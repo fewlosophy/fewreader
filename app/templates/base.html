@@ -119,18 +119,14 @@
     const FONT_SIZES = [15, 17, 20, 24];
 
     function adjustFontSize(delta) {
-      const current = parseFloat(
-        getComputedStyle(document.documentElement).getPropertyValue('--reader-font-size') || '17'
-      );
-      let idx = FONT_SIZES.indexOf(current);
-      if (idx === -1) idx = 1;
-      const newIdx = Math.max(0, Math.min(FONT_SIZES.length - 1, idx + delta));
-      document.documentElement.style.setProperty('--reader-font-size', FONT_SIZES[newIdx] + 'px');
-      localStorage.setItem('fontSizeIdx', newIdx);
+      let idx = parseInt(localStorage.getItem('fontSizeIdx') || '1', 10);
+      idx = Math.max(0, Math.min(FONT_SIZES.length - 1, idx + delta));
+      document.documentElement.style.setProperty('--reader-font-size', FONT_SIZES[idx] + 'px');
+      localStorage.setItem('fontSizeIdx', idx);
       const dec = document.getElementById('btn-font-decrease');
       const inc = document.getElementById('btn-font-increase');
-      if (dec) dec.disabled = newIdx === 0;
-      if (inc) inc.disabled = newIdx === FONT_SIZES.length - 1;
+      if (dec) dec.disabled = idx === 0;
+      if (inc) inc.disabled = idx === FONT_SIZES.length - 1;
     }
   </script>
 

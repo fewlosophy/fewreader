@@ -67,7 +67,7 @@ body {
 
 /* ─── Reader typography ─────────────────────────────────────────────────── */
 .reader-content {
-  font-size: var(--reader-font-size);
+  font-size: var(--reader-font-size) !important;
   line-height: 1.85;
 }
 
