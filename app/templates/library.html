@@ -29,17 +29,9 @@
       {% endif %}
     </h1>
 
-    {% set visible = namespace(items=[]) %}
-    {% if current_path %}
-      {# Find the subtree matching current_path #}
-      {% set visible.items = find_subtree(tree, current_path) %}
-    {% else %}
-      {% set visible.items = tree %}
-    {% endif %}
-
-    {% if visible.items %}
+    {% if visible_items %}
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {% for item in visible.items %}
+        {% for item in visible_items %}
           {% if item.type == 'category' %}
             {# Category card #}
             <a href="/library/{{ item.path }}"

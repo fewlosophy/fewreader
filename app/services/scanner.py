@@ -82,6 +82,29 @@ def _walk(current: Path, base: Path) -> list[BookFile | BookCategory]:
     return entries
 
 
+def find_subtree(tree: list, cat_path: str) -> list:
+    """
+    Walk *tree* to find the category matching *cat_path* and return its children.
+    Returns the root tree if cat_path is empty, or [] if not found.
+    """
+    if not cat_path:
+        return tree
+
+    parts = cat_path.strip("/").split("/")
+
+    def _search(nodes: list, parts: list) -> list:
+        target = parts[0]
+        rest = parts[1:]
+        for node in nodes:
+            if node["type"] == "category" and node["path"].split("/")[-1] == target:
+                if not rest:
+                    return node["children"]
+                return _search(node["children"], rest)
+        return []
+
+    return _search(tree, parts)
+
+
 def resolve_file(rel_path: str, base: Path) -> Path:
     """
     Resolve *rel_path* relative to *base* and verify it stays within *base*
