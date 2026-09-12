@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Library — {{ app_title }}{% endblock %}
+
+{% block content %}
+<div class="flex gap-6 min-h-[calc(100vh-8rem)]">
+
+  {# ── Left sidebar: full book tree ── #}
+  <aside class="w-64 shrink-0">
+    <div class="sticky top-20 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
+      <h2 class="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">Library</h2>
+      <nav>
+        {% if tree %}
+          {{ render_tree(tree) }}
+        {% else %}
+          <p class="text-sm text-gray-400 dark:text-gray-500 italic">No books found.</p>
+        {% endif %}
+      </nav>
+    </div>
+  </aside>
+
+  {# ── Main content: file cards ── #}
+  <section class="flex-1">
+    <h1 class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100">
+      {% if current_path %}
+        {{ current_path.split('/')[-1].replace('-', ' ').replace('_', ' ').title() }}
+      {% else %}
+        All Books
+      {% endif %}
+    </h1>
+
+    {% set visible = namespace(items=[]) %}
+    {% if current_path %}
+      {# Find the subtree matching current_path #}
+      {% set visible.items = find_subtree(tree, current_path) %}
+    {% else %}
+      {% set visible.items = tree %}
+    {% endif %}
+
+    {% if visible.items %}
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {% for item in visible.items %}
+          {% if item.type == 'category' %}
+            {# Category card #}
+            <a href="/library/{{ item.path }}"
+               class="group flex flex-col gap-2 p-5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-indigo-400 dark:hover:border-indigo-500 hover:shadow-md transition-all">
+              <div class="flex items-center gap-2 text-indigo-500 dark:text-indigo-400">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M10 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2h-8l-2-2z"/>
+                </svg>
+                <span class="font-semibold text-sm">{{ item.name }}</span>
+              </div>
+              <p class="text-xs text-gray-400 dark:text-gray-500">
+                {{ item.children | length }} item{{ 's' if item.children | length != 1 else '' }}
+              </p>
+            </a>
+          {% else %}
+            {# File card #}
+            <a href="/read/{{ item.path }}"
+               class="group flex flex-col gap-2 p-5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-indigo-400 dark:hover:border-indigo-500 hover:shadow-md transition-all">
+              <div class="flex items-start justify-between gap-2">
+                <span class="font-semibold text-gray-800 dark:text-gray-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors leading-snug">
+                  {{ item.name }}
+                </span>
+                <span class="shrink-0 text-xs font-mono px-1.5 py-0.5 rounded
+                  {% if item.ext == '.md' %}
+                    bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300
+                  {% else %}
+                    bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-300
+                  {% endif %}">
+                  {{ item.ext }}
+                </span>
+              </div>
+              <p class="text-xs text-gray-400 dark:text-gray-500 truncate">{{ item.path }}</p>
+            </a>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-gray-400 dark:text-gray-500 italic">This folder is empty.</p>
+    {% endif %}
+  </section>
+
+</div>
+{% endblock %}
+
+{# ── Recursive tree macro ── #}
+{% macro render_tree(items, depth=0) %}
+  <ul class="space-y-0.5 {% if depth > 0 %}ml-3 border-l border-gray-200 dark:border-gray-700 pl-3 mt-1{% endif %}">
+    {% for item in items %}
+      {% if item.type == 'category' %}
+        <li>
+          <details class="group" {% if current_path and current_path.startswith(item.path) %}open{% endif %}>
+            <summary class="flex items-center gap-1.5 cursor-pointer py-1 px-2 rounded-lg text-sm font-medium
+                            text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700
+                            list-none select-none transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0 transition-transform group-open:rotate-90 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M7.293 4.293a1 1 0 011.414 0L14 9.586l-5.293 5.293a1 1 0 01-1.414-1.414L11.586 10 6.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+              </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0 text-indigo-400" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2h-8l-2-2z"/>
+              </svg>
+              {{ item.name }}
+            </summary>
+            {{ render_tree(item.children, depth + 1) }}
+          </details>
+        </li>
+      {% else %}
+        <li>
+          <a href="/read/{{ item.path }}"
+             class="flex items-center gap-1.5 py-1 px-2 rounded-lg text-sm transition-colors
+                    {% if request.url.path == '/read/' ~ item.path %}
+                      bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 font-medium
+                    {% else %}
+                      text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100
+                    {% endif %}">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0 text-gray-300 dark:text-gray-600" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/>
+            </svg>
+            <span class="truncate">{{ item.name }}</span>
+          </a>
+        </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+{% endmacro %}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}{{ app_title }}{% endblock %}</title>
+
+  {# Theme script — must run before first paint to avoid flash #}
+  <script>
+    (function () {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
+
+  {# Tailwind CDN play script with typography plugin and dark mode #}
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          typography: (theme) => ({
+            DEFAULT: { css: { maxWidth: 'none' } },
+            invert: { css: { maxWidth: 'none' } },
+          }),
+        },
+      },
+    };
+
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+  </script>
+
+  <link rel="stylesheet" href="/static/custom.css" />
+</head>
+<body class="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
+
+  {# Navigation bar #}
+  <nav class="sticky top-0 z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+    <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
+      <a href="/" class="flex items-center gap-2 font-bold text-lg text-indigo-600 dark:text-indigo-400 hover:opacity-80 transition-opacity">
+        {# Book icon #}
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C9.243 2 7 4.243 7 7v14l5-3 5 3V7c0-2.757-2.243-5-5-5zm0 2c1.654 0 3 1.346 3 3v11.197l-3-1.8-3 1.8V7c0-1.654 1.346-3 3-3z"/>
+        </svg>
+        {{ app_title }}
+      </a>
+
+      {# Theme toggle button #}
+      <button
+        onclick="toggleTheme()"
+        class="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+        title="Toggle theme"
+        aria-label="Toggle dark/light theme"
+      >
+        {# Sun icon (shown in dark mode) #}
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+        </svg>
+        {# Moon icon (shown in light mode) #}
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" />
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  {# Page content #}
+  <main class="max-w-screen-2xl mx-auto px-4 sm:px-6 py-6">
+    {% block content %}{% endblock %}
+  </main>
+
+</body>
+</html>
