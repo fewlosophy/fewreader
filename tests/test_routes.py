@@ -135,6 +135,29 @@ def test_gzip_compression_enabled(client):
     assert resp.headers.get("content-encoding") == "gzip"
 
 
+def test_html_head_structure_and_no_leaked_js(client):
+    resp = client.get("/")
+    assert resp.status_code == 200
+    assert "</head>" in resp.text
+    head_content = resp.text.split("</head>")[0]
+    assert '<link rel="stylesheet" href="/static/tailwind.min.css"' in head_content
+    assert '<link rel="stylesheet" href="/static/custom.css"' in head_content
+    assert "function toggleTheme()" in head_content
+
+
+def test_code_block_theme_styling_in_custom_css(client):
+    resp = client.get("/static/custom.css")
+    assert resp.status_code == 200
+    # Must not contain hardcoded dark background for light mode
+    assert "background: #16181d !important;" not in resp.text
+    # Must use design tokens for light and dark modes
+    assert ".prose pre" in resp.text
+    assert "var(--color-surface)" in resp.text
+    assert "var(--color-text-primary)" in resp.text
+
+
+
+
 # ── PWA routes ─────────────────────────────────────────────────────────────
 
 def test_service_worker_route(client):
