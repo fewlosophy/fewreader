@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -23,6 +24,35 @@ app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="stat
 # Jinja2 templates — store on app.state so routers can access via request
 app.state.templates = Jinja2Templates(directory=str(BASE_DIR / "app/templates"))
 
+
+# PWA Root Routes
+@app.get("/sw.js", include_in_schema=False)
+def service_worker():
+    return FileResponse(
+        BASE_DIR / "static/sw.js",
+        media_type="application/javascript",
+        headers={"Service-Worker-Allowed": "/"},
+    )
+
+
+@app.get("/manifest.webmanifest", include_in_schema=False)
+@app.get("/manifest.json", include_in_schema=False)
+def web_manifest():
+    return FileResponse(
+        BASE_DIR / "static/manifest.webmanifest",
+        media_type="application/manifest+json",
+    )
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    return FileResponse(
+        BASE_DIR / "static/icons/icon-192.png",
+        media_type="image/png",
+    )
+
+
 # Routers
 app.include_router(library.router)
 app.include_router(reader.router)
+

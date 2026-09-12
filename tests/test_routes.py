@@ -113,3 +113,45 @@ def test_static_css_returns_200(client):
 def test_static_css_is_css(client):
     resp = client.get("/static/custom.css")
     assert "text/css" in resp.headers["content-type"]
+
+
+# ── PWA routes ─────────────────────────────────────────────────────────────
+
+def test_service_worker_route(client):
+    resp = client.get("/sw.js")
+    assert resp.status_code == 200
+    assert "javascript" in resp.headers["content-type"]
+    assert resp.headers.get("service-worker-allowed") == "/"
+    assert "readlite-pwa" in resp.text
+
+
+def test_manifest_webmanifest_route(client):
+    resp = client.get("/manifest.webmanifest")
+    assert resp.status_code == 200
+    assert "json" in resp.headers["content-type"]
+    data = resp.json()
+    assert data["name"] == "ReadLite"
+    assert data["display"] == "standalone"
+    assert data["start_url"] == "/"
+    assert len(data["icons"]) >= 2
+
+
+def test_manifest_json_alias(client):
+    resp = client.get("/manifest.json")
+    assert resp.status_code == 200
+    assert resp.json()["name"] == "ReadLite"
+
+
+def test_favicon_route(client):
+    resp = client.get("/favicon.ico")
+    assert resp.status_code == 200
+    assert "image/png" in resp.headers["content-type"]
+
+
+def test_pwa_head_tags_rendered_in_html(client):
+    resp = client.get("/")
+    assert resp.status_code == 200
+    assert '<link rel="manifest" href="/manifest.webmanifest"' in resp.text
+    assert '<meta name="theme-color"' in resp.text
+    assert "navigator.serviceWorker.register('/sw.js'" in resp.text
+
