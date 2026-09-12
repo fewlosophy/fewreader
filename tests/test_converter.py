@@ -131,6 +131,23 @@ def test_txt_decodes_gbk_encoding(tmp_path):
     assert "红楼梦经典章节" in html
 
 
+def test_txt_preserves_first_paragraph_indentation(tmp_path):
+    f = tmp_path / "t.txt"
+    f.write_text("        第一段有八个空格。\n\n        第二段也有八个空格。", encoding="utf-8")
+    html, _ = convert(f)
+    # The first paragraph must retain its leading indentation via &nbsp;
+    assert "<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;第一段有八个空格。</p>" in html
+    assert "<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;第二段也有八个空格。</p>" in html
+
+
+def test_txt_preserves_cjk_fullwidth_indentation(tmp_path):
+    f = tmp_path / "t.txt"
+    f.write_text("　　全角空格段落一。\n\n　　全角空格段落二。", encoding="utf-8")
+    html, _ = convert(f)
+    assert "<p>　　全角空格段落一。</p>" in html
+    assert "<p>　　全角空格段落二。</p>" in html
+
+
 # ── Error handling ─────────────────────────────────────────────────────────
 
 def test_unsupported_extension_raises(tmp_path):

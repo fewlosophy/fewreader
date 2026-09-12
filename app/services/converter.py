@@ -1,6 +1,7 @@
 import functools
 import html
 from pathlib import Path
+import re
 
 import markdown as md_lib
 
@@ -39,20 +40,42 @@ def _cached_convert_markdown(file_str: str, mtime: float, size: int) -> tuple[st
     return html_out, toc_out
 
 
+def _format_plaintext_line(line: str) -> str:
+    """
+    Format a single line of plain text.
+    Preserves leading indentation (spaces and tabs) by converting them to &nbsp;
+    so HTML rendering engines don't collapse them, while escaping all other content.
+    """
+    match = re.match(r"^([ \t]+)", line)
+    if match:
+        leading = match.group(1)
+        rest = line[len(leading):]
+        leading_html = leading.replace("\t", "    ").replace(" ", "&nbsp;")
+        return leading_html + html.escape(rest)
+    return html.escape(line)
+
+
 @functools.lru_cache(maxsize=128)
 def _cached_convert_plaintext(file_str: str, mtime: float, size: int) -> str:
     file_path = Path(file_str)
     text = _read_file_text(file_path)
-    # Split on blank lines → paragraphs; single newlines → <br>
-    paragraphs = text.split("\n\n")
+    # Split on blank lines (including lines with only whitespace)
+    paragraphs = re.split(r"\n\s*\n+", text)
     parts = []
     for para in paragraphs:
-        stripped = para.strip()
-        if stripped:
-            # HTML-escape raw text to prevent XSS injection
-            escaped = html.escape(stripped)
-            inner = escaped.replace("\n", "<br>\n")
-            parts.append(f"<p>{inner}</p>")
+        if not para.strip():
+            continue
+        lines = para.split("\n")
+        # Remove empty boundary lines within the paragraph block without stripping indentation from text lines
+        while lines and not lines[0].strip():
+            lines.pop(0)
+        while lines and not lines[-1].strip():
+            lines.pop()
+        if not lines:
+            continue
+        formatted_lines = [_format_plaintext_line(l) for l in lines]
+        inner = "<br>\n".join(formatted_lines)
+        parts.append(f"<p>{inner}</p>")
     return "\n".join(parts)
 
 
