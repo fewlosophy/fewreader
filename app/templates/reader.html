@@ -25,6 +25,19 @@
 {% endblock %}
 
 {% block nav_right %}
+  {# Reading progress badge #}
+  <span id="reading-progress-badge" class="text-[11px] font-mono text-[var(--color-text-muted)] mr-1" title="Reading progress">
+    0%
+  </span>
+
+  {# Font family toggle — Sans / Serif #}
+  <button id="btn-font-family"
+          onclick="toggleSerifFont()"
+          class="px-2 py-1 rounded border border-[var(--color-border)] text-xs text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)] hover:text-[var(--color-text-primary)] transition-colors"
+          title="Toggle font family">
+    Sans
+  </button>
+
   {# Font size controls — A− / A+ #}
   <div class="flex items-center gap-0 rounded-md border border-[var(--color-border)] overflow-hidden text-xs">
     <button id="btn-font-decrease"
@@ -37,6 +50,18 @@
             class="px-2.5 py-1.5 text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)] hover:text-[var(--color-text-primary)] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             aria-label="Increase font size">A+</button>
   </div>
+
+  {# Mobile TOC toggle button #}
+  {% if has_toc %}
+  <button onclick="toggleTocDrawer()"
+          class="xl:hidden p-1.5 rounded-md border border-[var(--color-border)] text-xs text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)] hover:text-[var(--color-text-primary)] transition-colors flex items-center gap-1"
+          aria-label="Table of Contents">
+    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h10M4 18h14"/>
+    </svg>
+    <span class="hidden sm:inline">TOC</span>
+  </button>
+  {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -59,32 +84,192 @@
         {{ content | safe }}
       </article>
 
-      {# Bottom nav: previous / next could go here in future #}
-      <div class="mt-16 pt-8 border-t border-[var(--color-border)]">
-        <a href="/" class="inline-flex items-center gap-1.5 text-sm text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors">
-          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-          </svg>
-          Back to library
+      {# Chapter Navigation Bar: Previous / Next #}
+      <div class="mt-16 pt-8 border-t border-[var(--color-border)] flex items-center justify-between gap-4">
+        {% if prev_file %}
+          <a href="/read/{{ prev_file.path }}"
+             id="link-prev-chapter"
+             class="inline-flex items-center gap-1.5 text-xs sm:text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors max-w-[45%] truncate group"
+             title="Previous: {{ prev_file.name }}">
+            <svg class="w-4 h-4 shrink-0 transition-transform group-hover:-translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+            </svg>
+            <span class="truncate">{{ prev_file.name }}</span>
+          </a>
+        {% else %}
+          <span class="text-xs text-[var(--color-text-muted)] italic">Start of section</span>
+        {% endif %}
+
+        <a href="/" class="hidden sm:inline-flex items-center gap-1 text-xs text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors shrink-0">
+          Library
         </a>
+
+        {% if next_file %}
+          <a href="/read/{{ next_file.path }}"
+             id="link-next-chapter"
+             class="inline-flex items-center gap-1.5 text-xs sm:text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors max-w-[45%] truncate text-right ml-auto group"
+             title="Next: {{ next_file.name }}">
+            <span class="truncate">{{ next_file.name }}</span>
+            <svg class="w-4 h-4 shrink-0 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+            </svg>
+          </a>
+        {% else %}
+          <span class="text-xs text-[var(--color-text-muted)] italic ml-auto">End of section</span>
+        {% endif %}
       </div>
 
     </div>
   </div>
 
-  {# ── TOC sidebar — xl+ and only when headings exist ── #}
+  {# ── Desktop TOC sidebar — xl+ and only when headings exist ── #}
   {% if has_toc %}
-  <aside class="hidden xl:block w-52 shrink-0 border-l border-[var(--color-border)]">
+  <aside class="hidden xl:block w-56 shrink-0 border-l border-[var(--color-border)]">
     <div class="sticky top-14 px-5 py-8 overflow-y-auto max-h-[calc(100vh-3.5rem)]">
       <p class="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-muted)] mb-3">
         Contents
       </p>
-      <div class="toc">
+      <div id="desktop-toc" class="toc">
         {{ toc | safe }}
       </div>
+    </div>
+  </aside>
+
+  {# ── Mobile / Tablet TOC slide-over drawer ── #}
+  <div id="toc-backdrop"
+       class="fixed inset-0 z-30 bg-black/40 opacity-0 pointer-events-none transition-opacity xl:hidden"
+       onclick="toggleTocDrawer()">
+  </div>
+  <aside id="toc-drawer"
+         class="fixed top-0 right-0 z-40 h-screen w-64 bg-[var(--color-surface)] border-l border-[var(--color-border)]
+                translate-x-full transition-transform duration-200 xl:hidden flex flex-col">
+    <div class="flex items-center justify-between px-4 h-14 border-b border-[var(--color-border)] shrink-0">
+      <span class="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">Contents</span>
+      <button onclick="toggleTocDrawer()"
+              class="p-1 rounded-md text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
+              aria-label="Close contents">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div id="mobile-toc" class="toc p-4 overflow-y-auto flex-1">
+      {{ toc | safe }}
     </div>
   </aside>
   {% endif %}
 
 </div>
+
+<script>
+  const CURRENT_FILE_PATH = {{ file_path | tojson }};
+  const SCROLL_CONTAINER = document.getElementById('main-scroll-container');
+
+  // ── Mobile TOC Drawer Toggle ─────────────────────────────
+  function toggleTocDrawer() {
+    const drawer = document.getElementById('toc-drawer');
+    const backdrop = document.getElementById('toc-backdrop');
+    if (!drawer || !backdrop) return;
+    const isOpen = drawer.style.transform === 'translateX(0px)' || drawer.style.transform === 'translateX(0)';
+    if (isOpen) {
+      drawer.style.transform = '';
+      backdrop.classList.add('opacity-0', 'pointer-events-none');
+      backdrop.classList.remove('opacity-100');
+    } else {
+      drawer.style.transform = 'translateX(0)';
+      backdrop.classList.remove('opacity-0', 'pointer-events-none');
+      backdrop.classList.add('opacity-100');
+    }
+  }
+
+  // ── Reading Position & Progress Persistence ─────────────
+  function initReadingProgress() {
+    const storageKey = 'readpos_' + CURRENT_FILE_PATH;
+    const badge = document.getElementById('reading-progress-badge');
+
+    // Restore saved scroll position
+    const savedScroll = localStorage.getItem(storageKey);
+    if (savedScroll && SCROLL_CONTAINER) {
+      const targetTop = parseInt(savedScroll, 10);
+      if (!isNaN(targetTop) && targetTop > 0) {
+        requestAnimationFrame(() => {
+          SCROLL_CONTAINER.scrollTop = targetTop;
+        });
+      }
+    }
+
+    // Update progress on scroll (throttled)
+    let scrollTimeout = null;
+    SCROLL_CONTAINER.addEventListener('scroll', () => {
+      const maxScroll = SCROLL_CONTAINER.scrollHeight - SCROLL_CONTAINER.clientHeight;
+      const currentScroll = SCROLL_CONTAINER.scrollTop;
+      const percent = maxScroll > 0 ? Math.min(100, Math.max(0, Math.round((currentScroll / maxScroll) * 100))) : 0;
+
+      if (badge) {
+        badge.textContent = percent + '%';
+      }
+
+      if (!scrollTimeout) {
+        scrollTimeout = setTimeout(() => {
+          localStorage.setItem(storageKey, currentScroll);
+          scrollTimeout = null;
+        }, 150);
+      }
+    });
+  }
+
+  // ── TOC Scrollspy ───────────────────────────────────────
+  function initTocScrollspy() {
+    const headings = Array.from(document.querySelectorAll('.reader-content h2, .reader-content h3, .reader-content h4'));
+    if (!headings.length) return;
+
+    const tocLinks = Array.from(document.querySelectorAll('.toc a'));
+
+    function onScroll() {
+      const containerTop = SCROLL_CONTAINER.scrollTop;
+      let currentActiveId = null;
+
+      for (const h of headings) {
+        // offset relative to the container
+        if (h.offsetTop <= containerTop + 120) {
+          currentActiveId = h.id;
+        }
+      }
+
+      tocLinks.forEach(link => {
+        const href = link.getAttribute('href') || '';
+        if (currentActiveId && href === '#' + currentActiveId) {
+          link.classList.add('active-heading');
+        } else {
+          link.classList.remove('active-heading');
+        }
+      });
+    }
+
+    SCROLL_CONTAINER.addEventListener('scroll', onScroll);
+    onScroll();
+  }
+
+  // ── Keyboard Shortcuts (Next / Previous Chapter) ────────
+  function initKeyboardNav() {
+    document.addEventListener('keydown', (e) => {
+      // Don't intercept if user is typing in an input
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+
+      if (e.key === 'ArrowLeft' || e.key === 'j') {
+        const prevLink = document.getElementById('link-prev-chapter');
+        if (prevLink) prevLink.click();
+      } else if (e.key === 'ArrowRight' || e.key === 'k') {
+        const nextLink = document.getElementById('link-next-chapter');
+        if (nextLink) nextLink.click();
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initReadingProgress();
+    initTocScrollspy();
+    initKeyboardNav();
+  });
+</script>
 {% endblock %}

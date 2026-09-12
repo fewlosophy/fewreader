@@ -1,12 +1,12 @@
 """
 Unit tests for app/services/scanner.py
 
-Covers: scan_tree, find_subtree, resolve_file
+Covers: scan_tree, find_subtree, resolve_file, natural sorting, Chinese chapter sorting, sibling navigation
 """
 import pytest
 from pathlib import Path
 
-from app.services.scanner import scan_tree, find_subtree, resolve_file
+from app.services.scanner import scan_tree, find_subtree, resolve_file, get_sibling_files
 
 
 # ── scan_tree ──────────────────────────────────────────────────────────────
@@ -73,6 +73,41 @@ def test_scan_file_has_ext_field(books_dir):
         assert f["ext"] in {".md", ".txt"}
 
 
+def test_natural_sorting_arabic_numerals(tmp_path):
+    (tmp_path / "chapter-10.md").write_text("# Ch 10", encoding="utf-8")
+    (tmp_path / "chapter-2.md").write_text("# Ch 2", encoding="utf-8")
+    (tmp_path / "chapter-1.md").write_text("# Ch 1", encoding="utf-8")
+
+    tree = scan_tree(tmp_path, use_cache=False)
+    paths = [n["path"] for n in tree if n["type"] == "file"]
+    assert paths == ["chapter-1.md", "chapter-2.md", "chapter-10.md"]
+
+
+def test_chinese_chapter_sorting(tmp_path):
+    chapters = [
+        "第一百二十回.txt",
+        "第一回.txt",
+        "第七回.txt",
+        "第三十回.txt",
+        "第七十回.txt",
+        "第一百回.txt",
+    ]
+    for ch in chapters:
+        (tmp_path / ch).write_text("content", encoding="utf-8")
+
+    tree = scan_tree(tmp_path, use_cache=False)
+    paths = [n["path"] for n in tree if n["type"] == "file"]
+    expected = [
+        "第一回.txt",
+        "第七回.txt",
+        "第三十回.txt",
+        "第七十回.txt",
+        "第一百回.txt",
+        "第一百二十回.txt",
+    ]
+    assert paths == expected
+
+
 # ── find_subtree ───────────────────────────────────────────────────────────
 
 def test_find_subtree_empty_path_returns_root(books_dir):
@@ -126,3 +161,23 @@ def test_resolve_bad_extension_raises(books_dir):
     # data.json exists in books_dir but is not an allowed extension
     with pytest.raises(ValueError, match="not allowed"):
         resolve_file("data.json", books_dir)
+
+
+# ── get_sibling_files ──────────────────────────────────────────────────────
+
+def test_get_sibling_files(tmp_path):
+    (tmp_path / "1.txt").write_text("1", encoding="utf-8")
+    (tmp_path / "2.txt").write_text("2", encoding="utf-8")
+    (tmp_path / "3.txt").write_text("3", encoding="utf-8")
+
+    prev_f, next_f = get_sibling_files("2.txt", tmp_path)
+    assert prev_f is not None and prev_f["path"] == "1.txt"
+    assert next_f is not None and next_f["path"] == "3.txt"
+
+    prev_first, next_first = get_sibling_files("1.txt", tmp_path)
+    assert prev_first is None
+    assert next_first is not None and next_first["path"] == "2.txt"
+
+    prev_last, next_last = get_sibling_files("3.txt", tmp_path)
+    assert prev_last is not None and prev_last["path"] == "2.txt"
+    assert next_last is None

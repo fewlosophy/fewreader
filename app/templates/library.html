@@ -10,10 +10,10 @@
 
 {% block nav_left %}
   {# Breadcrumb in navbar #}
-  <nav class="flex items-center gap-1 text-sm min-w-0">
+  <nav class="flex items-center gap-1 text-sm min-w-0" aria-label="Breadcrumb">
     {% if current_path %}
       <a href="/" class="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors shrink-0">Library</a>
-      {% set parts = current_path.split('/') %}
+      {% set parts = current_path.strip('/').split('/') %}
       {% for part in parts %}
         <span class="text-[var(--color-text-muted)] shrink-0">/</span>
         {% if loop.last %}
@@ -36,30 +36,48 @@
 {% block content %}
 <div class="p-4 md:p-6 lg:p-8">
 
-  {# Section heading #}
-  <div class="mb-6">
-    <h1 class="text-lg font-semibold text-[var(--color-text-primary)]">
-      {% if current_path %}
-        {{ current_path.split('/')[-1].replace('-',' ').replace('_',' ').title() }}
-      {% else %}
-        All Books
-      {% endif %}
-    </h1>
-    <p class="text-xs text-[var(--color-text-muted)] mt-0.5">
-      {{ visible_items | length }} item{{ 's' if visible_items | length != 1 else '' }}
-    </p>
+  {# Section heading & search filter #}
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-lg font-semibold text-[var(--color-text-primary)]">
+        {% if current_path %}
+          {{ current_path.split('/')[-1].replace('-',' ').replace('_',' ').title() }}
+        {% else %}
+          All Books
+        {% endif %}
+      </h1>
+      <p id="library-count" class="text-xs text-[var(--color-text-muted)] mt-0.5">
+        {{ visible_items | length }} item{{ 's' if visible_items | length != 1 else '' }}
+      </p>
+    </div>
+
+    {% if visible_items %}
+    <div class="w-full sm:w-64">
+      <div class="relative">
+        <input type="text"
+               id="library-filter-input"
+               placeholder="Search items..."
+               oninput="filterLibraryCards(this.value)"
+               class="w-full bg-[var(--color-surface)] text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] text-xs rounded-lg pl-8 pr-3 py-2 border border-[var(--color-border)] focus:outline-none focus:border-[var(--color-accent)] transition-colors" />
+        <svg class="w-3.5 h-3.5 text-[var(--color-text-muted)] absolute left-2.5 top-2.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+      </div>
+    </div>
+    {% endif %}
   </div>
 
   {# Card grid #}
   {% if visible_items %}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+    <div id="library-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
 
       {% for item in visible_items %}
 
         {% if item.type == 'category' %}
           {# Category card #}
           <a href="/library/{{ item.path }}"
-             class="group flex items-center gap-3 p-4 rounded-xl
+             data-name="{{ item.name | lower }}"
+             class="library-card group flex items-center gap-3 p-4 rounded-xl
                     border border-[var(--color-border)] bg-[var(--color-surface)]
                     hover:border-[var(--color-accent)] hover:bg-[var(--color-surface-raised)]
                     transition-all duration-150">
@@ -85,7 +103,8 @@
         {% else %}
           {# File card #}
           <a href="/read/{{ item.path }}"
-             class="group flex items-center gap-3 p-4 rounded-xl
+             data-name="{{ item.name | lower }}"
+             class="library-card group flex items-center gap-3 p-4 rounded-xl
                     border border-[var(--color-border)] bg-[var(--color-surface)]
                     hover:border-[var(--color-accent)] hover:bg-[var(--color-surface-raised)]
                     transition-all duration-150">
@@ -122,4 +141,25 @@
   {% endif %}
 
 </div>
+
+<script>
+  function filterLibraryCards(query) {
+    const q = query.trim().toLowerCase();
+    const cards = document.querySelectorAll('#library-grid .library-card');
+    let count = 0;
+    cards.forEach(card => {
+      const name = card.getAttribute('data-name') || '';
+      if (!q || name.includes(q)) {
+        card.style.display = '';
+        count++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+    const countEl = document.getElementById('library-count');
+    if (countEl) {
+      countEl.textContent = `${count} item${count !== 1 ? 's' : ''}${q ? ' found' : ''}`;
+    }
+  }
+</script>
 {% endblock %}

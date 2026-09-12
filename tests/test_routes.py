@@ -80,6 +80,14 @@ def test_read_nested_file_contains_content(client):
     assert "Once upon a time" in resp.text
 
 
+def test_read_breadcrumb_strips_file_extension(client):
+    resp = client.get("/read/welcome.md")
+    assert resp.status_code == 200
+    # Last breadcrumb should display 'Welcome', not 'Welcome.Md'
+    assert "Welcome.Md" not in resp.text
+    assert "Welcome.md" not in resp.text
+
+
 def test_read_nonexistent_file_returns_404(client):
     resp = client.get("/read/ghost.md")
     assert resp.status_code == 404

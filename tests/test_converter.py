@@ -1,7 +1,7 @@
 """
 Unit tests for app/services/converter.py
 
-Covers: Markdown → HTML (with TOC), plain text → HTML
+Covers: Markdown → HTML (with TOC), plain text → HTML, XSS escaping, encoding fallbacks
 """
 import pytest
 from pathlib import Path
@@ -74,6 +74,13 @@ def test_md_returns_tuple(tmp_path):
     assert isinstance(result, tuple) and len(result) == 2
 
 
+def test_md_converts_footnotes(tmp_path):
+    f = tmp_path / "t.md"
+    f.write_text("Text with footnote[^1].\n\n[^1]: Note content.\n", encoding="utf-8")
+    html, _ = convert(f)
+    assert "footnote" in html.lower()
+
+
 # ── Plain text ─────────────────────────────────────────────────────────────
 
 def test_txt_double_newline_creates_paragraphs(tmp_path):
@@ -103,6 +110,25 @@ def test_txt_empty_lines_ignored(tmp_path):
     f.write_text("Para one.\n\n\n\nPara two.", encoding="utf-8")
     html, _ = convert(f)
     assert html.count("<p>") == 2
+
+
+def test_txt_escapes_xss_payload(tmp_path):
+    f = tmp_path / "t.txt"
+    f.write_text("<script>alert('xss')</script>\n\n<img src=x onerror=alert(1)>", encoding="utf-8")
+    html, _ = convert(f)
+    assert "<script>" not in html
+    assert "&lt;script&gt;alert(&#x27;xss&#x27;)&lt;/script&gt;" in html or "&lt;script&gt;" in html
+    assert "<img" not in html
+    assert "&lt;img" in html
+
+
+def test_txt_decodes_gbk_encoding(tmp_path):
+    f = tmp_path / "t.txt"
+    text = "第一回 甄士隐梦幻识通灵\n\n红楼梦经典章节。"
+    f.write_bytes(text.encode("gb18030"))
+    html, _ = convert(f)
+    assert "甄士隐梦幻识通灵" in html
+    assert "红楼梦经典章节" in html
 
 
 # ── Error handling ─────────────────────────────────────────────────────────

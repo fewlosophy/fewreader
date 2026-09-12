@@ -13,6 +13,18 @@ def app():
     return fastapi_app
 
 
+@pytest.fixture(autouse=True)
+def reset_caches():
+    """Clear in-memory caches before and after each test."""
+    from app.services.scanner import clear_scanner_cache
+    from app.services.converter import clear_converter_cache
+    clear_scanner_cache()
+    clear_converter_cache()
+    yield
+    clear_scanner_cache()
+    clear_converter_cache()
+
+
 @pytest.fixture
 def books_dir(tmp_path: Path) -> Path:
     """

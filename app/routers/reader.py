@@ -1,9 +1,11 @@
+from pathlib import Path
+
 from fastapi import APIRouter, Request, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 from app.config import settings
-from app.services.scanner import scan_tree, resolve_file
+from app.services.scanner import scan_tree, resolve_file, get_sibling_files
 from app.services.converter import convert
 
 router = APIRouter()
@@ -21,9 +23,11 @@ def _breadcrumb(file_path: str) -> list[dict]:
     for i, part in enumerate(parts):
         accumulated = f"{accumulated}/{part}" if accumulated else part
         is_last = i == len(parts) - 1
+        # Strip extension on the final file name crumb
+        raw_label = Path(part).stem if is_last else part
         crumbs.append(
             {
-                "label": part.replace("-", " ").replace("_", " ").title(),
+                "label": raw_label.replace("-", " ").replace("_", " ").title(),
                 "path": accumulated,
                 "is_last": is_last,
             }
@@ -32,7 +36,7 @@ def _breadcrumb(file_path: str) -> list[dict]:
 
 
 @router.get("/read/{file_path:path}", response_class=HTMLResponse)
-async def read_file(request: Request, file_path: str):
+def read_file(request: Request, file_path: str):
     # Resolve and guard against path traversal
     try:
         abs_path = resolve_file(file_path, settings.BOOKS_DIR)
@@ -51,6 +55,7 @@ async def read_file(request: Request, file_path: str):
     )
 
     tree = scan_tree(settings.BOOKS_DIR)
+    prev_file, next_file = get_sibling_files(file_path, settings.BOOKS_DIR)
     templates = _get_templates(request)
 
     return templates.TemplateResponse(
@@ -64,6 +69,8 @@ async def read_file(request: Request, file_path: str):
             "file_path": file_path,
             "breadcrumb": _breadcrumb(file_path),
             "tree": tree,
+            "prev_file": prev_file,
+            "next_file": next_file,
             "app_title": settings.APP_TITLE,
         },
     )
