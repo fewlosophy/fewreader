@@ -17,9 +17,9 @@ async def library_root(request: Request):
     tree = scan_tree(settings.BOOKS_DIR)
     templates = _get_templates(request)
     return templates.TemplateResponse(
+        request,
         "library.html",
         {
-            "request": request,
             "tree": tree,
             "visible_items": tree,
             "current_path": "",
@@ -34,9 +34,9 @@ async def library_category(request: Request, cat_path: str):
     visible = find_subtree(tree, cat_path)
     templates = _get_templates(request)
     return templates.TemplateResponse(
+        request,
         "library.html",
         {
-            "request": request,
             "tree": tree,
             "visible_items": visible,
             "current_path": cat_path,

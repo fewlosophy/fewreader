@@ -1,0 +1,3 @@
+# Dev / test dependencies (not needed in production)
+pytest
+httpx

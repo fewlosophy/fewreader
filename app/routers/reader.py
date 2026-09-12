@@ -54,9 +54,9 @@ async def read_file(request: Request, file_path: str):
     templates = _get_templates(request)
 
     return templates.TemplateResponse(
+        request,
         "reader.html",
         {
-            "request": request,
             "content": html_content,
             "toc": toc_html,
             "has_toc": bool(toc_html and "<li>" in toc_html),
