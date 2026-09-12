@@ -217,3 +217,12 @@ def test_reader_mobile_layout_and_anchor_guards(client):
     assert "preventViewportScroll" in resp.text
 
 
+def test_chapter_navigation_svg_dimensions(client):
+    # Ensure chapter nav SVG icons don't use uncompiled classes like w-4.5
+    resp = client.get("/read/welcome.md")
+    assert resp.status_code == 200
+    assert "w-4.5" not in resp.text
+    assert "h-4.5" not in resp.text
+
+
+

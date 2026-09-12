@@ -46,3 +46,6 @@ Thumbs.db
 # --- Node / npm ---
 node_modules/
 package-lock.json
+
+# --- Images ---
+*.png
