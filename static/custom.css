@@ -32,25 +32,6 @@
   --color-accent-subtle:  #1e293b;
 }
 
-/* ─── Design Tokens — Sepia (Warm Paper) ────────────────────────────────── */
-.sepia {
-  --color-bg:             #f8f1e3;
-  --color-surface:        #efe4d0;
-  --color-surface-raised: #e5d8c1;
-  --color-border:         #dfd2b9;
-  --color-text-primary:   #3c3022;
-  --color-text-secondary: #6e5c47;
-  --color-text-muted:     #9a8670;
-  --color-accent:         #8c5828;
-  --color-accent-hover:   #6b421d;
-  --color-accent-subtle:  #eee2cb;
-}
-
-.sepia .prose pre {
-  background: #2b2218 !important;
-  border-color: #4a3b2c;
-}
-
 /* ─── Base ──────────────────────────────────────────────────────────────── */
 html {
   scroll-behavior: smooth;

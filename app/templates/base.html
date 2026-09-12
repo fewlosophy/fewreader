@@ -56,14 +56,12 @@
 
   {# ── Init scripts: run before first paint to avoid flash ── #}
   <script>
-    // Theme (light / sepia / dark)
+    // Theme
     (function () {
       const saved = localStorage.getItem('theme');
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       if (saved === 'dark' || (!saved && prefersDark)) {
         document.documentElement.classList.add('dark');
-      } else if (saved === 'sepia') {
-        document.documentElement.classList.add('sepia');
       }
     })();
 
@@ -96,42 +94,10 @@
       },
     };
 
-    // ── Theme cycling: light -> sepia -> dark ──────────────
-    function cycleTheme() {
-      const el = document.documentElement;
-      let nextTheme = 'light';
-      if (el.classList.contains('dark')) {
-        el.classList.remove('dark');
-        el.classList.remove('sepia');
-        nextTheme = 'light';
-      } else if (el.classList.contains('sepia')) {
-        el.classList.remove('sepia');
-        el.classList.add('dark');
-        nextTheme = 'dark';
-      } else {
-        el.classList.add('sepia');
-        nextTheme = 'sepia';
-      }
-      localStorage.setItem('theme', nextTheme);
-      updateThemeDisplay();
-    }
-
-    function updateThemeDisplay() {
-      const el = document.documentElement;
-      const sun = document.getElementById('icon-theme-sun');
-      const moon = document.getElementById('icon-theme-moon');
-      const sepia = document.getElementById('icon-theme-sepia');
-      if (!sun || !moon || !sepia) return;
-      sun.classList.add('hidden');
-      moon.classList.add('hidden');
-      sepia.classList.add('hidden');
-      if (el.classList.contains('dark')) {
-        sun.classList.remove('hidden');
-      } else if (el.classList.contains('sepia')) {
-        moon.classList.remove('hidden');
-      } else {
-        sepia.classList.remove('hidden');
-      }
+    // ── Theme ─────────────────────────────────────────────
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
     }
 
     // ── Font family mode (Sans vs Serif) ───────────────────
@@ -211,7 +177,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      updateThemeDisplay();
       updateFontSizeButtons();
       const isSerif = document.documentElement.classList.contains('font-serif-mode');
       const btn = document.getElementById('btn-font-family');
@@ -306,21 +271,17 @@
       <div class="flex items-center gap-2 shrink-0">
         {% block nav_right %}{% endblock %}
 
-        {# 3-way Theme cycle: Light -> Sepia -> Dark #}
-        <button onclick="cycleTheme()"
+        {# Theme toggle #}
+        <button onclick="toggleTheme()"
                 class="p-1.5 rounded-md text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)] hover:text-[var(--color-text-primary)] transition-colors"
-                title="Toggle Theme: Light / Sepia / Dark"
+                title="Toggle theme"
                 aria-label="Toggle theme">
-          {# Sun — shown in Dark mode #}
-          <svg id="icon-theme-sun" class="w-4 h-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          {# Sun — shown in dark mode #}
+          <svg class="w-4 h-4 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>
           </svg>
-          {# Sepia/Warm icon — shown in Light mode #}
-          <svg id="icon-theme-sepia" class="w-4 h-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-          </svg>
-          {# Moon — shown in Sepia mode #}
-          <svg id="icon-theme-moon" class="w-4 h-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          {# Moon — shown in light mode #}
+          <svg class="w-4 h-4 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/>
           </svg>
         </button>
