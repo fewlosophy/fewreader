@@ -14,8 +14,8 @@
   --color-accent-hover:   #475569;
   --color-accent-subtle:  #f1f5f9;
 
-  --reader-font-size: 17px;
-  --sidebar-width: 256px;
+  --reader-font-size: 18px;
+  --sidebar-width: 288px;
 }
 
 /* ─── Design Tokens — Dark ──────────────────────────────────────────────── */
@@ -68,7 +68,7 @@ body {
 #sidebar > div:first-child,
 #toc-drawer > div:first-child {
   padding-top: env(safe-area-inset-top, 0px);
-  height: calc(3.5rem + env(safe-area-inset-top, 0px));
+  height: calc(3.75rem + env(safe-area-inset-top, 0px));
 }
 
 /* ─── Typography mode toggle ────────────────────────────────────────────── */
@@ -186,11 +186,11 @@ body {
 
 .toc a {
   display: block;
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   color: var(--color-text-muted);
   text-decoration: none;
-  padding: 0.15rem 0;
-  line-height: 1.4;
+  padding: 0.25rem 0;
+  line-height: 1.5;
   transition: all 0.15s;
 }
 
@@ -202,7 +202,7 @@ body {
   color: var(--color-accent) !important;
   font-weight: 600;
   border-left: 2px solid var(--color-accent);
-  padding-left: 0.4rem;
+  padding-left: 0.5rem;
 }
 
 /* ─── Scrollbar (webkit) ────────────────────────────────────────────────── */

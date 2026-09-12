@@ -4,14 +4,14 @@
 
 {% block nav_left %}
   {# Breadcrumb — collapses on mobile to just the title #}
-  <nav class="flex items-center gap-1 text-sm min-w-0" aria-label="Breadcrumb">
+  <nav class="flex items-center gap-1 text-sm sm:text-base min-w-0" aria-label="Breadcrumb">
     <a href="/" class="hidden sm:block text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors shrink-0">
       Library
     </a>
     {% for crumb in breadcrumb %}
       <span class="hidden sm:block text-[var(--color-text-muted)] shrink-0">/</span>
       {% if crumb.is_last %}
-        <span class="text-[var(--color-text-primary)] font-medium truncate max-w-[120px] sm:max-w-[260px]">
+        <span class="text-[var(--color-text-primary)] font-medium truncate max-w-[170px] sm:max-w-[320px]">
           {{ crumb.label }}
         </span>
       {% else %}
@@ -26,37 +26,37 @@
 
 {% block nav_right %}
   {# Reading progress badge #}
-  <span id="reading-progress-badge" class="text-[11px] font-mono text-[var(--color-text-muted)] mr-0.5 sm:mr-1" title="Reading progress">
+  <span id="reading-progress-badge" class="text-xs sm:text-sm font-mono text-[var(--color-text-muted)] mr-1 sm:mr-2" title="Reading progress">
     0%
   </span>
 
   {# Font family toggle — Sans / Serif (shown on sm+) #}
   <button id="btn-font-family"
           onclick="toggleSerifFont()"
-          class="hidden sm:inline-block px-2 py-1 rounded border border-[var(--color-border)] text-xs text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)] hover:text-[var(--color-text-primary)] transition-colors"
+          class="hidden sm:inline-block px-2.5 py-1.5 rounded-lg border border-[var(--color-border)] text-xs sm:text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)] hover:text-[var(--color-text-primary)] transition-colors"
           title="Toggle font family">
     Sans
   </button>
 
   {# Font size controls — A− / A+ #}
-  <div class="flex items-center gap-0 rounded-md border border-[var(--color-border)] overflow-hidden text-xs">
+  <div class="flex items-center gap-0 rounded-lg border border-[var(--color-border)] overflow-hidden text-xs sm:text-sm">
     <button id="btn-font-decrease"
             onclick="adjustFontSize(-1)"
-            class="px-2.5 py-1.5 text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)] hover:text-[var(--color-text-primary)] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            class="px-3 py-1.5 text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)] hover:text-[var(--color-text-primary)] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             aria-label="Decrease font size">A−</button>
     <span class="w-px h-4 bg-[var(--color-border)]"></span>
     <button id="btn-font-increase"
             onclick="adjustFontSize(1)"
-            class="px-2.5 py-1.5 text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)] hover:text-[var(--color-text-primary)] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            class="px-3 py-1.5 text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)] hover:text-[var(--color-text-primary)] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             aria-label="Increase font size">A+</button>
   </div>
 
   {# Mobile TOC toggle button #}
   {% if has_toc %}
   <button onclick="toggleTocDrawer()"
-          class="xl:hidden p-1.5 rounded-md border border-[var(--color-border)] text-xs text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)] hover:text-[var(--color-text-primary)] transition-colors flex items-center gap-1"
+          class="xl:hidden px-2.5 py-1.5 rounded-lg border border-[var(--color-border)] text-xs sm:text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)] hover:text-[var(--color-text-primary)] transition-colors flex items-center gap-1.5"
           aria-label="Table of Contents">
-    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
       <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h10M4 18h14"/>
     </svg>
     <span class="hidden sm:inline">TOC</span>
@@ -69,10 +69,10 @@
 
   {# ── Reading area ── #}
   <div class="flex-1 min-w-0 px-4 py-10 md:px-10 xl:px-16">
-    <div class="max-w-[680px] mx-auto">
+    <div class="max-w-[720px] mx-auto">
 
       {# Article title (derived from filename) #}
-      <h1 class="text-2xl md:text-3xl font-bold text-[var(--color-text-primary)] mb-8 tracking-tight leading-tight">
+      <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--color-text-primary)] mb-8 tracking-tight leading-tight">
         {{ title }}
       </h1>
 
@@ -89,33 +89,33 @@
         {% if prev_file %}
           <a href="/read/{{ prev_file.path }}"
              id="link-prev-chapter"
-             class="inline-flex items-center gap-1.5 text-xs sm:text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors max-w-[45%] truncate group"
+             class="inline-flex items-center gap-2 text-sm sm:text-base text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors max-w-[45%] truncate group"
              title="Previous: {{ prev_file.name }}">
-            <svg class="w-4 h-4 shrink-0 transition-transform group-hover:-translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg class="w-4.5 h-4.5 shrink-0 transition-transform group-hover:-translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
             </svg>
             <span class="truncate">{{ prev_file.name }}</span>
           </a>
         {% else %}
-          <span class="text-xs text-[var(--color-text-muted)] italic">Start of section</span>
+          <span class="text-sm text-[var(--color-text-muted)] italic">Start of section</span>
         {% endif %}
 
-        <a href="/" class="hidden sm:inline-flex items-center gap-1 text-xs text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors shrink-0">
+        <a href="/" class="hidden sm:inline-flex items-center gap-1.5 text-sm text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors shrink-0">
           Library
         </a>
 
         {% if next_file %}
           <a href="/read/{{ next_file.path }}"
              id="link-next-chapter"
-             class="inline-flex items-center gap-1.5 text-xs sm:text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors max-w-[45%] truncate text-right ml-auto group"
+             class="inline-flex items-center gap-2 text-sm sm:text-base text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors max-w-[45%] truncate text-right ml-auto group"
              title="Next: {{ next_file.name }}">
             <span class="truncate">{{ next_file.name }}</span>
-            <svg class="w-4 h-4 shrink-0 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg class="w-4.5 h-4.5 shrink-0 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
             </svg>
           </a>
         {% else %}
-          <span class="text-xs text-[var(--color-text-muted)] italic ml-auto">End of section</span>
+          <span class="text-sm text-[var(--color-text-muted)] italic ml-auto">End of section</span>
         {% endif %}
       </div>
 
@@ -124,9 +124,9 @@
 
   {# ── Desktop TOC sidebar — xl+ and only when headings exist ── #}
   {% if has_toc %}
-  <aside class="hidden xl:block w-56 shrink-0 border-l border-[var(--color-border)]">
-    <div class="sticky top-14 px-5 py-8 overflow-y-auto max-h-[calc(100vh-3.5rem)]">
-      <p class="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-muted)] mb-3">
+  <aside class="hidden xl:block w-64 shrink-0 border-l border-[var(--color-border)]">
+    <div class="sticky top-16 px-6 py-8 overflow-y-auto max-h-[calc(100vh-4rem)]">
+      <p class="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)] mb-3">
         Contents
       </p>
       <div id="desktop-toc" class="toc">
@@ -148,19 +148,19 @@
        onclick="closeTocDrawer()">
   </div>
   <aside id="toc-drawer"
-         class="fixed top-0 right-0 z-40 h-screen w-64 bg-[var(--color-surface)] border-l border-[var(--color-border)]
+         class="fixed top-0 right-0 z-40 h-screen w-72 sm:w-80 bg-[var(--color-surface)] border-l border-[var(--color-border)]
                 translate-x-full transition-transform duration-200 xl:hidden flex flex-col">
-    <div class="flex items-center justify-between px-4 h-14 border-b border-[var(--color-border)] shrink-0">
-      <span class="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">Contents</span>
+    <div class="flex items-center justify-between px-4 h-15 sm:h-16 border-b border-[var(--color-border)] shrink-0">
+      <span class="text-sm font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">Contents</span>
       <button onclick="closeTocDrawer()"
-              class="p-1 rounded-md text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
+              class="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-raised)] transition-colors"
               aria-label="Close contents">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
         </svg>
       </button>
     </div>
-    <div id="mobile-toc" class="toc p-4 overflow-y-auto flex-1">
+    <div id="mobile-toc" class="toc p-5 overflow-y-auto flex-1">
       {{ toc | safe }}
     </div>
   </aside>
