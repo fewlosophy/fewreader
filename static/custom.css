@@ -102,7 +102,7 @@ body {
 /* ─── Reader typography ─────────────────────────────────────────────────── */
 .reader-content {
   font-size: var(--reader-font-size) !important;
-  line-height: 1.85;
+  line-height: 1.65;
 }
 
 /* ─── Prose overrides ───────────────────────────────────────────────────── */
