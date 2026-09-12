@@ -2,7 +2,24 @@
 
 A clean, self-hosted web app for reading `.md` and `.txt` files in your browser.
 
-## Setup
+## Quick Start (Docker)
+
+Run with Docker Compose:
+
+```bash
+docker compose up -d
+```
+
+Or build and run with Docker directly:
+
+```bash
+docker build -t readlite .
+docker run -d -p 8000:8000 -v $(pwd)/books:/app/books:ro --name readlite readlite
+```
+
+Then open **http://localhost:8000** in your browser.
+
+## Local Setup (Python)
 
 ```bash
 # Install dependencies
@@ -11,8 +28,6 @@ pip install -r requirements.txt
 # Run the development server
 uvicorn app.main:app --reload --port 8000
 ```
-
-Then open **http://localhost:8000** in your browser.
 
 ## Adding Books
 

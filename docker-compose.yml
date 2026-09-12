@@ -1,0 +1,22 @@
+services:
+  readlite:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: readlite:latest
+    container_name: readlite
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - BOOKS_DIR=/app/books
+      - APP_TITLE=ReadLite
+    volumes:
+      # Mount local books folder as read-only
+      - ./books:/app/books:ro
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/').read()"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
