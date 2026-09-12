@@ -1,8 +1,9 @@
-const CACHE_NAME = 'readlite-pwa-v1';
+const CACHE_NAME = 'readlite-pwa-v2';
 
 // Essential App Shell assets to pre-cache on install
 const PRECACHE_ASSETS = [
   '/',
+  '/static/tailwind.min.css',
   '/static/custom.css',
   '/static/manifest.webmanifest',
   '/static/icons/icon.svg',

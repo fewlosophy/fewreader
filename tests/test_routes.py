@@ -115,6 +115,26 @@ def test_static_css_is_css(client):
     assert "text/css" in resp.headers["content-type"]
 
 
+def test_static_tailwind_css_returns_200(client):
+    resp = client.get("/static/tailwind.min.css")
+    assert resp.status_code == 200
+    assert "text/css" in resp.headers["content-type"]
+
+
+def test_no_external_render_blocking_cdns(client):
+    resp = client.get("/")
+    assert resp.status_code == 200
+    assert "cdn.tailwindcss.com" not in resp.text
+    assert "fonts.googleapis.com" not in resp.text
+    assert "fonts.gstatic.com" not in resp.text
+
+
+def test_gzip_compression_enabled(client):
+    resp = client.get("/", headers={"Accept-Encoding": "gzip"})
+    assert resp.status_code == 200
+    assert resp.headers.get("content-encoding") == "gzip"
+
+
 # ── PWA routes ─────────────────────────────────────────────────────────────
 
 def test_service_worker_route(client):

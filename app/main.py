@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -17,6 +18,7 @@ else:
     settings.BOOKS_DIR = Path(settings.BOOKS_DIR).resolve()
 
 app = FastAPI(title=settings.APP_TITLE)
+app.add_middleware(GZipMiddleware, minimum_size=500)
 
 # Static files
 app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")

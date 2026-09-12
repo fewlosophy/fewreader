@@ -1,0 +1,12 @@
+{
+  "name": "readlite",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build:css": "tailwindcss -i ./static/input.css -o ./static/tailwind.min.css --minify"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.16",
+    "tailwindcss": "^3.4.17"
+  }
+}
