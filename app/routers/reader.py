@@ -59,6 +59,7 @@ async def read_file(request: Request, file_path: str):
             "request": request,
             "content": html_content,
             "toc": toc_html,
+            "has_toc": bool(toc_html and "<li>" in toc_html),
             "title": title,
             "file_path": file_path,
             "breadcrumb": _breadcrumb(file_path),

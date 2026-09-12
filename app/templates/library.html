@@ -1,118 +1,125 @@
 {% extends "base.html" %}
 
-{% block title %}Library — {{ app_title }}{% endblock %}
+{% block title %}
+  {% if current_path %}
+    {{ current_path.split('/')[-1].replace('-',' ').replace('_',' ').title() }} — {{ app_title }}
+  {% else %}
+    {{ app_title }}
+  {% endif %}
+{% endblock %}
+
+{% block nav_left %}
+  {# Breadcrumb in navbar #}
+  <nav class="flex items-center gap-1 text-sm min-w-0">
+    {% if current_path %}
+      <a href="/" class="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors shrink-0">Library</a>
+      {% set parts = current_path.split('/') %}
+      {% for part in parts %}
+        <span class="text-[var(--color-text-muted)] shrink-0">/</span>
+        {% if loop.last %}
+          <span class="text-[var(--color-text-primary)] font-medium truncate">
+            {{ part.replace('-',' ').replace('_',' ').title() }}
+          </span>
+        {% else %}
+          <a href="/library/{{ parts[:loop.index] | join('/') }}"
+             class="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors shrink-0">
+            {{ part.replace('-',' ').replace('_',' ').title() }}
+          </a>
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      <span class="text-[var(--color-text-primary)] font-medium">Library</span>
+    {% endif %}
+  </nav>
+{% endblock %}
 
 {% block content %}
-<div class="flex gap-6 min-h-[calc(100vh-8rem)]">
+<div class="p-4 md:p-6 lg:p-8">
 
-  {# ── Left sidebar: full book tree ── #}
-  <aside class="w-64 shrink-0">
-    <div class="sticky top-20 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
-      <h2 class="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-3">Library</h2>
-      <nav>
-        {% if tree %}
-          {{ render_tree(tree) }}
-        {% else %}
-          <p class="text-sm text-gray-400 dark:text-gray-500 italic">No books found.</p>
-        {% endif %}
-      </nav>
-    </div>
-  </aside>
-
-  {# ── Main content: file cards ── #}
-  <section class="flex-1">
-    <h1 class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100">
+  {# Section heading #}
+  <div class="mb-6">
+    <h1 class="text-lg font-semibold text-[var(--color-text-primary)]">
       {% if current_path %}
-        {{ current_path.split('/')[-1].replace('-', ' ').replace('_', ' ').title() }}
+        {{ current_path.split('/')[-1].replace('-',' ').replace('_',' ').title() }}
       {% else %}
         All Books
       {% endif %}
     </h1>
+    <p class="text-xs text-[var(--color-text-muted)] mt-0.5">
+      {{ visible_items | length }} item{{ 's' if visible_items | length != 1 else '' }}
+    </p>
+  </div>
 
-    {% if visible_items %}
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {% for item in visible_items %}
-          {% if item.type == 'category' %}
-            {# Category card #}
-            <a href="/library/{{ item.path }}"
-               class="group flex flex-col gap-2 p-5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-indigo-400 dark:hover:border-indigo-500 hover:shadow-md transition-all">
-              <div class="flex items-center gap-2 text-indigo-500 dark:text-indigo-400">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M10 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2h-8l-2-2z"/>
-                </svg>
-                <span class="font-semibold text-sm">{{ item.name }}</span>
-              </div>
-              <p class="text-xs text-gray-400 dark:text-gray-500">
+  {# Card grid #}
+  {% if visible_items %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+
+      {% for item in visible_items %}
+
+        {% if item.type == 'category' %}
+          {# Category card #}
+          <a href="/library/{{ item.path }}"
+             class="group flex items-center gap-3 p-4 rounded-xl
+                    border border-[var(--color-border)] bg-[var(--color-surface)]
+                    hover:border-[var(--color-accent)] hover:bg-[var(--color-surface-raised)]
+                    transition-all duration-150">
+            <div class="w-9 h-9 rounded-lg bg-[var(--color-surface-raised)] group-hover:bg-[var(--color-surface)]
+                        flex items-center justify-center shrink-0 transition-colors">
+              <svg class="w-4 h-4 text-[var(--color-text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 7a2 2 0 012-2h3.586a1 1 0 01.707.293L11 7h10a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/>
+              </svg>
+            </div>
+            <div class="min-w-0">
+              <p class="text-sm font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate transition-colors">
+                {{ item.name }}
+              </p>
+              <p class="text-xs text-[var(--color-text-muted)] mt-0.5">
                 {{ item.children | length }} item{{ 's' if item.children | length != 1 else '' }}
               </p>
-            </a>
-          {% else %}
-            {# File card #}
-            <a href="/read/{{ item.path }}"
-               class="group flex flex-col gap-2 p-5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-indigo-400 dark:hover:border-indigo-500 hover:shadow-md transition-all">
-              <div class="flex items-start justify-between gap-2">
-                <span class="font-semibold text-gray-800 dark:text-gray-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors leading-snug">
-                  {{ item.name }}
-                </span>
-                <span class="shrink-0 text-xs font-mono px-1.5 py-0.5 rounded
-                  {% if item.ext == '.md' %}
-                    bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300
-                  {% else %}
-                    bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-300
-                  {% endif %}">
-                  {{ item.ext }}
-                </span>
-              </div>
-              <p class="text-xs text-gray-400 dark:text-gray-500 truncate">{{ item.path }}</p>
-            </a>
-          {% endif %}
-        {% endfor %}
-      </div>
-    {% else %}
-      <p class="text-gray-400 dark:text-gray-500 italic">This folder is empty.</p>
-    {% endif %}
-  </section>
+            </div>
+            <svg class="w-3.5 h-3.5 text-[var(--color-text-muted)] ml-auto shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+            </svg>
+          </a>
+
+        {% else %}
+          {# File card #}
+          <a href="/read/{{ item.path }}"
+             class="group flex items-center gap-3 p-4 rounded-xl
+                    border border-[var(--color-border)] bg-[var(--color-surface)]
+                    hover:border-[var(--color-accent)] hover:bg-[var(--color-surface-raised)]
+                    transition-all duration-150">
+            <div class="w-9 h-9 rounded-lg bg-[var(--color-surface-raised)] group-hover:bg-[var(--color-surface)]
+                        flex items-center justify-center shrink-0 transition-colors">
+              <svg class="w-4 h-4 text-[var(--color-text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+            </div>
+            <div class="min-w-0 flex-1">
+              <p class="text-sm font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] truncate transition-colors">
+                {{ item.name }}
+              </p>
+              <span class="inline-block text-[10px] font-mono text-[var(--color-text-muted)] mt-0.5">{{ item.ext }}</span>
+            </div>
+            <svg class="w-3.5 h-3.5 text-[var(--color-text-muted)] shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+            </svg>
+          </a>
+        {% endif %}
+
+      {% endfor %}
+    </div>
+
+  {% else %}
+    {# Empty state #}
+    <div class="flex flex-col items-center justify-center py-24 text-center">
+      <svg class="w-10 h-10 text-[var(--color-text-muted)] mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.25">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+      </svg>
+      <p class="text-sm text-[var(--color-text-secondary)]">This folder is empty</p>
+      <a href="/" class="mt-2 text-xs text-[var(--color-accent)] hover:underline">← Back to library</a>
+    </div>
+  {% endif %}
 
 </div>
 {% endblock %}
-
-{# ── Recursive tree macro ── #}
-{% macro render_tree(items, depth=0) %}
-  <ul class="space-y-0.5 {% if depth > 0 %}ml-3 border-l border-gray-200 dark:border-gray-700 pl-3 mt-1{% endif %}">
-    {% for item in items %}
-      {% if item.type == 'category' %}
-        <li>
-          <details class="group" {% if current_path and current_path.startswith(item.path) %}open{% endif %}>
-            <summary class="flex items-center gap-1.5 cursor-pointer py-1 px-2 rounded-lg text-sm font-medium
-                            text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700
-                            list-none select-none transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0 transition-transform group-open:rotate-90 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M7.293 4.293a1 1 0 011.414 0L14 9.586l-5.293 5.293a1 1 0 01-1.414-1.414L11.586 10 6.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
-              </svg>
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0 text-indigo-400" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M10 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2h-8l-2-2z"/>
-              </svg>
-              {{ item.name }}
-            </summary>
-            {{ render_tree(item.children, depth + 1) }}
-          </details>
-        </li>
-      {% else %}
-        <li>
-          <a href="/read/{{ item.path }}"
-             class="flex items-center gap-1.5 py-1 px-2 rounded-lg text-sm transition-colors
-                    {% if request.url.path == '/read/' ~ item.path %}
-                      bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 font-medium
-                    {% else %}
-                      text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100
-                    {% endif %}">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0 text-gray-300 dark:text-gray-600" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/>
-            </svg>
-            <span class="truncate">{{ item.name }}</span>
-          </a>
-        </li>
-      {% endif %}
-    {% endfor %}
-  </ul>
-{% endmacro %}

@@ -1,3 +1,47 @@
+{# ─── Sidebar tree macro (defined before HTML so it can be called anywhere) ─── #}
+{% macro render_tree(items, depth=0) %}
+<ul class="space-y-px {% if depth > 0 %}ml-2 pl-2 border-l border-[var(--color-border)]{% endif %}">
+  {% for item in items %}
+    {% if item.type == 'category' %}
+      <li>
+        <details class="group/cat"
+          {% if (file_path is defined and file_path and file_path.startswith(item.path + '/'))
+              or (current_path is defined and current_path and current_path.startswith(item.path)) %}
+            open
+          {% endif %}>
+          <summary class="flex items-center gap-2 py-1.5 px-2 rounded-md text-xs font-medium cursor-pointer select-none
+                          text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-raised)] hover:text-[var(--color-text-primary)]
+                          transition-colors list-none">
+            <svg class="w-2.5 h-2.5 shrink-0 text-[var(--color-text-muted)] transition-transform duration-150 group-open/cat:rotate-90"
+                 fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M7.293 4.293a1 1 0 011.414 0L14 9.586l-5.293 5.293a1 1 0 01-1.414-1.414L11.586 10 6.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+            </svg>
+            <span class="truncate">{{ item.name }}</span>
+          </summary>
+          {{ render_tree(item.children, depth + 1) }}
+        </details>
+      </li>
+    {% else %}
+      <li>
+        <a href="/read/{{ item.path }}"
+           class="flex items-center gap-2 py-1.5 px-2 rounded-md text-xs transition-colors
+                  {% if file_path is defined and file_path == item.path %}
+                    bg-[var(--color-accent-subtle)] text-[var(--color-accent)] font-medium
+                  {% else %}
+                    text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-raised)] hover:text-[var(--color-text-primary)]
+                  {% endif %}">
+          <svg class="w-3 h-3 shrink-0 text-[var(--color-text-muted)] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+          <span class="truncate flex-1">{{ item.name }}</span>
+          <span class="text-[10px] font-mono text-[var(--color-text-muted)] shrink-0">{{ item.ext }}</span>
+        </a>
+      </li>
+    {% endif %}
+  {% endfor %}
+</ul>
+{% endmacro %}
+
 <!DOCTYPE html>
 <html lang="en" class="">
 <head>
@@ -5,8 +49,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}{{ app_title }}{% endblock %}</title>
 
-  {# Theme script — must run before first paint to avoid flash #}
+  {# Noto Sans SC for CJK — preconnect for speed #}
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  {# ── Init scripts: run before first paint to avoid flash ── #}
   <script>
+    // Theme
     (function () {
       const saved = localStorage.getItem('theme');
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -14,67 +64,170 @@
         document.documentElement.classList.add('dark');
       }
     })();
+
+    // Reader font size
+    (function () {
+      const sizes = [15, 17, 20, 24];
+      const idx = Math.min(sizes.length - 1, Math.max(0, parseInt(localStorage.getItem('fontSizeIdx') || '1', 10)));
+      document.documentElement.style.setProperty('--reader-font-size', sizes[idx] + 'px');
+    })();
   </script>
 
-  {# Tailwind CDN play script with typography plugin and dark mode #}
+  {# Tailwind CDN with typography plugin #}
   <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
-          typography: (theme) => ({
-            DEFAULT: { css: { maxWidth: 'none' } },
-            invert: { css: { maxWidth: 'none' } },
-          }),
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', '"Noto Sans SC"', 'sans-serif'],
+          },
         },
       },
     };
 
+    // ── Theme ─────────────────────────────────────────────
     function toggleTheme() {
       const isDark = document.documentElement.classList.toggle('dark');
       localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+
+    // ── Sidebar / drawer ──────────────────────────────────
+    function openSidebar() {
+      document.getElementById('sidebar').style.transform = 'translateX(0)';
+      const bd = document.getElementById('drawer-backdrop');
+      bd.classList.remove('opacity-0', 'pointer-events-none');
+      bd.classList.add('opacity-100');
+    }
+
+    function closeSidebar() {
+      document.getElementById('sidebar').style.transform = '';
+      const bd = document.getElementById('drawer-backdrop');
+      bd.classList.add('opacity-0', 'pointer-events-none');
+      bd.classList.remove('opacity-100');
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      // Sidebar is "open" when it has an inline transform overriding the CSS default
+      const isOpen = sidebar.style.transform === 'translateX(0px)' || sidebar.style.transform === 'translateX(0)';
+      isOpen ? closeSidebar() : openSidebar();
+    }
+
+    // ── Font size ─────────────────────────────────────────
+    const FONT_SIZES = [15, 17, 20, 24];
+
+    function adjustFontSize(delta) {
+      const current = parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue('--reader-font-size') || '17'
+      );
+      let idx = FONT_SIZES.indexOf(current);
+      if (idx === -1) idx = 1;
+      const newIdx = Math.max(0, Math.min(FONT_SIZES.length - 1, idx + delta));
+      document.documentElement.style.setProperty('--reader-font-size', FONT_SIZES[newIdx] + 'px');
+      localStorage.setItem('fontSizeIdx', newIdx);
+      const dec = document.getElementById('btn-font-decrease');
+      const inc = document.getElementById('btn-font-increase');
+      if (dec) dec.disabled = newIdx === 0;
+      if (inc) inc.disabled = newIdx === FONT_SIZES.length - 1;
     }
   </script>
 
   <link rel="stylesheet" href="/static/custom.css" />
 </head>
-<body class="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
 
-  {# Navigation bar #}
-  <nav class="sticky top-0 z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
-    <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
-      <a href="/" class="flex items-center gap-2 font-bold text-lg text-indigo-600 dark:text-indigo-400 hover:opacity-80 transition-opacity">
-        {# Book icon #}
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2C9.243 2 7 4.243 7 7v14l5-3 5 3V7c0-2.757-2.243-5-5-5zm0 2c1.654 0 3 1.346 3 3v11.197l-3-1.8-3 1.8V7c0-1.654 1.346-3 3-3z"/>
+<body class="flex h-screen overflow-hidden">
+
+  {# ── Mobile backdrop ── #}
+  <div id="drawer-backdrop"
+       class="fixed inset-0 z-30 bg-black/40 opacity-0 pointer-events-none transition-opacity md:hidden"
+       onclick="closeSidebar()">
+  </div>
+
+  {# ── Sidebar ── #}
+  <aside id="sidebar"
+         class="fixed top-0 left-0 z-40 h-screen w-64 flex flex-col shrink-0
+                -translate-x-full md:relative md:translate-x-0
+                border-r border-[var(--color-border)] bg-[var(--color-surface)]
+                overflow-y-auto">
+
+    {# Sidebar header #}
+    <div class="flex items-center justify-between px-4 h-14 border-b border-[var(--color-border)] shrink-0">
+      <a href="/" class="flex items-center gap-2 text-sm font-semibold text-[var(--color-text-primary)] hover:text-[var(--color-accent)] transition-colors">
+        <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
         </svg>
         {{ app_title }}
       </a>
-
-      {# Theme toggle button #}
-      <button
-        onclick="toggleTheme()"
-        class="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-        title="Toggle theme"
-        aria-label="Toggle dark/light theme"
-      >
-        {# Sun icon (shown in dark mode) #}
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
-        </svg>
-        {# Moon icon (shown in light mode) #}
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" />
+      {# Close button — mobile only #}
+      <button onclick="closeSidebar()"
+              class="md:hidden p-1 rounded-md text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-raised)] transition-colors"
+              aria-label="Close menu">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
         </svg>
       </button>
     </div>
-  </nav>
 
-  {# Page content #}
-  <main class="max-w-screen-2xl mx-auto px-4 sm:px-6 py-6">
-    {% block content %}{% endblock %}
-  </main>
+    {# Sidebar nav tree #}
+    <nav class="flex-1 px-2 py-3 overflow-y-auto">
+      {% if tree is defined and tree %}
+        {{ render_tree(tree) }}
+      {% else %}
+        <p class="text-xs text-[var(--color-text-muted)] italic px-2 py-2">No books found.<br>Drop .md or .txt files into books/</p>
+      {% endif %}
+    </nav>
+  </aside>
+
+  {# ── Main wrapper ── #}
+  <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+
+    {# Top navbar #}
+    <nav class="sticky top-0 z-20 flex items-center justify-between h-14 px-4 shrink-0
+                border-b border-[var(--color-border)] bg-[var(--color-bg)]">
+
+      <div class="flex items-center gap-3 min-w-0">
+        {# Hamburger — mobile only #}
+        <button onclick="toggleSidebar()"
+                class="md:hidden p-1.5 rounded-md text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)] hover:text-[var(--color-text-primary)] transition-colors shrink-0"
+                aria-label="Open menu">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+        {# Page-specific left nav content #}
+        <div class="min-w-0">
+          {% block nav_left %}
+            <span class="text-sm text-[var(--color-text-secondary)]">{{ app_title }}</span>
+          {% endblock %}
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 shrink-0">
+        {% block nav_right %}{% endblock %}
+        {# Theme toggle #}
+        <button onclick="toggleTheme()"
+                class="p-1.5 rounded-md text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)] hover:text-[var(--color-text-primary)] transition-colors"
+                aria-label="Toggle theme">
+          {# Sun — shown in dark mode #}
+          <svg class="w-4 h-4 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>
+          </svg>
+          {# Moon — shown in light mode #}
+          <svg class="w-4 h-4 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    {# Page content — child templates fill this block #}
+    <main class="flex-1">
+      {% block content %}{% endblock %}
+    </main>
+
+  </div>
 
 </body>
 </html>
