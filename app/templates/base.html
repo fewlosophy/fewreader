@@ -187,11 +187,31 @@
       });
     }
 
+    // ── Prevent Viewport / Wrapper Scroll Drift ────────────
+    function preventViewportScroll() {
+      if (window.scrollY !== 0 || window.scrollX !== 0) {
+        window.scrollTo(0, 0);
+      }
+      if (document.documentElement.scrollTop !== 0) {
+        document.documentElement.scrollTop = 0;
+      }
+      if (document.body.scrollTop !== 0) {
+        document.body.scrollTop = 0;
+      }
+      const mw = document.getElementById('main-wrapper');
+      if (mw && mw.scrollTop !== 0) {
+        mw.scrollTop = 0;
+      }
+    }
+    window.addEventListener('scroll', preventViewportScroll, { passive: true });
+
     document.addEventListener('DOMContentLoaded', () => {
       updateFontSizeButtons();
       const isSerif = document.documentElement.classList.contains('font-serif-mode');
       const btn = document.getElementById('btn-font-family');
       if (btn) btn.textContent = isSerif ? 'Serif' : 'Sans';
+      const mw = document.getElementById('main-wrapper');
+      if (mw) mw.addEventListener('scroll', preventViewportScroll, { passive: true });
     });
   </script>
 
@@ -266,10 +286,10 @@
   </aside>
 
   {# ── Main wrapper (Navbar + Scrollable Content) ── #}
-  <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
+  <div id="main-wrapper" class="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
 
     {# Top navbar — pinned rigidly above the scroll container #}
-    <nav id="top-navbar" class="flex items-center justify-between h-14 px-3 sm:px-4 shrink-0
+    <nav id="top-navbar" class="sticky top-0 flex items-center justify-between h-14 px-3 sm:px-4 shrink-0
                 border-b border-[var(--color-border)] bg-[var(--color-bg)] z-20">
 
       <div class="flex items-center gap-2 sm:gap-3 min-w-0">
@@ -310,7 +330,7 @@
     </nav>
 
     {# Scrollable content container #}
-    <div id="main-scroll-container" class="flex-1 min-w-0 overflow-y-auto">
+    <div id="main-scroll-container" class="flex-1 min-w-0 overflow-y-auto relative">
       <main class="min-h-full">
         {% block content %}{% endblock %}
       </main>
@@ -318,5 +338,8 @@
 
   </div>
 
+  {% block drawers %}{% endblock %}
+
+  {% block scripts %}{% endblock %}
 </body>
 </html>

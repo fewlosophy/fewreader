@@ -155,3 +155,13 @@ def test_pwa_head_tags_rendered_in_html(client):
     assert '<meta name="theme-color"' in resp.text
     assert "navigator.serviceWorker.register('/sw.js'" in resp.text
 
+
+def test_reader_mobile_layout_and_anchor_guards(client):
+    resp = client.get("/read/welcome.md")
+    assert resp.status_code == 200
+    assert 'id="main-wrapper"' in resp.text
+    assert 'id="toc-drawer"' in resp.text
+    assert "initAnchorNavigation" in resp.text
+    assert "preventViewportScroll" in resp.text
+
+

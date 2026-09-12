@@ -39,7 +39,6 @@ html, body {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  scroll-behavior: smooth;
 }
 
 body {
@@ -53,8 +52,21 @@ body {
   width: 100%;
 }
 
+/* ─── Main Wrapper & Scroll Container ───────────────────────────────────── */
+#main-wrapper {
+  overflow: hidden;
+  overflow: clip !important;
+}
+
+#main-scroll-container {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
 /* ─── Mobile Safe Area Inset ────────────────────────────────────────────── */
-#top-navbar {
+#top-navbar,
+#sidebar > div:first-child,
+#toc-drawer > div:first-child {
   padding-top: env(safe-area-inset-top, 0px);
   height: calc(3.5rem + env(safe-area-inset-top, 0px));
 }
@@ -101,10 +113,11 @@ body {
   color: var(--color-text-primary);
 }
 
-.prose h1, .prose h2, .prose h3, .prose h4, .prose h5 {
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
   color: var(--color-text-primary);
   font-weight: 600;
   letter-spacing: -0.02em;
+  scroll-margin-top: 1.5rem;
 }
 
 .prose a {

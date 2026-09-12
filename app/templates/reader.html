@@ -135,17 +135,24 @@
     </div>
   </aside>
 
+  {% endif %}
+
+</div>
+{% endblock %}
+
+{% block drawers %}
+  {% if has_toc %}
   {# ── Mobile / Tablet TOC slide-over drawer ── #}
   <div id="toc-backdrop"
        class="fixed inset-0 z-30 bg-black/40 opacity-0 pointer-events-none transition-opacity xl:hidden"
-       onclick="toggleTocDrawer()">
+       onclick="closeTocDrawer()">
   </div>
   <aside id="toc-drawer"
          class="fixed top-0 right-0 z-40 h-screen w-64 bg-[var(--color-surface)] border-l border-[var(--color-border)]
                 translate-x-full transition-transform duration-200 xl:hidden flex flex-col">
     <div class="flex items-center justify-between px-4 h-14 border-b border-[var(--color-border)] shrink-0">
       <span class="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">Contents</span>
-      <button onclick="toggleTocDrawer()"
+      <button onclick="closeTocDrawer()"
               class="p-1 rounded-md text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
               aria-label="Close contents">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -158,27 +165,100 @@
     </div>
   </aside>
   {% endif %}
+{% endblock %}
 
-</div>
-
+{% block scripts %}
 <script>
   const CURRENT_FILE_PATH = {{ file_path | tojson }};
   const SCROLL_CONTAINER = document.getElementById('main-scroll-container');
 
-  // ── Mobile TOC Drawer Toggle ─────────────────────────────
-  function toggleTocDrawer() {
+  // ── Mobile TOC Drawer Controls ───────────────────────────
+  function closeTocDrawer() {
     const drawer = document.getElementById('toc-drawer');
     const backdrop = document.getElementById('toc-backdrop');
     if (!drawer || !backdrop) return;
+    drawer.style.transform = '';
+    backdrop.classList.add('opacity-0', 'pointer-events-none');
+    backdrop.classList.remove('opacity-100');
+  }
+
+  function openTocDrawer() {
+    const drawer = document.getElementById('toc-drawer');
+    const backdrop = document.getElementById('toc-backdrop');
+    if (!drawer || !backdrop) return;
+    drawer.style.transform = 'translateX(0)';
+    backdrop.classList.remove('opacity-0', 'pointer-events-none');
+    backdrop.classList.add('opacity-100');
+  }
+
+  function toggleTocDrawer() {
+    const drawer = document.getElementById('toc-drawer');
+    if (!drawer) return;
     const isOpen = drawer.style.transform === 'translateX(0px)' || drawer.style.transform === 'translateX(0)';
-    if (isOpen) {
-      drawer.style.transform = '';
-      backdrop.classList.add('opacity-0', 'pointer-events-none');
-      backdrop.classList.remove('opacity-100');
-    } else {
-      drawer.style.transform = 'translateX(0)';
-      backdrop.classList.remove('opacity-0', 'pointer-events-none');
-      backdrop.classList.add('opacity-100');
+    isOpen ? closeTocDrawer() : openTocDrawer();
+  }
+
+  // ── Smooth In-Page Anchor Navigation ─────────────────────
+  // Intercepts clicks on internal hash links (TOC, footnotes, headings)
+  // to prevent browser native fragment jumping from pushing the top navbar out of view.
+  function initAnchorNavigation() {
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a[href^="#"]');
+      if (!link) return;
+
+      const href = link.getAttribute('href');
+      if (!href || href === '#') return;
+
+      const targetId = decodeURIComponent(href.slice(1));
+      const targetEl = document.getElementById(targetId);
+      if (!targetEl || !SCROLL_CONTAINER) return;
+
+      // CRITICAL: Prevent browser native anchor jump which scrolls parent containers / window
+      e.preventDefault();
+
+      // Automatically dismiss the mobile TOC drawer if open
+      closeTocDrawer();
+
+      // Ensure root & wrapper have not drifted
+      window.scrollTo(0, 0);
+      const mw = document.getElementById('main-wrapper');
+      if (mw) mw.scrollTop = 0;
+
+      // Calculate destination inside SCROLL_CONTAINER
+      const containerRect = SCROLL_CONTAINER.getBoundingClientRect();
+      const targetRect = targetEl.getBoundingClientRect();
+      const currentScroll = SCROLL_CONTAINER.scrollTop;
+      const targetOffset = targetRect.top - containerRect.top + currentScroll;
+
+      SCROLL_CONTAINER.scrollTo({
+        top: Math.max(0, targetOffset - 16),
+        behavior: 'smooth'
+      });
+
+      // Update URL hash without native browser jump
+      if (history.pushState) {
+        history.pushState(null, '', href);
+      }
+    });
+
+    // Handle initial hash on page load without ancestor drift
+    if (window.location.hash && window.location.hash.length > 1) {
+      setTimeout(() => {
+        const targetId = decodeURIComponent(window.location.hash.slice(1));
+        const targetEl = document.getElementById(targetId);
+        if (targetEl && SCROLL_CONTAINER) {
+          window.scrollTo(0, 0);
+          const mw = document.getElementById('main-wrapper');
+          if (mw) mw.scrollTop = 0;
+
+          const containerRect = SCROLL_CONTAINER.getBoundingClientRect();
+          const targetRect = targetEl.getBoundingClientRect();
+          const currentScroll = SCROLL_CONTAINER.scrollTop;
+          const targetOffset = targetRect.top - containerRect.top + currentScroll;
+
+          SCROLL_CONTAINER.scrollTop = Math.max(0, targetOffset - 16);
+        }
+      }, 80);
     }
   }
 
@@ -186,15 +266,18 @@
   function initReadingProgress() {
     const storageKey = 'readpos_' + CURRENT_FILE_PATH;
     const badge = document.getElementById('reading-progress-badge');
+    const hasHash = Boolean(window.location.hash && window.location.hash.length > 1);
 
-    // Restore saved scroll position
-    const savedScroll = localStorage.getItem(storageKey);
-    if (savedScroll && SCROLL_CONTAINER) {
-      const targetTop = parseInt(savedScroll, 10);
-      if (!isNaN(targetTop) && targetTop > 0) {
-        requestAnimationFrame(() => {
-          SCROLL_CONTAINER.scrollTop = targetTop;
-        });
+    // Restore saved scroll position only if not navigating to a specific hash anchor
+    if (!hasHash) {
+      const savedScroll = localStorage.getItem(storageKey);
+      if (savedScroll && SCROLL_CONTAINER) {
+        const targetTop = parseInt(savedScroll, 10);
+        if (!isNaN(targetTop) && targetTop > 0) {
+          requestAnimationFrame(() => {
+            SCROLL_CONTAINER.scrollTop = targetTop;
+          });
+        }
       }
     }
 
@@ -221,17 +304,17 @@
   // ── TOC Scrollspy ───────────────────────────────────────
   function initTocScrollspy() {
     const headings = Array.from(document.querySelectorAll('.reader-content h2, .reader-content h3, .reader-content h4'));
-    if (!headings.length) return;
+    if (!headings.length || !SCROLL_CONTAINER) return;
 
     const tocLinks = Array.from(document.querySelectorAll('.toc a'));
 
     function onScroll() {
-      const containerTop = SCROLL_CONTAINER.scrollTop;
+      const containerRect = SCROLL_CONTAINER.getBoundingClientRect();
       let currentActiveId = null;
 
       for (const h of headings) {
-        // offset relative to the container
-        if (h.offsetTop <= containerTop + 120) {
+        const relativeTop = h.getBoundingClientRect().top - containerRect.top;
+        if (relativeTop <= 120) {
           currentActiveId = h.id;
         }
       }
@@ -246,7 +329,7 @@
       });
     }
 
-    SCROLL_CONTAINER.addEventListener('scroll', onScroll);
+    SCROLL_CONTAINER.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
   }
 
@@ -267,6 +350,7 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
+    initAnchorNavigation();
     initReadingProgress();
     initTocScrollspy();
     initKeyboardNav();
