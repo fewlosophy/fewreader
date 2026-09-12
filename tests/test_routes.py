@@ -156,6 +156,15 @@ def test_code_block_theme_styling_in_custom_css(client):
     assert "var(--color-text-primary)" in resp.text
 
 
+def test_reader_font_size_uses_rem(client):
+    resp = client.get("/")
+    assert resp.status_code == 200
+    assert "'1rem', '1.0625rem', '1.125rem'" in resp.text
+    css_resp = client.get("/static/custom.css")
+    assert "--reader-font-size: 1.125rem;" in css_resp.text
+
+
+
 
 
 # ── PWA routes ─────────────────────────────────────────────────────────────
