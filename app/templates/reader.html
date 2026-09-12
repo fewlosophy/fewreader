@@ -11,7 +11,7 @@
     {% for crumb in breadcrumb %}
       <span class="hidden sm:block text-[var(--color-text-muted)] shrink-0">/</span>
       {% if crumb.is_last %}
-        <span class="text-[var(--color-text-primary)] font-medium truncate max-w-[180px] sm:max-w-[260px]">
+        <span class="text-[var(--color-text-primary)] font-medium truncate max-w-[120px] sm:max-w-[260px]">
           {{ crumb.label }}
         </span>
       {% else %}
@@ -26,14 +26,14 @@
 
 {% block nav_right %}
   {# Reading progress badge #}
-  <span id="reading-progress-badge" class="text-[11px] font-mono text-[var(--color-text-muted)] mr-1" title="Reading progress">
+  <span id="reading-progress-badge" class="text-[11px] font-mono text-[var(--color-text-muted)] mr-0.5 sm:mr-1" title="Reading progress">
     0%
   </span>
 
-  {# Font family toggle — Sans / Serif #}
+  {# Font family toggle — Sans / Serif (shown on sm+) #}
   <button id="btn-font-family"
           onclick="toggleSerifFont()"
-          class="px-2 py-1 rounded border border-[var(--color-border)] text-xs text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)] hover:text-[var(--color-text-primary)] transition-colors"
+          class="hidden sm:inline-block px-2 py-1 rounded border border-[var(--color-border)] text-xs text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)] hover:text-[var(--color-text-primary)] transition-colors"
           title="Toggle font family">
     Sans
   </button>
