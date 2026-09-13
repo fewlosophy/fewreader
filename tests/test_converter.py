@@ -3,11 +3,10 @@ Unit tests for app/services/converter.py
 
 Covers: Markdown → HTML (with TOC), plain text → HTML, XSS escaping, encoding fallbacks
 """
+
 import pytest
-from pathlib import Path
 
 from app.services.converter import convert
-
 
 # ── Markdown ───────────────────────────────────────────────────────────────
 

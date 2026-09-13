@@ -12,9 +12,9 @@ Transforms legacy Project Gutenberg text formatting into modern digital reading 
 6. Preserves clear paragraph separations and chapter/part headers.
 """
 
-from pathlib import Path
 import re
 import sys
+from pathlib import Path
 
 
 def is_header(s: str) -> bool:
@@ -27,9 +27,7 @@ def is_header(s: str) -> bool:
         return True
     if clean.upper() == "EPILOGUE":
         return True
-    if clean in ("I", "II", "III", "IV", "V", "VI", "VII", "VIII"):
-        return True
-    return False
+    return clean in ("I", "II", "III", "IV", "V", "VI", "VII", "VIII")
 
 
 def format_chapter_text(raw_text: str) -> str:
