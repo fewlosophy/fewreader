@@ -5,40 +5,40 @@
 [![Docker](https://img.shields.io/badge/docker-ready-brightgreen.svg)](Dockerfile)
 [![CI](https://img.shields.io/badge/CI-passing-brightgreen.svg)](#)
 
-[English](#readlite) | [繁體中文](#繁體中文)
+[English](#readlite) | [简体中文](#简体中文) | [繁體中文](#繁體中文)
 
-A clean, self-hosted web app for reading `.md` and `.txt` files in your browser.
+A minimal, self-hosted reading app for your `.md` and `.txt` files. No accounts, no cloud, no noise — just your content in a clean browser interface.
 
-## Quick Start (Docker)
+## Get Started (Docker)
 
-Run with Docker Compose:
+The fastest way is with Docker Compose:
 
 ```bash
 docker compose up -d
 ```
 
-Or build and run with Docker directly:
+Or if you prefer to build it yourself:
 
 ```bash
 docker build -t readlite .
 docker run -d -p 8000:8000 -v $(pwd)/content:/app/content:ro --name readlite readlite
 ```
 
-Then open **http://localhost:8000** in your browser.
+Once it's running, open **http://localhost:8000** and you're good to go.
 
-## Local Setup (Python)
+## Running Locally (Python)
 
 ```bash
 # Install dependencies
 pip install -r requirements.txt
 
-# Run the development server
+# Start the dev server
 uvicorn app.main:app --reload --port 8000
 ```
 
-## Adding Books & Notes
+## Adding Your Content
 
-Drop `.md` or `.txt` files into the `content/` directory. Sub-folders become categories:
+Drop any `.md` or `.txt` files into the `content/` folder. Sub-folders automatically become categories in the sidebar — no configuration required:
 
 ```
 content/
@@ -49,23 +49,93 @@ content/
 └── welcome.md
 ```
 
-Changes are picked up automatically — no restart needed.
+Save a file and it shows up immediately. No restart, no fuss.
 
 ## Configuration
 
-| Environment variable | Default | Description |
+There's not much to tweak, but here's what you can change:
+
+| Variable | Default | What it does |
 |---|---|---|
-| `CONTENT_DIR` | `content` | Path to content directory (legacy `BOOKS_DIR` also supported) |
-| `APP_TITLE` | `ReadLite` | Site title shown in the nav |
+| `CONTENT_DIR` | `content` | Where your files live. Legacy `BOOKS_DIR` also works. |
+| `APP_TITLE` | `ReadLite` | The title shown in the nav bar. |
 
-## Stack
+## Built With
 
-- **FastAPI** — routing
-- **Jinja2** — server-side rendering
-- **python-markdown** — CommonMark conversion
-- **Tailwind CSS** — styling
+- **FastAPI** — handles routing
+- **Jinja2** — renders the templates
+- **python-markdown** — converts Markdown to HTML
+- **Tailwind CSS** — keeps everything looking clean
 
 ## License
+
+[MIT](LICENSE) — do whatever you like with it.
+
+---
+
+## 简体中文
+
+一个轻量的自托管阅读器，用来在浏览器里读 `.md` 和 `.txt` 文件。没有账号，没有云服务，没有多余的东西——只有你的内容，干净呈现。
+
+### 快速开始（Docker）
+
+用 Docker Compose 是最简单的方式：
+
+```bash
+docker compose up -d
+```
+
+或者直接用 Docker 构建运行：
+
+```bash
+docker build -t readlite .
+docker run -d -p 8000:8000 -v $(pwd)/content:/app/content:ro --name readlite readlite
+```
+
+启动后在浏览器打开 **http://localhost:8000** 就可以了。
+
+### 本地运行（Python）
+
+```bash
+# 安装依赖
+pip install -r requirements.txt
+
+# 启动开发服务器
+uvicorn app.main:app --reload --port 8000
+```
+
+### 添加内容
+
+把 `.md` 或 `.txt` 文件丢进 `content/` 目录就行，子文件夹会自动变成侧边栏的分类：
+
+```
+content/
+├── fiction/
+│   └── my_story.txt
+├── notes/
+│   └── ideas.md
+└── welcome.md
+```
+
+文件保存后立刻出现，不需要重启。
+
+### 配置
+
+能改的不多，但都在这里了：
+
+| 变量 | 默认值 | 说明 |
+|---|---|---|
+| `CONTENT_DIR` | `content` | 文件存放路径，兼容旧版 `BOOKS_DIR`。 |
+| `APP_TITLE` | `ReadLite` | 导航栏显示的标题。 |
+
+### 技术栈
+
+- **FastAPI** — 路由
+- **Jinja2** — 模板渲染
+- **python-markdown** — Markdown 解析
+- **Tailwind CSS** — 样式
+
+### 授权
 
 [MIT](LICENSE)
 
@@ -73,26 +143,26 @@ Changes are picked up automatically — no restart needed.
 
 ## 繁體中文
 
-簡潔、清爽的自託管 Web 閱讀器，支援在瀏覽器中閱讀 `.md` 與 `.txt` 格式的書籍與筆記。
+一款輕量的自託管閱讀器，讓你在瀏覽器裡讀 `.md` 和 `.txt` 文件。沒有帳號、沒有雲端、沒有多餘的東西——只有你的內容，乾淨呈現。
 
-### 快速開始 (Docker)
+### 快速開始（Docker）
 
-使用 Docker Compose 啟動：
+用 Docker Compose 是最簡單的方式：
 
 ```bash
 docker compose up -d
 ```
 
-或直接透過 Docker 建置並執行：
+或者直接透過 Docker 建置並執行：
 
 ```bash
 docker build -t readlite .
 docker run -d -p 8000:8000 -v $(pwd)/content:/app/content:ro --name readlite readlite
 ```
 
-啟動後請在瀏覽器中開啟 **http://localhost:8000**。
+啟動後在瀏覽器開啟 **http://localhost:8000** 就可以了。
 
-### 本地環境設定 (Python)
+### 本地執行（Python）
 
 ```bash
 # 安裝依賴套件
@@ -102,9 +172,9 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
-### 新增書籍與筆記
+### 新增內容
 
-將 `.md` 或 `.txt` 檔案放入 `content/` 目錄中。支援子資料夾層級，子資料夾會自動作為分類目錄顯示：
+把 `.md` 或 `.txt` 檔案丟進 `content/` 目錄就好，子資料夾會自動成為側邊欄的分類：
 
 ```
 content/
@@ -115,24 +185,24 @@ content/
 └── welcome.md
 ```
 
-檔案變更會自動即時更新，無需重新啟動服務。
+存檔後立即出現，不需要重啟服務。
 
-### 設定選項
+### 設定
 
-| 環境變數 | 預設值 | 說明 |
+能調整的不多，都在這裡了：
+
+| 變數 | 預設值 | 說明 |
 |---|---|---|
-| `CONTENT_DIR` | `content` | 內容檔案存放路徑（亦相容 `BOOKS_DIR`） |
-| `APP_TITLE` | `ReadLite` | 網站與導覽列顯示的標題 |
+| `CONTENT_DIR` | `content` | 檔案存放路徑，相容舊版 `BOOKS_DIR`。 |
+| `APP_TITLE` | `ReadLite` | 導覽列顯示的標題。 |
 
 ### 技術棧
 
-- **FastAPI** — 路由與後端服務
-- **Jinja2** — 伺服器端 HTML 模板渲染
-- **python-markdown** — Markdown 解析與目錄 (TOC) 生成
-- **Tailwind CSS** — 樣式呈現與響應式設計
+- **FastAPI** — 路由
+- **Jinja2** — 模板渲染
+- **python-markdown** — Markdown 解析
+- **Tailwind CSS** — 樣式
 
 ### 授權條款
 
 [MIT](LICENSE)
-
-
