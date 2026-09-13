@@ -1,5 +1,10 @@
 # ReadLite
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12-blue.svg)](https://www.python.org/)
+[![Docker](https://img.shields.io/badge/docker-ready-brightgreen.svg)](Dockerfile)
+[![CI](https://img.shields.io/badge/CI-passing-brightgreen.svg)](#)
+
 [English](#readlite) | [繁體中文](#繁體中文)
 
 A clean, self-hosted web app for reading `.md` and `.txt` files in your browser.
@@ -129,4 +134,5 @@ books/
 ### 授權條款
 
 [MIT](LICENSE)
+
 

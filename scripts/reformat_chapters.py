@@ -79,5 +79,8 @@ def batch_reformat(target_dir: Path) -> None:
 
 if __name__ == "__main__":
     base_dir = Path(__file__).resolve().parent.parent
-    chapters_dir = base_dir / "books" / "refs" / "crime-and-punishment"
-    batch_reformat(chapters_dir)
+    if len(sys.argv) > 1:
+        target_dir = Path(sys.argv[1]).resolve()
+    else:
+        target_dir = base_dir / "books" / "fiction" / "crime-and-punishment"
+    batch_reformat(target_dir)

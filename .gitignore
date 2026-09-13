@@ -49,3 +49,5 @@ package-lock.json
 
 # --- Images ---
 *.png
+!static/icons/*.png
+
