@@ -1,4 +1,4 @@
-const CACHE_NAME = 'readlite-pwa-v2';
+const CACHE_NAME = 'readlite-pwa-v3';
 
 // Essential App Shell assets to pre-cache on install
 const PRECACHE_ASSETS = [
@@ -38,6 +38,22 @@ self.addEventListener('fetch', (event) => {
 
   // Only handle GET requests
   if (request.method !== 'GET') {
+    return;
+  }
+
+  // Hard reload (Ctrl + Shift + R / DevTools reload): bypass cache and fetch directly from network
+  if (request.cache === 'reload' || request.cache === 'no-cache') {
+    event.respondWith(
+      fetch(request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const copy = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+          }
+          return networkResponse;
+        })
+        .catch(() => caches.match(request))
+    );
     return;
   }
 

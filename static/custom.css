@@ -7,9 +7,9 @@
   --color-text-primary:   #111111;
   --color-text-secondary: #6b6b6b;
   --color-text-muted:     #aaaaaa;
-  --color-accent:         #64748b;
-  --color-accent-hover:   #475569;
-  --color-accent-subtle:  #f1f5f9;
+  --color-accent:         #71717a;
+  --color-accent-hover:   #52525b;
+  --color-accent-subtle:  #f4f4f5;
 
   --reader-font-size: 1.125rem;
   --sidebar-width: 288px;
@@ -24,9 +24,9 @@
   --color-text-primary:   #efefef;
   --color-text-secondary: #888888;
   --color-text-muted:     #555555;
-  --color-accent:         #94a3b8;
-  --color-accent-hover:   #cbd5e1;
-  --color-accent-subtle:  #1e293b;
+  --color-accent:         #a1a1aa;
+  --color-accent-hover:   #d4d4d8;
+  --color-accent-subtle:  #27272a;
 }
 
 /* ─── Base ──────────────────────────────────────────────────────────────── */
