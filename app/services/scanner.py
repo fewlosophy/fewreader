@@ -241,3 +241,99 @@ def get_sibling_files(
     prev_file = file_siblings[idx - 1] if idx > 0 else None
     next_file = file_siblings[idx + 1] if idx < len(file_siblings) - 1 else None
     return (prev_file, next_file)
+
+
+class SearchResult(TypedDict):
+    name: str
+    path: str
+    snippet: str
+
+
+def search_files(base: Path, query: str, limit: int = 20) -> list[SearchResult]:
+    """
+    Search for `query` in file contents lazily.
+    Reads files in chunks to avoid memory spikes.
+    """
+    if not query:
+        return []
+
+    q = query.lower()
+    tree = scan_tree(base)
+
+    files = []
+    def _flatten(nodes):
+        for node in nodes:
+            if node["type"] == "file":
+                files.append(node)
+            elif node["type"] == "category":
+                _flatten(node["children"])
+    _flatten(tree)
+
+    results: list[SearchResult] = []
+
+    for f in files:
+        if len(results) >= limit:
+            break
+
+        f_path = resolve_file(f["path"], base)
+
+        # Check name first
+        if q in f["name"].lower():
+            results.append({
+                "name": f["name"],
+                "path": f["path"],
+                "snippet": f"Title match: {f['name']}"
+            })
+            continue
+
+        # Check content lazily in chunks
+        chunk_size = 8192
+        overlap = len(q) * 2
+
+        try:
+            with open(f_path, "rb") as file_obj:
+                prev_chunk = b""
+                matched = False
+
+                while not matched:
+                    chunk = file_obj.read(chunk_size)
+                    if not chunk:
+                        break
+
+                    # Decode chunk
+                    try:
+                        text_chunk = chunk.decode("utf-8")
+                    except UnicodeDecodeError:
+                        text_chunk = chunk.decode("utf-8", errors="replace")
+
+                    # Also decode previous overlap
+                    try:
+                        text_prev = prev_chunk.decode("utf-8")
+                    except UnicodeDecodeError:
+                        text_prev = prev_chunk.decode("utf-8", errors="replace")
+
+                    combined = text_prev + text_chunk
+                    lower_combined = combined.lower()
+
+                    idx = lower_combined.find(q)
+                    if idx != -1:
+                        # Match found, create snippet
+                        start = max(0, idx - 40)
+                        end = min(len(combined), idx + len(q) + 40)
+                        snippet = combined[start:end].replace("\n", " ")
+                        if start > 0: snippet = "..." + snippet
+                        if end < len(combined): snippet = snippet + "..."
+
+                        results.append({
+                            "name": f["name"],
+                            "path": f["path"],
+                            "snippet": snippet
+                        })
+                        matched = True
+
+                    prev_chunk = chunk[-overlap:] if len(chunk) > overlap else chunk
+
+        except Exception:
+            pass
+
+    return results

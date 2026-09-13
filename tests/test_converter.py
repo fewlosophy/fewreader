@@ -81,6 +81,16 @@ def test_md_converts_footnotes(tmp_path):
     assert "footnote" in html.lower()
 
 
+def test_md_escapes_xss_payload(tmp_path):
+    f = tmp_path / "t.md"
+    f.write_text("<script>alert('xss')</script>\n\n<img src=x onerror=alert(1)>", encoding="utf-8")
+    html, _ = convert(f)
+    assert "<script>" not in html
+    assert "alert('xss')" not in html
+    assert "onerror" not in html
+    assert "<img" in html
+
+
 # ── Plain text ─────────────────────────────────────────────────────────────
 
 def test_txt_double_newline_creates_paragraphs(tmp_path):

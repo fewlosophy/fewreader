@@ -51,20 +51,52 @@
       </p>
     </div>
 
-    {% if visible_items %}
-    <div class="w-full sm:w-72">
-      <div class="relative">
-        <input type="text"
-               id="library-filter-input"
-               placeholder="Search items..."
-               oninput="filterLibraryCards(this.value)"
-               class="w-full bg-[var(--color-surface)] text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] text-sm rounded-lg pl-9 pr-3 py-2 border border-[var(--color-border)] focus:outline-none focus:border-[var(--color-accent)] transition-colors" />
-        <svg class="w-4 h-4 text-[var(--color-text-muted)] absolute left-3 top-2.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+    <div class="flex gap-2">
+      {% if visible_items %}
+      <div class="w-full sm:w-72">
+        <div class="relative">
+          <input type="text"
+                 id="library-filter-input"
+                 placeholder="Filter items..."
+                 oninput="filterLibraryCards(this.value)"
+                 class="w-full bg-[var(--color-surface)] text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] text-sm rounded-lg pl-9 pr-3 py-2 border border-[var(--color-border)] focus:outline-none focus:border-[var(--color-accent)] transition-colors" />
+          <svg class="w-4 h-4 text-[var(--color-text-muted)] absolute left-3 top-2.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+          </svg>
+        </div>
+      </div>
+      {% endif %}
+
+      <button onclick="openFullTextSearch()" class="px-4 py-2 bg-[var(--color-surface)] text-[var(--color-text-primary)] text-sm rounded-lg border border-[var(--color-border)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
         </svg>
+        <span class="hidden sm:inline">Search</span>
+      </button>
+    </div>
+  </div>
+
+  {# Full-Text Search Modal #}
+  <div id="fts-modal" class="fixed inset-0 z-50 bg-black/60 opacity-0 pointer-events-none transition-opacity flex items-start justify-center pt-20 px-4" onclick="closeFullTextSearch(event)">
+    <div class="bg-[var(--color-surface)] rounded-2xl w-full max-w-2xl shadow-2xl border border-[var(--color-border)] overflow-hidden flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
+      <div class="p-4 border-b border-[var(--color-border)] flex items-center gap-3 relative">
+        <svg class="w-5 h-5 text-[var(--color-text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <input type="text" id="fts-input" placeholder="Search all documents..." class="flex-1 bg-transparent border-none outline-none text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] text-base" autocomplete="off" />
+        <span id="fts-loading" class="hidden text-xs text-[var(--color-accent)]">Loading...</span>
+        <button onclick="closeFullTextSearch()" class="p-1 rounded-md text-[var(--color-text-muted)] hover:bg-[var(--color-surface-raised)] transition-colors">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <div id="fts-results" class="flex-1 overflow-y-auto p-2">
+        <div class="p-8 text-center text-sm text-[var(--color-text-muted)]">
+          Type to start searching your library.
+        </div>
       </div>
     </div>
-    {% endif %}
   </div>
 
   {# Card grid #}
@@ -142,24 +174,5 @@
 
 </div>
 
-<script>
-  function filterLibraryCards(query) {
-    const q = query.trim().toLowerCase();
-    const cards = document.querySelectorAll('#library-grid .library-card');
-    let count = 0;
-    cards.forEach(card => {
-      const name = card.getAttribute('data-name') || '';
-      if (!q || name.includes(q)) {
-        card.style.display = '';
-        count++;
-      } else {
-        card.style.display = 'none';
-      }
-    });
-    const countEl = document.getElementById('library-count');
-    if (countEl) {
-      countEl.textContent = `${count} item${count !== 1 ? 's' : ''}${q ? ' found' : ''}`;
-    }
-  }
-</script>
+<script src="/static/library.js"></script>
 {% endblock %}
