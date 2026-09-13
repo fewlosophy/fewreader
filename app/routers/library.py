@@ -14,7 +14,8 @@ def _get_templates(request: Request) -> Jinja2Templates:
 
 @router.get("/", response_class=HTMLResponse)
 def library_root(request: Request):
-    tree = scan_tree(settings.BOOKS_DIR)
+    content_dir = settings.CONTENT_DIR or settings.BOOKS_DIR
+    tree = scan_tree(content_dir)
     templates = _get_templates(request)
     return templates.TemplateResponse(
         request,
@@ -30,7 +31,8 @@ def library_root(request: Request):
 
 @router.get("/library/{cat_path:path}", response_class=HTMLResponse)
 def library_category(request: Request, cat_path: str):
-    tree = scan_tree(settings.BOOKS_DIR)
+    content_dir = settings.CONTENT_DIR or settings.BOOKS_DIR
+    tree = scan_tree(content_dir)
     visible = find_subtree(tree, cat_path)
     templates = _get_templates(request)
     return templates.TemplateResponse(

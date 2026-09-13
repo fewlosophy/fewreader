@@ -21,7 +21,7 @@ Or build and run with Docker directly:
 
 ```bash
 docker build -t readlite .
-docker run -d -p 8000:8000 -v $(pwd)/books:/app/books:ro --name readlite readlite
+docker run -d -p 8000:8000 -v $(pwd)/content:/app/content:ro --name readlite readlite
 ```
 
 Then open **http://localhost:8000** in your browser.
@@ -36,12 +36,12 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
-## Adding Books
+## Adding Books & Notes
 
-Drop `.md` or `.txt` files into the `books/` directory. Sub-folders become categories:
+Drop `.md` or `.txt` files into the `content/` directory. Sub-folders become categories:
 
 ```
-books/
+content/
 ├── fiction/
 │   └── my_story.txt
 ├── notes/
@@ -55,7 +55,7 @@ Changes are picked up automatically — no restart needed.
 
 | Environment variable | Default | Description |
 |---|---|---|
-| `BOOKS_DIR` | `books` | Path to the books directory |
+| `CONTENT_DIR` | `content` | Path to content directory (legacy `BOOKS_DIR` also supported) |
 | `APP_TITLE` | `ReadLite` | Site title shown in the nav |
 
 ## Stack
@@ -87,7 +87,7 @@ docker compose up -d
 
 ```bash
 docker build -t readlite .
-docker run -d -p 8000:8000 -v $(pwd)/books:/app/books:ro --name readlite readlite
+docker run -d -p 8000:8000 -v $(pwd)/content:/app/content:ro --name readlite readlite
 ```
 
 啟動後請在瀏覽器中開啟 **http://localhost:8000**。
@@ -102,12 +102,12 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
-### 新增書籍
+### 新增書籍與筆記
 
-將 `.md` 或 `.txt` 檔案放入 `books/` 目錄中。支援子資料夾層級，子資料夾會自動作為分類目錄顯示：
+將 `.md` 或 `.txt` 檔案放入 `content/` 目錄中。支援子資料夾層級，子資料夾會自動作為分類目錄顯示：
 
 ```
-books/
+content/
 ├── fiction/
 │   └── my_story.txt
 ├── notes/
@@ -121,7 +121,7 @@ books/
 
 | 環境變數 | 預設值 | 說明 |
 |---|---|---|
-| `BOOKS_DIR` | `books` | 書籍檔案存放路徑 |
+| `CONTENT_DIR` | `content` | 內容檔案存放路徑（亦相容 `BOOKS_DIR`） |
 | `APP_TITLE` | `ReadLite` | 網站與導覽列顯示的標題 |
 
 ### 技術棧

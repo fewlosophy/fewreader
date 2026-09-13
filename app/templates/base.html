@@ -247,7 +247,7 @@
       <div class="relative">
         <input type="text"
                id="sidebar-filter-input"
-               placeholder="Filter books..."
+               placeholder="Filter library..."
                oninput="filterSidebar(this.value)"
                class="w-full bg-[var(--color-surface-raised)] text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] text-sm rounded-lg pl-8 pr-3 py-2 border border-[var(--color-border)] focus:outline-none focus:border-[var(--color-accent)] transition-colors" />
         <svg class="w-4 h-4 text-[var(--color-text-muted)] absolute left-2.5 top-2.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -261,7 +261,7 @@
       {% if tree is defined and tree %}
         {{ render_tree(tree) }}
       {% else %}
-        <p class="text-sm text-[var(--color-text-muted)] italic px-2.5 py-2">No books found.<br>Drop .md or .txt files into books/</p>
+        <p class="text-sm text-[var(--color-text-muted)] italic px-2.5 py-2">No items found.<br>Drop .md or .txt files into content/</p>
       {% endif %}
     </nav>
   </aside>

@@ -37,9 +37,11 @@ def _breadcrumb(file_path: str) -> list[dict]:
 
 @router.get("/read/{file_path:path}", response_class=HTMLResponse)
 def read_file(request: Request, file_path: str):
+    content_dir = settings.CONTENT_DIR or settings.BOOKS_DIR
+
     # Resolve and guard against path traversal
     try:
-        abs_path = resolve_file(file_path, settings.BOOKS_DIR)
+        abs_path = resolve_file(file_path, content_dir)
     except (ValueError, FileNotFoundError) as exc:
         raise HTTPException(status_code=404, detail=str(exc))
 
@@ -52,8 +54,8 @@ def read_file(request: Request, file_path: str):
     # Derive title from filename stem
     title = human_title(abs_path.stem)
 
-    tree = scan_tree(settings.BOOKS_DIR)
-    prev_file, next_file = get_sibling_files(file_path, settings.BOOKS_DIR, tree=tree)
+    tree = scan_tree(content_dir)
+    prev_file, next_file = get_sibling_files(file_path, content_dir, tree=tree)
     templates = _get_templates(request)
 
     return templates.TemplateResponse(

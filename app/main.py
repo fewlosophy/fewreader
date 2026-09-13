@@ -12,11 +12,14 @@ from app.services.scanner import human_title
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Resolve BOOKS_DIR relative to BASE_DIR if not absolute
-if not Path(settings.BOOKS_DIR).is_absolute():
-    settings.BOOKS_DIR = (BASE_DIR / settings.BOOKS_DIR).resolve()
+# Resolve CONTENT_DIR and legacy BOOKS_DIR relative to BASE_DIR if not absolute
+target_dir = settings.CONTENT_DIR or settings.BOOKS_DIR
+if not target_dir.is_absolute():
+    target_dir = (BASE_DIR / target_dir).resolve()
 else:
-    settings.BOOKS_DIR = Path(settings.BOOKS_DIR).resolve()
+    target_dir = target_dir.resolve()
+settings.CONTENT_DIR = target_dir
+settings.BOOKS_DIR = target_dir
 
 app = FastAPI(title=settings.APP_TITLE)
 app.add_middleware(GZipMiddleware, minimum_size=500)

@@ -9,11 +9,11 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - BOOKS_DIR=/app/books
+      - CONTENT_DIR=/app/content
       - APP_TITLE=ReadLite
     volumes:
-      # Mount local books folder as read-only
-      - ./books:/app/books:ro
+      # Mount local content folder as read-only
+      - ./content:/app/content:ro
     healthcheck:
       test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/').read()"]
       interval: 30s

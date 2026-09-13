@@ -82,5 +82,6 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         target_dir = Path(sys.argv[1]).resolve()
     else:
-        target_dir = base_dir / "books" / "fiction" / "crime-and-punishment"
+        content_path = base_dir / "content" / "fiction" / "crime-and-punishment"
+        target_dir = content_path if content_path.exists() else base_dir / "books" / "fiction" / "crime-and-punishment"
     batch_reformat(target_dir)

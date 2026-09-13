@@ -74,6 +74,7 @@ def client(app, books_dir: Path, monkeypatch) -> TestClient:
     before the first request is sufficient.
     """
     from app.config import settings
+    monkeypatch.setattr(settings, "CONTENT_DIR", books_dir)
     monkeypatch.setattr(settings, "BOOKS_DIR", books_dir)
     with TestClient(app) as c:
         yield c

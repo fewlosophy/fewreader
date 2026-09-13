@@ -195,13 +195,13 @@ def resolve_file(rel_path: str, base: Path) -> Path:
     """
     Resolve *rel_path* relative to *base* and verify it stays within *base*
     (path-traversal guard). Returns the resolved absolute Path.
-    Raises ValueError if the path escapes the books directory.
+    Raises ValueError if the path escapes the content directory.
     """
     resolved_base = base.resolve()
     candidate = (resolved_base / rel_path).resolve()
 
     if not candidate.is_relative_to(resolved_base):
-        raise ValueError(f"Path '{rel_path}' is outside the books directory.")
+        raise ValueError(f"Path '{rel_path}' is outside the content directory.")
     if not candidate.is_file():
         raise FileNotFoundError(f"'{rel_path}' does not exist.")
     if candidate.suffix.lower() not in ALLOWED_EXTENSIONS:

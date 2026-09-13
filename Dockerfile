@@ -6,7 +6,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONPATH=/app \
     PORT=8000 \
-    BOOKS_DIR=/app/books \
+    CONTENT_DIR=/app/content \
+    BOOKS_DIR=/app/content \
     APP_TITLE=ReadLite
 
 WORKDIR /app
@@ -24,8 +25,8 @@ COPY app /app/app
 COPY static /app/static
 COPY pyproject.toml /app/pyproject.toml
 
-# Prepare books mount directory with proper ownership
-RUN mkdir -p /app/books && chown -R appuser:appgroup /app
+# Prepare content mount directory (and legacy books mount) with proper ownership
+RUN mkdir -p /app/content /app/books && chown -R appuser:appgroup /app
 
 # Switch to non-root user
 USER appuser

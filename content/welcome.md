@@ -9,12 +9,12 @@ No clutter — just you and your words.
 - 🌙 Dark and light theme toggle
 - 📂 Sub-folder aware library browser
 - 📑 Automatic table of contents from headings
-- 🔗 Fast navigation between books
+- 🔗 Fast navigation between documents
 
 ## Getting Started
 
-Browse the library on the left to find your books, or drop new `.md` and `.txt`
-files into the `books/` directory and they'll appear automatically.
+Browse the library on the left to find your books and notes, or drop new `.md` and `.txt`
+files into the `content/` directory and they'll appear automatically.
 
 ## Markdown Support
 
@@ -43,19 +43,19 @@ print(greet("reader"))
 ### Lists
 
 1. Open the library
-2. Pick a book
+2. Pick an item
 3. Start reading
 
 - Keyboard-friendly navigation
 - Responsive layout
-- Zero dependencies on the frontend (Tailwind CDN only)
+- Zero runtime dependencies on the frontend
 
 ## Tip
 
-You can organise books into sub-folders inside `books/` for categories:
+You can organise files into sub-folders inside `content/` for categories:
 
 ```
-books/
+content/
 ├── fiction/
 │   └── my_novel.txt
 ├── notes/
