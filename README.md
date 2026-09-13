@@ -9,6 +9,8 @@
 
 A minimal, self-hosted reading app for your `.md` and `.txt` files. No accounts, no cloud, no noise — just your content in a clean browser interface.
 
+> 💡 **Note**: This project was 100% vibe coded from start to finish.
+
 ## Get Started (Docker)
 
 The fastest way is with Docker Compose:
@@ -77,6 +79,8 @@ There's not much to tweak, but here's what you can change:
 
 一个轻量的自托管阅读器，用来在浏览器里读 `.md` 和 `.txt` 文件。没有账号，没有云服务，没有多余的东西——只有你的内容，干净呈现。
 
+> 💡 **注**：本项目全程 100% vibe coding 打造。
+
 ### 快速开始（Docker）
 
 用 Docker Compose 是最简单的方式：
@@ -144,6 +148,8 @@ content/
 ## 繁體中文
 
 一款輕量的自託管閱讀器，讓你在瀏覽器裡讀 `.md` 和 `.txt` 文件。沒有帳號、沒有雲端、沒有多餘的東西——只有你的內容，乾淨呈現。
+
+> 💡 **註**：本專案全程 100% vibe coding 打造。
 
 ### 快速開始（Docker）
 
