@@ -1,11 +1,11 @@
+"""Scanner service module for handling document discovery."""
 from __future__ import annotations
 
 import os
-from pathlib import Path
 import re
 import time
-from typing import TypedDict, Literal
-
+from pathlib import Path
+from typing import Literal, TypedDict
 
 ALLOWED_EXTENSIONS = {".md", ".txt"}
 CACHE_TTL_SECONDS = 10.0
@@ -23,6 +23,7 @@ CN_NUM = {
 
 
 class BookFile(TypedDict):
+    """Type definition for a book file."""
     type: Literal["file"]
     name: str       # human-readable title
     path: str       # URL-safe relative path from BOOKS_DIR
@@ -30,6 +31,7 @@ class BookFile(TypedDict):
 
 
 class BookCategory(TypedDict):
+    """Type definition for a book category."""
     type: Literal["category"]
     name: str       # human-readable folder name
     path: str       # relative path from BOOKS_DIR
@@ -129,9 +131,8 @@ def _walk(current: Path, base: Path) -> list[BookFile | BookCategory]:
                 try:
                     if entry.is_dir(follow_symlinks=False):
                         dir_entries.append(entry)
-                    elif entry.is_file(follow_symlinks=False):
-                        if Path(entry.name).suffix.lower() in ALLOWED_EXTENSIONS:
-                            file_entries.append(entry)
+                    elif entry.is_file(follow_symlinks=False) and Path(entry.name).suffix.lower() in ALLOWED_EXTENSIONS:
+                        file_entries.append(entry)
                 except OSError:
                     continue
     except (PermissionError, FileNotFoundError):

@@ -1,4 +1,5 @@
 from pathlib import Path
+
 from pydantic_settings import BaseSettings
 
 
@@ -9,7 +10,7 @@ class Settings(BaseSettings):
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8", "extra": "ignore"}
 
-    def model_post_init(self, __context) -> None:
+    def model_post_init(self, __context, /) -> None:
         target = self.CONTENT_DIR or self.BOOKS_DIR
         if target is None:
             target = Path("content") if Path("content").exists() or not Path("books").exists() else Path("books")

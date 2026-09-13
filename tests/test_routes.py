@@ -4,7 +4,6 @@ Integration tests for HTTP routes.
 Uses a TestClient with BOOKS_DIR patched to a known temp directory
 (defined in conftest.py).
 """
-import pytest
 
 
 # ── Library routes ─────────────────────────────────────────────────────────
