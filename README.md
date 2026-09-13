@@ -60,6 +60,10 @@ Changes are picked up automatically — no restart needed.
 - **python-markdown** — CommonMark conversion
 - **Tailwind CSS** — styling
 
+## License
+
+[MIT](LICENSE)
+
 ---
 
 ## 繁體中文
@@ -121,4 +125,8 @@ books/
 - **Jinja2** — 伺服器端 HTML 模板渲染
 - **python-markdown** — Markdown 解析與目錄 (TOC) 生成
 - **Tailwind CSS** — 樣式呈現與響應式設計
+
+### 授權條款
+
+[MIT](LICENSE)
 

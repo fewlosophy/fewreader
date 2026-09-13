@@ -1,6 +1,7 @@
 {
   "name": "readlite",
   "version": "1.0.0",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "build:css": "tailwindcss -i ./static/input.css -o ./static/tailwind.min.css --minify"
