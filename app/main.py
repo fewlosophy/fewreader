@@ -8,6 +8,7 @@ from fastapi.templating import Jinja2Templates
 
 from app.config import settings
 from app.routers import library, reader
+from app.services.scanner import human_title
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -24,7 +25,9 @@ app.add_middleware(GZipMiddleware, minimum_size=500)
 app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
 
 # Jinja2 templates — store on app.state so routers can access via request
-app.state.templates = Jinja2Templates(directory=str(BASE_DIR / "app/templates"))
+templates = Jinja2Templates(directory=str(BASE_DIR / "app/templates"))
+templates.env.filters["human_title"] = human_title
+app.state.templates = templates
 
 
 # PWA Root Routes

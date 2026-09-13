@@ -2,7 +2,7 @@
 
 {% block title %}
   {% if current_path %}
-    {{ current_path.split('/')[-1].replace('-',' ').replace('_',' ').title() }} — {{ app_title }}
+    {{ current_path.split('/')[-1] | human_title }} — {{ app_title }}
   {% else %}
     {{ app_title }}
   {% endif %}
@@ -18,12 +18,12 @@
         <span class="text-[var(--color-text-muted)] shrink-0">/</span>
         {% if loop.last %}
           <span class="text-[var(--color-text-primary)] font-medium truncate">
-            {{ part.replace('-',' ').replace('_',' ').title() }}
+            {{ part | human_title }}
           </span>
         {% else %}
           <a href="/library/{{ parts[:loop.index] | join('/') }}"
              class="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors shrink-0">
-            {{ part.replace('-',' ').replace('_',' ').title() }}
+            {{ part | human_title }}
           </a>
         {% endif %}
       {% endfor %}
@@ -41,7 +41,7 @@
     <div>
       <h1 class="text-xl sm:text-2xl font-bold text-[var(--color-text-primary)]">
         {% if current_path %}
-          {{ current_path.split('/')[-1].replace('-',' ').replace('_',' ').title() }}
+          {{ current_path.split('/')[-1] | human_title }}
         {% else %}
           All Books
         {% endif %}

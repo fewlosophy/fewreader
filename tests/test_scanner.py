@@ -181,3 +181,13 @@ def test_get_sibling_files(tmp_path):
     prev_last, next_last = get_sibling_files("3.txt", tmp_path)
     assert prev_last is not None and prev_last["path"] == "2.txt"
     assert next_last is None
+
+
+def test_get_sibling_files_with_passed_tree(tmp_path):
+    (tmp_path / "1.txt").write_text("1", encoding="utf-8")
+    (tmp_path / "2.txt").write_text("2", encoding="utf-8")
+    tree = scan_tree(tmp_path)
+    prev_f, next_f = get_sibling_files("2.txt", tmp_path, tree=tree)
+    assert prev_f is not None and prev_f["path"] == "1.txt"
+    assert next_f is None
+

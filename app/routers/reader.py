@@ -5,7 +5,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 from app.config import settings
-from app.services.scanner import scan_tree, resolve_file, get_sibling_files
+from app.services.scanner import scan_tree, resolve_file, get_sibling_files, human_title
 from app.services.converter import convert
 
 router = APIRouter()
@@ -27,7 +27,7 @@ def _breadcrumb(file_path: str) -> list[dict]:
         raw_label = Path(part).stem if is_last else part
         crumbs.append(
             {
-                "label": raw_label.replace("-", " ").replace("_", " ").title(),
+                "label": human_title(raw_label),
                 "path": accumulated,
                 "is_last": is_last,
             }
@@ -50,12 +50,10 @@ def read_file(request: Request, file_path: str):
         raise HTTPException(status_code=500, detail=f"Conversion error: {exc}")
 
     # Derive title from filename stem
-    title = (
-        abs_path.stem.replace("-", " ").replace("_", " ").title()
-    )
+    title = human_title(abs_path.stem)
 
     tree = scan_tree(settings.BOOKS_DIR)
-    prev_file, next_file = get_sibling_files(file_path, settings.BOOKS_DIR)
+    prev_file, next_file = get_sibling_files(file_path, settings.BOOKS_DIR, tree=tree)
     templates = _get_templates(request)
 
     return templates.TemplateResponse(

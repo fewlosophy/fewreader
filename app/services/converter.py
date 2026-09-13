@@ -40,18 +40,21 @@ def _cached_convert_markdown(file_str: str, mtime: float, size: int) -> tuple[st
     return html_out, toc_out
 
 
+BLANK_PARAGRAPHS_RE = re.compile(r"\n\s*\n+")
+
+
 def _format_plaintext_line(line: str) -> str:
     """
     Format a single line of plain text.
     Preserves leading indentation (spaces and tabs) by converting them to &nbsp;
     so HTML rendering engines don't collapse them, while escaping all other content.
     """
-    match = re.match(r"^([ \t]+)", line)
-    if match:
-        leading = match.group(1)
-        rest = line[len(leading):]
+    stripped_leading = line.lstrip(" \t")
+    leading_len = len(line) - len(stripped_leading)
+    if leading_len > 0:
+        leading = line[:leading_len]
         leading_html = leading.replace("\t", "    ").replace(" ", "&nbsp;")
-        return leading_html + html.escape(rest)
+        return leading_html + html.escape(stripped_leading)
     return html.escape(line)
 
 
@@ -59,21 +62,22 @@ def _format_plaintext_line(line: str) -> str:
 def _cached_convert_plaintext(file_str: str, mtime: float, size: int) -> str:
     file_path = Path(file_str)
     text = _read_file_text(file_path)
-    # Split on blank lines (including lines with only whitespace)
-    paragraphs = re.split(r"\n\s*\n+", text)
+    paragraphs = BLANK_PARAGRAPHS_RE.split(text)
     parts = []
     for para in paragraphs:
         if not para.strip():
             continue
-        lines = para.split("\n")
-        # Remove empty boundary lines within the paragraph block without stripping indentation from text lines
-        while lines and not lines[0].strip():
-            lines.pop(0)
-        while lines and not lines[-1].strip():
-            lines.pop()
-        if not lines:
+        lines = para.splitlines()
+        start = 0
+        while start < len(lines) and not lines[start].strip():
+            start += 1
+        end = len(lines)
+        while end > start and not lines[end - 1].strip():
+            end -= 1
+        trimmed_lines = lines[start:end]
+        if not trimmed_lines:
             continue
-        formatted_lines = [_format_plaintext_line(l) for l in lines]
+        formatted_lines = [_format_plaintext_line(l) for l in trimmed_lines]
         inner = "<br>\n".join(formatted_lines)
         parts.append(f"<p>{inner}</p>")
     return "\n".join(parts)

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 import re
 import time
@@ -8,6 +9,9 @@ from typing import TypedDict, Literal
 
 ALLOWED_EXTENSIONS = {".md", ".txt"}
 CACHE_TTL_SECONDS = 10.0
+
+CN_NUMERAL_RE = re.compile(r"第([一二三四五六七八九十百千万\d]+)[回章节卷集]")
+DIGIT_SPLIT_RE = re.compile(r"(\d+)")
 
 _tree_cache: dict[str, tuple[float, list[BookFile | BookCategory]]] = {}
 
@@ -62,7 +66,7 @@ def _natural_sort_key(s: str) -> list:
     Sort key supporting both Arabic numerals (natural sort) and Chinese chapter numerals.
     E.g. 'Chapter 2' before 'Chapter 10', and '第一回' before '第七回' before '第一百回'.
     """
-    cn_match = re.search(r"第([一二三四五六七八九十百千万\d]+)[回章节卷集]", s)
+    cn_match = CN_NUMERAL_RE.search(s)
     if cn_match:
         cn_val = _parse_chinese_numeral(cn_match.group(1))
         if cn_val is not None:
@@ -70,7 +74,7 @@ def _natural_sort_key(s: str) -> list:
             return [prefix, 0, cn_val, s.lower()]
 
     parts: list = []
-    for token in re.split(r"(\d+)", s.lower()):
+    for token in DIGIT_SPLIT_RE.split(s.lower()):
         if token.isdigit():
             parts.append(int(token))
         else:
@@ -78,9 +82,12 @@ def _natural_sort_key(s: str) -> list:
     return parts
 
 
-def _human_name(stem: str) -> str:
-    """Convert a filename stem to a readable title."""
+def human_title(stem: str) -> str:
+    """Convert a filename stem or URL slug to a readable title."""
     return stem.replace("-", " ").replace("_", " ").title()
+
+
+_human_name = human_title
 
 
 def clear_scanner_cache() -> None:
@@ -111,45 +118,50 @@ def scan_tree(base: Path, use_cache: bool = True) -> list[BookFile | BookCategor
 
 def _walk(current: Path, base: Path) -> list[BookFile | BookCategory]:
     entries: list[BookFile | BookCategory] = []
-    dirs = []
-    files = []
+    dir_entries: list[os.DirEntry] = []
+    file_entries: list[os.DirEntry] = []
 
     try:
-        children = list(current.iterdir())
-    except PermissionError:
+        with os.scandir(current) as it:
+            for entry in it:
+                if entry.name.startswith("."):
+                    continue
+                try:
+                    if entry.is_dir(follow_symlinks=False):
+                        dir_entries.append(entry)
+                    elif entry.is_file(follow_symlinks=False):
+                        if Path(entry.name).suffix.lower() in ALLOWED_EXTENSIONS:
+                            file_entries.append(entry)
+                except OSError:
+                    continue
+    except (PermissionError, FileNotFoundError):
         return []
 
-    for entry in children:
-        if entry.name.startswith("."):
-            continue
-        if entry.is_dir():
-            dirs.append(entry)
-        elif entry.is_file() and entry.suffix.lower() in ALLOWED_EXTENSIONS:
-            files.append(entry)
+    dir_entries.sort(key=lambda e: _natural_sort_key(e.name))
+    file_entries.sort(key=lambda e: _natural_sort_key(e.name))
 
-    dirs.sort(key=lambda p: _natural_sort_key(p.name))
-    files.sort(key=lambda p: _natural_sort_key(p.name))
-
-    for d in dirs:
-        rel = d.relative_to(base).as_posix()
-        subtree = _walk(d, base)
+    for d in dir_entries:
+        d_path = Path(d.path)
+        rel = d_path.relative_to(base).as_posix()
+        subtree = _walk(d_path, base)
         entries.append(
             BookCategory(
                 type="category",
-                name=_human_name(d.name),
+                name=human_title(d.name),
                 path=rel,
                 children=subtree,
             )
         )
 
-    for f in files:
-        rel = f.relative_to(base).as_posix()
+    for f in file_entries:
+        f_path = Path(f.path)
+        rel = f_path.relative_to(base).as_posix()
         entries.append(
             BookFile(
                 type="file",
-                name=_human_name(f.stem),
+                name=human_title(f_path.stem),
                 path=rel,
-                ext=f.suffix.lower(),
+                ext=f_path.suffix.lower(),
             )
         )
 
@@ -198,7 +210,11 @@ def resolve_file(rel_path: str, base: Path) -> Path:
     return candidate
 
 
-def get_sibling_files(rel_path: str, base: Path) -> tuple[BookFile | None, BookFile | None]:
+def get_sibling_files(
+    rel_path: str,
+    base: Path,
+    tree: list[BookFile | BookCategory] | None = None,
+) -> tuple[BookFile | None, BookFile | None]:
     """
     Find previous and next sibling files relative to current file within its parent directory.
     Returns (prev_file, next_file).
@@ -208,7 +224,8 @@ def get_sibling_files(rel_path: str, base: Path) -> tuple[BookFile | None, BookF
     if parent_path == ".":
         parent_path = ""
 
-    tree = scan_tree(base)
+    if tree is None:
+        tree = scan_tree(base)
     siblings = find_subtree(tree, parent_path)
     file_siblings = [item for item in siblings if item["type"] == "file"]
 
