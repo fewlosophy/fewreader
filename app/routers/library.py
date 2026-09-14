@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Query
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 from app.config import settings
-from app.services.scanner import scan_tree, find_subtree
+from app.services.scanner import scan_tree, find_subtree, search_files
 
 router = APIRouter()
 
@@ -27,6 +27,13 @@ def library_root(request: Request):
             "app_title": settings.APP_TITLE,
         },
     )
+
+
+@router.get("/api/search")
+def search_index(q: str = Query(..., min_length=1)):
+    content_dir = settings.CONTENT_DIR or settings.BOOKS_DIR
+    results = search_files(content_dir, q, limit=20)
+    return {"results": results}
 
 
 @router.get("/library/{cat_path:path}", response_class=HTMLResponse)

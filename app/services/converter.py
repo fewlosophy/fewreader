@@ -4,6 +4,7 @@ from pathlib import Path
 import re
 
 import markdown as md_lib
+import nh3
 
 
 def _read_file_text(file_path: Path) -> str:
@@ -36,6 +37,19 @@ def _cached_convert_markdown(file_str: str, mtime: float, size: int) -> tuple[st
         },
     )
     html_out = converter.convert(text)
+
+    # Sanitize markdown HTML to prevent XSS
+    allowed_tags = nh3.ALLOWED_TAGS | {"h1", "h2", "h3", "h4", "h5", "h6", "hr", "br", "pre", "code", "table", "thead", "tbody", "tr", "th", "td", "img", "del", "sup", "sub", "div", "span", "p", "a", "ul", "ol", "li", "strong", "em", "blockquote"}
+    allowed_attributes = {
+        **nh3.ALLOWED_ATTRIBUTES,
+        "a": {"href", "title", "id", "class"},
+        "img": {"src", "alt", "title"},
+        "h1": {"id"}, "h2": {"id"}, "h3": {"id"}, "h4": {"id"}, "h5": {"id"}, "h6": {"id"},
+        "div": {"class"}, "span": {"class"}, "code": {"class"},
+        "sup": {"id"}, "li": {"id", "class"}
+    }
+    html_out = nh3.clean(html_out, tags=allowed_tags, attributes=allowed_attributes)
+
     toc_out = getattr(converter, "toc", "")
     return html_out, toc_out
 

@@ -142,7 +142,7 @@ def test_html_head_structure_and_no_leaked_js(client):
     head_content = resp.text.split("</head>")[0]
     assert '<link rel="stylesheet" href="/static/tailwind.min.css"' in head_content
     assert '<link rel="stylesheet" href="/static/custom.css"' in head_content
-    assert "function toggleTheme()" in head_content
+    assert "/static/base.js" in head_content
 
 
 def test_code_block_theme_styling_in_custom_css(client):
@@ -157,7 +157,7 @@ def test_code_block_theme_styling_in_custom_css(client):
 
 
 def test_reader_font_size_uses_rem(client):
-    resp = client.get("/")
+    resp = client.get("/static/base.js")
     assert resp.status_code == 200
     assert "'1rem', '1.0625rem', '1.125rem'" in resp.text
     css_resp = client.get("/static/custom.css")
@@ -213,8 +213,12 @@ def test_reader_mobile_layout_and_anchor_guards(client):
     assert resp.status_code == 200
     assert 'id="main-wrapper"' in resp.text
     assert 'id="toc-drawer"' in resp.text
-    assert "initAnchorNavigation" in resp.text
-    assert "preventViewportScroll" in resp.text
+
+    # Check external js inclusions
+    js_resp = client.get("/static/reader.js")
+    assert "initAnchorNavigation" in js_resp.text
+    base_js_resp = client.get("/static/base.js")
+    assert "preventViewportScroll" in base_js_resp.text
 
 
 def test_chapter_navigation_svg_dimensions(client):
