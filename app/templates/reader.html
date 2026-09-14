@@ -122,9 +122,9 @@
     </div>
   </div>
 
-  {# ── Desktop TOC sidebar — xl+ and only when headings exist ── #}
-  {% if has_toc %}
-  <aside class="hidden xl:block w-64 shrink-0 border-l border-[var(--color-border)]">
+  {# ── Desktop TOC sidebar (or blank spacer) — xl+ ── #}
+  <aside class="hidden xl:block w-72 shrink-0 {{ 'border-l border-[var(--color-border)]' if has_toc else '' }}">
+    {% if has_toc %}
     <div class="sticky top-16 px-6 py-8 overflow-y-auto max-h-[calc(100vh-4rem)]">
       <p class="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)] mb-3">
         Contents
@@ -133,9 +133,8 @@
         {{ toc | safe }}
       </div>
     </div>
+    {% endif %}
   </aside>
-
-  {% endif %}
 
 </div>
 {% endblock %}
