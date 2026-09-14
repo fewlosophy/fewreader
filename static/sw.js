@@ -1,4 +1,4 @@
-const CACHE_NAME = 'readlite-pwa-v3';
+const CACHE_NAME = 'fewreader-pwa-v1';
 
 // Essential App Shell assets to pre-cache on install
 const PRECACHE_ASSETS = [
@@ -108,7 +108,7 @@ self.addEventListener('fetch', (event) => {
           }
         }
         return new Response(
-          '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Offline — ReadLite</title></head><body style="font-family:sans-serif;text-align:center;padding:50px;background:#111;color:#eee;"><h2>Offline</h2><p>This book or page has not been cached yet. Please open it once while online.</p><a href="/" style="color:#94a3b8;">Go to Library</a></body></html>',
+          '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Offline — Fewreader</title></head><body style="font-family:sans-serif;text-align:center;padding:50px;background:#111;color:#eee;"><h2>Offline</h2><p>This book or page has not been cached yet. Please open it once while online.</p><a href="/" style="color:#94a3b8;">Go to Library</a></body></html>',
           { headers: { 'Content-Type': 'text/html' } }
         );
       })

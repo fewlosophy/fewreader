@@ -1,6 +1,6 @@
 {
-  "name": "ReadLite",
-  "short_name": "ReadLite",
+  "name": "Fewreader",
+  "short_name": "Fewreader",
   "description": "A clean, self-hosted web app for reading .md and .txt files",
   "start_url": "/",
   "scope": "/",
