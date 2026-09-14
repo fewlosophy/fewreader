@@ -8,7 +8,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PORT=8000 \
     CONTENT_DIR=/app/content \
     BOOKS_DIR=/app/content \
-    APP_TITLE=ReadLite
+    APP_TITLE=Fewreader
 
 WORKDIR /app
 

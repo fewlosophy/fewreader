@@ -1,6 +1,6 @@
-# Welcome to ReadLite
+# Welcome to Fewreader
 
-ReadLite is a clean, distraction-free reading app for your Markdown and plain-text files.
+Fewreader is a clean, distraction-free reading app for your Markdown and plain-text files.
 No clutter — just you and your words.
 
 ## Features
@@ -18,7 +18,7 @@ files into the `content/` directory and they'll appear automatically.
 
 ## Markdown Support
 
-ReadLite supports standard CommonMark including:
+Fewreader supports standard CommonMark including:
 
 ### Inline formatting
 

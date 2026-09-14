@@ -1,16 +1,16 @@
 services:
-  readlite:
+  fewreader:
     build:
       context: .
       dockerfile: Dockerfile
-    image: readlite:latest
-    container_name: readlite
+    image: fewreader:latest
+    container_name: fewreader
     restart: unless-stopped
     ports:
       - "8000:8000"
     environment:
       - CONTENT_DIR=/app/content
-      - APP_TITLE=ReadLite
+      - APP_TITLE=Fewreader
     volumes:
       # Mount local content folder as read-only
       - ./content:/app/content:ro

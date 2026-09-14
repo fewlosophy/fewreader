@@ -5,7 +5,7 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     CONTENT_DIR: Path | None = None
     BOOKS_DIR: Path | None = None
-    APP_TITLE: str = "ReadLite"
+    APP_TITLE: str = "Fewreader"
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8", "extra": "ignore"}
 

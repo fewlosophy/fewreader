@@ -5,7 +5,7 @@
 [![Docker](https://img.shields.io/badge/docker-ready-brightgreen.svg)](Dockerfile)
 [![CI](https://img.shields.io/badge/CI-passing-brightgreen.svg)](#)
 
-[English](#readlite) | [简体中文](#简体中文) | [繁體中文](#繁體中文)
+[English](#fewreader) | [简体中文](#简体中文) | [繁體中文](#繁體中文)
 
 A minimal, self-hosted reading app for your `.md` and `.txt` files. No accounts, no cloud, no noise — just your content in a clean browser interface.
 
@@ -22,8 +22,8 @@ docker compose up -d
 Or if you prefer to build it yourself:
 
 ```bash
-docker build -t readlite .
-docker run -d -p 8000:8000 -v $(pwd)/content:/app/content:ro --name readlite readlite
+docker build -t fewreader .
+docker run -d -p 8000:8000 -v $(pwd)/content:/app/content:ro --name fewreader fewreader
 ```
 
 Once it's running, open **http://localhost:8000** and you're good to go.
@@ -60,7 +60,7 @@ There's not much to tweak, but here's what you can change:
 | Variable | Default | What it does |
 |---|---|---|
 | `CONTENT_DIR` | `content` | Where your files live. Legacy `BOOKS_DIR` also works. |
-| `APP_TITLE` | `ReadLite` | The title shown in the nav bar. |
+| `APP_TITLE` | `Fewreader` | The title shown in the nav bar. |
 
 ## Built With
 
@@ -92,8 +92,8 @@ docker compose up -d
 或者直接用 Docker 构建运行：
 
 ```bash
-docker build -t readlite .
-docker run -d -p 8000:8000 -v $(pwd)/content:/app/content:ro --name readlite readlite
+docker build -t fewreader .
+docker run -d -p 8000:8000 -v $(pwd)/content:/app/content:ro --name fewreader fewreader
 ```
 
 启动后在浏览器打开 **http://localhost:8000** 就可以了。
@@ -130,7 +130,7 @@ content/
 | 变量 | 默认值 | 说明 |
 |---|---|---|
 | `CONTENT_DIR` | `content` | 文件存放路径，兼容旧版 `BOOKS_DIR`。 |
-| `APP_TITLE` | `ReadLite` | 导航栏显示的标题。 |
+| `APP_TITLE` | `Fewreader` | 导航栏显示的标题。 |
 
 ### 技术栈
 
@@ -162,8 +162,8 @@ docker compose up -d
 或者直接透過 Docker 建置並執行：
 
 ```bash
-docker build -t readlite .
-docker run -d -p 8000:8000 -v $(pwd)/content:/app/content:ro --name readlite readlite
+docker build -t fewreader .
+docker run -d -p 8000:8000 -v $(pwd)/content:/app/content:ro --name fewreader fewreader
 ```
 
 啟動後在瀏覽器開啟 **http://localhost:8000** 就可以了。
@@ -200,7 +200,7 @@ content/
 | 變數 | 預設值 | 說明 |
 |---|---|---|
 | `CONTENT_DIR` | `content` | 檔案存放路徑，相容舊版 `BOOKS_DIR`。 |
-| `APP_TITLE` | `ReadLite` | 導覽列顯示的標題。 |
+| `APP_TITLE` | `Fewreader` | 導覽列顯示的標題。 |
 
 ### 技術棧
 

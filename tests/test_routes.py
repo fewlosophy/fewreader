@@ -174,7 +174,7 @@ def test_service_worker_route(client):
     assert resp.status_code == 200
     assert "javascript" in resp.headers["content-type"]
     assert resp.headers.get("service-worker-allowed") == "/"
-    assert "readlite-pwa" in resp.text
+    assert "fewreader-pwa" in resp.text
 
 
 def test_manifest_webmanifest_route(client):
@@ -182,7 +182,7 @@ def test_manifest_webmanifest_route(client):
     assert resp.status_code == 200
     assert "json" in resp.headers["content-type"]
     data = resp.json()
-    assert data["name"] == "ReadLite"
+    assert data["name"] == "Fewreader"
     assert data["display"] == "standalone"
     assert data["start_url"] == "/"
     assert len(data["icons"]) >= 2
@@ -191,7 +191,7 @@ def test_manifest_webmanifest_route(client):
 def test_manifest_json_alias(client):
     resp = client.get("/manifest.json")
     assert resp.status_code == 200
-    assert resp.json()["name"] == "ReadLite"
+    assert resp.json()["name"] == "Fewreader"
 
 
 def test_favicon_route(client):
