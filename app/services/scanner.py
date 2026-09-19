@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 import re
 import time
-from typing import TypedDict, Literal
+from typing import TypedDict, Literal, Any
 
 
 ALLOWED_EXTENSIONS = {".md", ".txt"}
@@ -23,6 +23,9 @@ CN_NUM = {
 
 
 class BookFile(TypedDict):
+    """
+    Represents a readable file in the library tree.
+    """
     type: Literal["file"]
     name: str       # human-readable title
     path: str       # URL-safe relative path from BOOKS_DIR
@@ -30,15 +33,24 @@ class BookFile(TypedDict):
 
 
 class BookCategory(TypedDict):
+    """
+    Represents a directory containing files or other categories.
+    """
     type: Literal["category"]
     name: str       # human-readable folder name
     path: str       # relative path from BOOKS_DIR
-    children: list  # list of BookFile | BookCategory
+    children: list[BookFile | BookCategory]  # list of BookFile | BookCategory
 
 
 def _parse_chinese_numeral(s: str) -> int | None:
     """
     Parse Chinese numerals like '一', '二十', '七十五', '一百零二' into an integer.
+
+    Args:
+        s (str): The Chinese numeral string to parse.
+
+    Returns:
+        int | None: The parsed integer, or None if parsing fails.
     """
     if not s:
         return None
@@ -61,10 +73,17 @@ def _parse_chinese_numeral(s: str) -> int | None:
     return num if (num > 0 or s in ("零", "〇")) else None
 
 
-def _natural_sort_key(s: str) -> list:
+def _natural_sort_key(s: str) -> list[Any]:
     """
-    Sort key supporting both Arabic numerals (natural sort) and Chinese chapter numerals.
+    Generate a sort key supporting Arabic numerals and Chinese chapter numerals.
+
     E.g. 'Chapter 2' before 'Chapter 10', and '第一回' before '第七回' before '第一百回'.
+
+    Args:
+        s (str): The string to generate a sort key for.
+
+    Returns:
+        list[Any]: A list of sortable components.
     """
     cn_match = CN_NUMERAL_RE.search(s)
     if cn_match:
@@ -73,7 +92,7 @@ def _natural_sort_key(s: str) -> list:
             prefix = s[:cn_match.start()].lower()
             return [prefix, 0, cn_val, s.lower()]
 
-    parts: list = []
+    parts: list[Any] = []
     for token in DIGIT_SPLIT_RE.split(s.lower()):
         if token.isdigit():
             parts.append(int(token))
@@ -83,7 +102,15 @@ def _natural_sort_key(s: str) -> list:
 
 
 def human_title(stem: str) -> str:
-    """Convert a filename stem or URL slug to a readable title."""
+    """
+    Convert a filename stem or URL slug to a readable title.
+
+    Args:
+        stem (str): The raw stem or slug string.
+
+    Returns:
+        str: The human-readable title.
+    """
     return stem.replace("-", " ").replace("_", " ").title()
 
 
@@ -91,16 +118,24 @@ _human_name = human_title
 
 
 def clear_scanner_cache() -> None:
-    """Clear in-memory directory tree cache."""
+    """Clear the in-memory directory tree cache."""
     _tree_cache.clear()
 
 
 def scan_tree(base: Path, use_cache: bool = True) -> list[BookFile | BookCategory]:
     """
-    Recursively walk *base* and return a nested tree of categories and files.
+    Recursively walk `base` and return a nested tree of categories and files.
+
     Directories come first (alphabetically), then files (alphabetically).
     Hidden entries (starting with '.') are skipped.
     Results are cached in memory for CACHE_TTL_SECONDS.
+
+    Args:
+        base (Path): The root path to start scanning from.
+        use_cache (bool): Whether to return a cached tree if available.
+
+    Returns:
+        list[BookFile | BookCategory]: The list representing the directory tree.
     """
     resolved_base = base.resolve()
     cache_key = str(resolved_base)
@@ -117,9 +152,19 @@ def scan_tree(base: Path, use_cache: bool = True) -> list[BookFile | BookCategor
 
 
 def _walk(current: Path, base: Path) -> list[BookFile | BookCategory]:
+    """
+    Internal recursive function to walk the directory tree.
+
+    Args:
+        current (Path): The current directory being walked.
+        base (Path): The root base path used for calculating relative paths.
+
+    Returns:
+        list[BookFile | BookCategory]: The nested contents of the current directory.
+    """
     entries: list[BookFile | BookCategory] = []
-    dir_entries: list[os.DirEntry] = []
-    file_entries: list[os.DirEntry] = []
+    dir_entries: list[os.DirEntry[str]] = []
+    file_entries: list[os.DirEntry[str]] = []
 
     try:
         with os.scandir(current) as it:
@@ -168,17 +213,25 @@ def _walk(current: Path, base: Path) -> list[BookFile | BookCategory]:
     return entries
 
 
-def find_subtree(tree: list, cat_path: str) -> list:
+def find_subtree(tree: list[BookFile | BookCategory], cat_path: str) -> list[BookFile | BookCategory]:
     """
-    Walk *tree* to find the category matching *cat_path* and return its children.
+    Walk `tree` to find the category matching `cat_path` and return its children.
+
     Returns the root tree if cat_path is empty, or [] if not found.
+
+    Args:
+        tree (list[BookFile | BookCategory]): The directory tree to search.
+        cat_path (str): The relative category path to find.
+
+    Returns:
+        list[BookFile | BookCategory]: The children of the matched category, or the entire tree.
     """
     if not cat_path:
         return tree
 
     parts = cat_path.strip("/").split("/")
 
-    def _search(nodes: list, parts: list) -> list:
+    def _search(nodes: list[BookFile | BookCategory], parts: list[str]) -> list[BookFile | BookCategory]:
         target = parts[0]
         rest = parts[1:]
         for node in nodes:
@@ -193,9 +246,20 @@ def find_subtree(tree: list, cat_path: str) -> list:
 
 def resolve_file(rel_path: str, base: Path) -> Path:
     """
-    Resolve *rel_path* relative to *base* and verify it stays within *base*
-    (path-traversal guard). Returns the resolved absolute Path.
-    Raises ValueError if the path escapes the content directory.
+    Resolve `rel_path` relative to `base` and verify it stays within `base`.
+
+    Acts as a path-traversal guard.
+
+    Args:
+        rel_path (str): The relative path of the file to resolve.
+        base (Path): The base content directory.
+
+    Raises:
+        ValueError: If the path escapes the content directory or has an invalid extension.
+        FileNotFoundError: If the resolved path does not exist.
+
+    Returns:
+        Path: The resolved absolute Path object.
     """
     resolved_base = base.resolve()
     candidate = (resolved_base / rel_path).resolve()
@@ -217,7 +281,14 @@ def get_sibling_files(
 ) -> tuple[BookFile | None, BookFile | None]:
     """
     Find previous and next sibling files relative to current file within its parent directory.
-    Returns (prev_file, next_file).
+
+    Args:
+        rel_path (str): The relative path of the current file.
+        base (Path): The base content directory.
+        tree (list[BookFile | BookCategory] | None): Optional cached directory tree.
+
+    Returns:
+        tuple[BookFile | None, BookFile | None]: A tuple containing the previous and next BookFile items, if they exist.
     """
     normalized = rel_path.strip("/")
     parent_path = Path(normalized).parent.as_posix()
@@ -227,7 +298,7 @@ def get_sibling_files(
     if tree is None:
         tree = scan_tree(base)
     siblings = find_subtree(tree, parent_path)
-    file_siblings = [item for item in siblings if item["type"] == "file"]
+    file_siblings = [item for item in siblings if item["type"] == "file"]  # type: ignore
 
     idx = -1
     for i, f in enumerate(file_siblings):
