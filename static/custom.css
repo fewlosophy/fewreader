@@ -2,6 +2,7 @@
 :root {
   --color-bg:             #ffffff;
   --color-surface:        #f7f7f7;
+  --color-surface-board:  #f7f7f7;
   --color-surface-raised: #efefef;
   --color-border:         #e4e4e4;
   --color-text-primary:   #111111;
@@ -18,7 +19,8 @@
 /* ─── Design Tokens — Dark ──────────────────────────────────────────────── */
 .dark {
   --color-bg:             #111111;
-  --color-surface:        #1c1c1c;
+  --color-surface:        #111111;
+  --color-surface-board:  #1c1c1c;
   --color-surface-raised: #242424;
   --color-border:         #2e2e2e;
   --color-text-primary:   #efefef;
