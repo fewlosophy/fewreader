@@ -1,7 +1,7 @@
 import functools
 import html
-from pathlib import Path
 import re
+from pathlib import Path
 
 import markdown as md_lib
 
@@ -23,7 +23,7 @@ def _read_file_text(file_path: Path) -> str:
 
 
 @functools.lru_cache(maxsize=128)
-def _cached_convert_markdown(file_str: str, mtime: float, size: int) -> tuple[str, str]:
+def _cached_convert_markdown(file_str: str, _mtime: float, _size: int) -> tuple[str, str]:
     file_path = Path(file_str)
     text = _read_file_text(file_path)
     converter = md_lib.Markdown(
@@ -59,7 +59,7 @@ def _format_plaintext_line(line: str) -> str:
 
 
 @functools.lru_cache(maxsize=128)
-def _cached_convert_plaintext(file_str: str, mtime: float, size: int) -> str:
+def _cached_convert_plaintext(file_str: str, _mtime: float, _size: int) -> str:
     file_path = Path(file_str)
     text = _read_file_text(file_path)
     paragraphs = BLANK_PARAGRAPHS_RE.split(text)
@@ -101,8 +101,8 @@ def convert(file_path: Path) -> tuple[str, str]:
     if ext == ".md":
         stat = file_path.stat()
         return _cached_convert_markdown(str(file_path.resolve()), stat.st_mtime, stat.st_size)
-    elif ext == ".txt":
+    if ext == ".txt":
         stat = file_path.stat()
         return _cached_convert_plaintext(str(file_path.resolve()), stat.st_mtime, stat.st_size), ""
-    else:
-        raise ValueError(f"Unsupported extension: {ext}")
+
+    raise ValueError(f"Unsupported extension: {ext}")

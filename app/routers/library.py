@@ -3,7 +3,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 from app.config import settings
-from app.services.scanner import scan_tree, find_subtree
+from app.services.scanner import find_subtree, scan_tree
 
 router = APIRouter()
 

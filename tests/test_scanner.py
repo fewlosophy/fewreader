@@ -3,11 +3,15 @@ Unit tests for app/services/scanner.py
 
 Covers: scan_tree, find_subtree, resolve_file, natural sorting, Chinese chapter sorting, sibling navigation
 """
+
 import pytest
-from pathlib import Path
 
-from app.services.scanner import scan_tree, find_subtree, resolve_file, get_sibling_files
-
+from app.services.scanner import (
+    find_subtree,
+    get_sibling_files,
+    resolve_file,
+    scan_tree,
+)
 
 # ── scan_tree ──────────────────────────────────────────────────────────────
 

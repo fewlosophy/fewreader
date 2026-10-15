@@ -1,12 +1,13 @@
+"""Reader router module for handling document reading endpoints."""
 from pathlib import Path
 
-from fastapi import APIRouter, Request, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 from app.config import settings
-from app.services.scanner import scan_tree, resolve_file, get_sibling_files, human_title
 from app.services.converter import convert
+from app.services.scanner import get_sibling_files, human_title, resolve_file, scan_tree
 
 router = APIRouter()
 
@@ -37,19 +38,20 @@ def _breadcrumb(file_path: str) -> list[dict]:
 
 @router.get("/read/{file_path:path}", response_class=HTMLResponse)
 def read_file(request: Request, file_path: str):
+    """Endpoint for reading a specific document file."""
     content_dir = settings.CONTENT_DIR or settings.BOOKS_DIR
 
     # Resolve and guard against path traversal
     try:
         abs_path = resolve_file(file_path, content_dir)
     except (ValueError, FileNotFoundError) as exc:
-        raise HTTPException(status_code=404, detail=str(exc))
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
 
     # Convert content
     try:
         html_content, toc_html = convert(abs_path)
     except Exception as exc:
-        raise HTTPException(status_code=500, detail=f"Conversion error: {exc}")
+        raise HTTPException(status_code=500, detail=f"Conversion error: {exc}") from exc
 
     # Derive title from filename stem
     title = human_title(abs_path.stem)

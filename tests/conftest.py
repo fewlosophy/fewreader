@@ -1,8 +1,9 @@
 """
 Shared fixtures for all test modules.
 """
-import pytest
 from pathlib import Path
+
+import pytest
 from fastapi.testclient import TestClient
 
 
@@ -16,8 +17,8 @@ def app():
 @pytest.fixture(autouse=True)
 def reset_caches():
     """Clear in-memory caches before and after each test."""
-    from app.services.scanner import clear_scanner_cache
     from app.services.converter import clear_converter_cache
+    from app.services.scanner import clear_scanner_cache
     clear_scanner_cache()
     clear_converter_cache()
     yield
