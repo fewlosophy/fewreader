@@ -9,8 +9,15 @@ import markdown as md_lib
 def _read_file_text(file_path: Path) -> str:
     """
     Read file text with automatic encoding fallback.
+
     Tries UTF-8, then GB18030 (covers GBK/GB2312), CP1252, Latin-1,
     and finally falls back to UTF-8 with character replacement to prevent crashes.
+
+    Args:
+        file_path (Path): The path to the file to read.
+
+    Returns:
+        str: The decoded file content as a string.
     """
     raw_bytes = file_path.read_bytes()
     encodings = ("utf-8", "gb18030", "cp1252", "latin-1")
@@ -24,6 +31,17 @@ def _read_file_text(file_path: Path) -> str:
 
 @functools.lru_cache(maxsize=128)
 def _cached_convert_markdown(file_str: str, mtime: float, size: int) -> tuple[str, str]:
+    """
+    Convert markdown text to HTML with TOC, using LRU cache.
+
+    Args:
+        file_str (str): Absolute file path as a string.
+        mtime (float): Last modification time of the file (used for cache invalidation).
+        size (int): Size of the file in bytes (used for cache invalidation).
+
+    Returns:
+        tuple[str, str]: A tuple containing the HTML content and the HTML Table of Contents.
+    """
     file_path = Path(file_str)
     text = _read_file_text(file_path)
     converter = md_lib.Markdown(
@@ -45,9 +63,16 @@ BLANK_PARAGRAPHS_RE = re.compile(r"\n\s*\n+")
 
 def _format_plaintext_line(line: str) -> str:
     """
-    Format a single line of plain text.
+    Format a single line of plain text for HTML rendering.
+
     Preserves leading indentation (spaces and tabs) by converting them to &nbsp;
     so HTML rendering engines don't collapse them, while escaping all other content.
+
+    Args:
+        line (str): The plain text line to format.
+
+    Returns:
+        str: The HTML-escaped and formatted line.
     """
     stripped_leading = line.lstrip(" \t")
     leading_len = len(line) - len(stripped_leading)
@@ -60,6 +85,17 @@ def _format_plaintext_line(line: str) -> str:
 
 @functools.lru_cache(maxsize=128)
 def _cached_convert_plaintext(file_str: str, mtime: float, size: int) -> str:
+    """
+    Convert plain text to HTML, using LRU cache.
+
+    Args:
+        file_str (str): Absolute file path as a string.
+        mtime (float): Last modification time of the file (used for cache invalidation).
+        size (int): Size of the file in bytes (used for cache invalidation).
+
+    Returns:
+        str: The converted HTML content.
+    """
     file_path = Path(file_str)
     text = _read_file_text(file_path)
     paragraphs = BLANK_PARAGRAPHS_RE.split(text)
@@ -84,7 +120,7 @@ def _cached_convert_plaintext(file_str: str, mtime: float, size: int) -> str:
 
 
 def clear_converter_cache() -> None:
-    """Clear LRU cache for converted files."""
+    """Clear the LRU cache for converted files."""
     _cached_convert_markdown.cache_clear()
     _cached_convert_plaintext.cache_clear()
 
@@ -93,8 +129,15 @@ def convert(file_path: Path) -> tuple[str, str]:
     """
     Convert a .md or .txt file to HTML with LRU caching.
 
+    Args:
+        file_path (Path): Path to the markdown or text file.
+
+    Raises:
+        ValueError: If the file extension is not supported.
+
     Returns:
-        (html_content, toc_html)  — toc_html is empty string for .txt files.
+        tuple[str, str]: A tuple of (html_content, toc_html).
+            `toc_html` is an empty string for .txt files.
     """
     ext = file_path.suffix.lower()
 

@@ -65,12 +65,22 @@ There's not much to tweak, but here's what you can change:
 | `CONTENT_DIR` | `content` | Where your files live. Legacy `BOOKS_DIR` also works. |
 | `APP_TITLE` | `Fewreader` | The title shown in the nav bar. |
 
+## Architecture
+
+See [fewreader-arch.md](fewreader-arch.md) for a technical overview of the service layers and routing architecture.
+
 ## Built With
 
 - **FastAPI** — handles routing
 - **Jinja2** — renders the templates
 - **python-markdown** — converts Markdown to HTML
 - **Tailwind CSS** — keeps everything looking clean
+
+## Local Run and Test Instructions
+
+1. Install dependencies: `pip install -r requirements.txt -r requirements-dev.txt`
+2. Run tests: `python -m pytest tests`
+3. Start the dev server: `uvicorn app.main:app --reload --port 8000`
 
 ## License
 

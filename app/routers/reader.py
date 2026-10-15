@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Any
 
 from fastapi import APIRouter, Request, HTTPException
 from fastapi.responses import HTMLResponse
@@ -12,11 +13,28 @@ router = APIRouter()
 
 
 def _get_templates(request: Request) -> Jinja2Templates:
+    """
+    Retrieve the Jinja2Templates instance from the application state.
+
+    Args:
+        request (Request): The incoming FastAPI request.
+
+    Returns:
+        Jinja2Templates: The template engine instance.
+    """
     return request.app.state.templates
 
 
-def _breadcrumb(file_path: str) -> list[dict]:
-    """Build breadcrumb segments from a relative file path string."""
+def _breadcrumb(file_path: str) -> list[dict[str, Any]]:
+    """
+    Build breadcrumb segments from a relative file path string.
+
+    Args:
+        file_path (str): The relative path of the file to build breadcrumbs for.
+
+    Returns:
+        list[dict[str, Any]]: A list of breadcrumb dictionaries containing label, path, and is_last boolean.
+    """
     parts = file_path.split("/")
     crumbs = []
     accumulated = ""
@@ -36,7 +54,20 @@ def _breadcrumb(file_path: str) -> list[dict]:
 
 
 @router.get("/read/{file_path:path}", response_class=HTMLResponse)
-def read_file(request: Request, file_path: str):
+def read_file(request: Request, file_path: str) -> HTMLResponse:
+    """
+    Render the reading view for a specific text or markdown file.
+
+    Args:
+        request (Request): The incoming FastAPI request.
+        file_path (str): The relative path of the file to read.
+
+    Raises:
+        HTTPException: If the file is not found (404) or a conversion error occurs (500).
+
+    Returns:
+        HTMLResponse: The rendered HTML page containing the converted file content.
+    """
     content_dir = settings.CONTENT_DIR or settings.BOOKS_DIR
 
     # Resolve and guard against path traversal
