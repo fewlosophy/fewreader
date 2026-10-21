@@ -18,11 +18,14 @@ def reset_caches():
     """Clear in-memory caches before and after each test."""
     from app.services.scanner import clear_scanner_cache
     from app.services.converter import clear_converter_cache
+    from app.services.meta import clear_meta_cache
     clear_scanner_cache()
     clear_converter_cache()
+    clear_meta_cache()
     yield
     clear_scanner_cache()
     clear_converter_cache()
+    clear_meta_cache()
 
 
 @pytest.fixture

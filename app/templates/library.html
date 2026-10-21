@@ -67,6 +67,37 @@
     {% endif %}
   </div>
 
+  {# Book provenance panel — shown when the current folder carries .meta.json #}
+  {% if book_meta %}
+  <div class="mb-7 p-5 sm:p-6 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface-board)]">
+    <div class="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-5">
+      <div class="flex-1 min-w-0">
+        <h2 class="text-lg sm:text-xl font-bold text-[var(--color-text-primary)] tracking-tight">
+          {{ book_meta.title | default((current_path | default('')).split('/')[-1] | human_title, true) }}
+        </h2>
+        <p class="text-sm sm:text-base text-[var(--color-text-secondary)] mt-1">
+          {% if book_meta.author %}{{ book_meta.author }}{% endif %}
+          {% if book_meta.translator %}<span class="text-[var(--color-text-muted)]"> · </span>trans. {{ book_meta.translator }}{% endif %}
+          {% if book_meta.year %}<span class="text-[var(--color-text-muted)]"> · </span>{{ book_meta.year }}{% endif %}
+        </p>
+        {% if book_meta.description %}
+        <p class="text-sm text-[var(--color-text-muted)] mt-2 leading-relaxed">{{ book_meta.description }}</p>
+        {% endif %}
+      </div>
+      {% if book_meta.source_url %}
+      <a href="{{ book_meta.source_url }}" target="_blank" rel="noopener noreferrer"
+         class="inline-flex items-center gap-1.5 self-start sm:self-start text-xs sm:text-sm text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors shrink-0"
+         title="Source: {{ book_meta.source_url }}">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+        </svg>
+        {{ book_meta.source or 'Source' }}
+      </a>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
   {# Card grid #}
   {% if visible_items %}
     <div id="library-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5 sm:gap-4">

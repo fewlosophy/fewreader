@@ -251,6 +251,32 @@ def write_index(root: Path, book: dict) -> Path:
     return path
 
 
+META_KEYS = ("title", "author", "translator", "year", "source", "source_url", "description")
+
+
+def write_meta(root: Path, book: dict) -> Path | None:
+    """Write the .meta.json provenance record for a book.
+
+    Reads `book['book_meta']` (a dict of known keys). If absent we derive a
+    minimal one from the title/author/subtitle fields the ingest already knows.
+    Returns the written path, or None if nothing to write (dry-run / empty).
+    """
+    meta = dict(book.get("book_meta") or {})
+    if not meta and (book.get("author") or book.get("title")):
+        # Fallback: build one from the legacy flat fields
+        meta = {k: v for k, v in {"title": book.get("title"), "author": book.get("author")}.items() if v}
+    if not meta:
+        return None
+    # Strip None / empty values to keep the JSON tidy
+    clean = {k: meta[k] for k in META_KEYS if meta.get(k) not in (None, "")}
+    if not clean:
+        return None
+    root.mkdir(parents=True, exist_ok=True)
+    path = root / ".meta.json"
+    path.write_text(json.dumps(clean, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return path
+
+
 def summarize(name: str, files: list[Path]) -> None:
     total = sum(p.stat().st_size for p in files)
     print(f"  ✓ {name}: {len(files)} files, {total/1024:.0f} KiB")
@@ -276,6 +302,9 @@ def run_book(book: dict, dry_run: bool, skip: set[int] | None = None) -> None:
         print(f"      wrote {order:03d}")
     if not dry_run:
         _rebuild_index_from_disk(root, book, intro=book.get("intro", ""))
+        written_meta = write_meta(root, book)
+        if written_meta:
+            print(f"      wrote {written_meta.name}")
         summarize(root.name, sorted(root.glob("*.txt"), key=chapter_number))
 
 
@@ -341,6 +370,15 @@ BOOKS = {
         "book_file": RepublicAdapter.book_file,
         "subtitle": "by Plato · translated by Benjamin Jowett (1871)",
         "meta": "Project Gutenberg eBook #150",
+        "book_meta": {
+            "title": "The Republic",
+            "author": "Plato",
+            "translator": "B. Jowett",
+            "year": 380,
+            "source": "Project Gutenberg #150",
+            "source_url": "https://www.gutenberg.org/cache/epub/150/pg150.txt",
+            "description": "Plato's dialogue on justice and the ideal state, in Benjamin Jowett's 1871 translation.",
+        },
     },
     "guai": {
         "title": "二十年目睹之怪現狀",
@@ -349,6 +387,14 @@ BOOKS = {
         "book_file": GuiXianZhuangAdapter.book_file,
         "subtitle": "滄海亭主人 (Weng Shao Mei, pseud.)",
         "meta": "zh.wikisource.org — public domain",
+        "book_meta": {
+            "title": "二十年目睹之怪現狀",
+            "author": "滄海亭主人 (Weng Shao Mei)",
+            "year": 1905,
+            "source": "Chinese Wikisource",
+            "source_url": "https://zh.wikisource.org/wiki/二十年目睹之怪現狀",
+            "description": "Late-Qing social satirical novel of the 'four great novels of the late Qing'.",
+        },
     },
 }
 
@@ -367,12 +413,14 @@ def _book_meta(key: str) -> dict:
 
 
 def reindex_book(key: str) -> Path:
-    """Offline: rebuild the index .md from chapters already on disk. No network."""
+    """Offline: rebuild the index .md + .meta.json from chapters already on disk. No network."""
     meta = _book_meta(key)
     root = CONTENT / meta["category"] / meta["slug"]
     n = len([p for p in root.glob("*.txt")])
     idx = _rebuild_index_from_disk(root, meta)  # intro preserved from existing index
-    print(f"  ✓ {root.relative_to(REPO)}: reindexed {n} chapters -> {idx.name}")
+    wmeta = write_meta(root, meta)
+    detail = f" -> {wmeta.name}" if wmeta else ""
+    print(f"  ✓ {root.relative_to(REPO)}: reindexed {n} chapters -> {idx.name}{detail}")
     return idx
 
 
@@ -383,7 +431,7 @@ def resume_book(key: str, dry_run: bool) -> None:
     ingest; it cannot conjure chapters the source itself lacks.
     """
     meta = _book_meta(key)
-    book = FETCHERS[key]()
+    book = {**meta, **FETCHERS[key]()}
     skip = disk_chapter_numbers(CONTENT / meta["category"] / meta["slug"])
     have = {o for o, _, _ in book["chapters"]}
     will_write = sorted(have - skip)

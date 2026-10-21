@@ -71,6 +71,23 @@
         {{ title }}
       </h1>
 
+      {# Book provenance strip — shown when the containing book has .meta.json #}
+      {% if book_meta %}
+      <div class="mb-8 pb-5 border-b border-[var(--color-border)] text-sm sm:text-base text-[var(--color-text-muted)]">
+        <span class="text-[var(--color-text-secondary)]">{{ book_meta.title | default('') }}</span>
+        {% if book_meta.author %} · {{ book_meta.author }}{% endif %}
+        {% if book_meta.translator %} · trans. {{ book_meta.translator }}{% endif %}
+        {% if book_meta.year %} · {{ book_meta.year }}{% endif %}
+        {% if book_meta.source_url %}
+          <span class="text-[var(--color-text-muted)]"> · </span>
+          <a href="{{ book_meta.source_url }}" target="_blank" rel="noopener noreferrer"
+             class="hover:text-[var(--color-accent)] transition-colors underline decoration-dotted underline-offset-4">
+            {{ book_meta.source | default('source') }}
+          </a>
+        {% endif %}
+      </div>
+      {% endif %}
+
       {# Content #}
       <article class="prose dark:prose-invert reader-content max-w-none
                       prose-headings:font-semibold prose-headings:tracking-tight

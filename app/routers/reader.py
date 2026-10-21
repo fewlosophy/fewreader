@@ -7,6 +7,7 @@ from fastapi.templating import Jinja2Templates
 from app.config import settings
 from app.services.scanner import scan_tree, resolve_file, get_sibling_files, human_title
 from app.services.converter import convert
+from app.services.meta import load_meta
 
 router = APIRouter()
 
@@ -56,6 +57,7 @@ def read_file(request: Request, file_path: str):
 
     tree = scan_tree(content_dir)
     prev_file, next_file = get_sibling_files(file_path, content_dir, tree=tree)
+    book_meta = load_meta(content_dir, Path(file_path).parent.as_posix())
     templates = _get_templates(request)
 
     return templates.TemplateResponse(
@@ -71,6 +73,7 @@ def read_file(request: Request, file_path: str):
             "tree": tree,
             "prev_file": prev_file,
             "next_file": next_file,
+            "book_meta": book_meta,
             "app_title": settings.APP_TITLE,
         },
     )
