@@ -4,6 +4,7 @@ from fastapi.templating import Jinja2Templates
 
 from app.config import settings
 from app.services.scanner import scan_tree, find_subtree
+from app.services.meta import load_meta
 
 router = APIRouter()
 
@@ -24,6 +25,7 @@ def library_root(request: Request):
             "tree": tree,
             "visible_items": tree,
             "current_path": "",
+            "book_meta": load_meta(content_dir, ""),
             "app_title": settings.APP_TITLE,
         },
     )
@@ -42,6 +44,7 @@ def library_category(request: Request, cat_path: str):
             "tree": tree,
             "visible_items": visible,
             "current_path": cat_path,
+            "book_meta": load_meta(content_dir, cat_path),
             "app_title": settings.APP_TITLE,
         },
     )
