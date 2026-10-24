@@ -52,3 +52,6 @@ package-lock.json
 *.png
 !static/icons/*.png
 
+
+# ingest staging (never committed)
+content/.staging/
