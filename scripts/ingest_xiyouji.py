@@ -46,6 +46,7 @@ META = {
 }
 
 HEADER_RE = re.compile(r"\{\{\s*header\b(.*?)\}\}", re.S | re.I)
+INDENT = "\u3000\u3000"  # 兩個漢字寬，對照 content/fiction/hlm 的既有慣例
 SECTION_RE = re.compile(r"\|\s*section\s*=\s*(.*?)(?=\n\s*\||\Z)", re.S)
 TEMPLATE_RE = re.compile(r"\{\{.*?\}\}", re.S)
 VARIANT_RE = re.compile(r"\{\{\s*另\s*\|\s*([^|}]*)[^}]*\}\}")  # {{另|主|王}} -> 主
@@ -136,12 +137,12 @@ def clean_body(raw: str) -> str:
             verse = [clean.normalize_typography(re.sub(r"^\s*:+\s*", "", ln)).strip() for ln in lines]
             verse = [v for v in verse if v]
             if verse:
-                paras.append("    " + "\n    ".join(verse))
+                paras.append(INDENT + ("\n" + INDENT).join(verse))
             continue
         joined = " ".join(ln.strip() for ln in lines)
         joined = re.sub(r"\s+", " ", clean.normalize_typography(joined)).strip()
         if joined:
-            paras.append("    " + joined)
+            paras.append(INDENT + joined)
     return "\n\n".join(paras) + "\n" if paras else ""
 
 
