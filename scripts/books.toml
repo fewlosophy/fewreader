@@ -1,0 +1,65 @@
+# Book registry for scripts/bookpipe.py — adding a book is one [[book]] block.
+#
+# Required: slug, title, category, source (gutenberg | wikisource)
+# gutenberg: source_url + chapter_re (regex for a chapter boundary line) + chapter_total
+# wikisource: source_id + chapter_total + profile
+#   profile = "wikisource-header"  -> {{header|...|section=第一回<br>回目}}
+#   profile = "wikisource-novel"   -> {{Novel|...|回目|...}}
+#
+# Validation bands: min_chars/max_chars are per chapter, in characters.
+# Content lands in content/<category>/<slug>/ only if every check passes.
+
+[[book]]
+slug = "xiyouji"
+title = "西遊記"
+category = "fiction"
+book_file = "西遊記"
+lang = "zh"
+source = "wikisource"
+source_id = "西遊記"
+chapter_total = 100
+profile = "wikisource-header"
+author = "吳承恩"
+year = 1592
+license = "PD-old-50 / page text CC BY-SA"
+pd_basis = "作者吳承恩（約1500–1582）逝世逾50年，作品屬公有領域；章節文字取自中文維基文庫，該站頁面內容以 CC BY-SA 授權，轉載須標註來源。"
+description = "明代吳承恩所著章回小說，一百回，中國四大名著之一。"
+min_chars = 2000
+max_chars = 200000
+
+[[book]]
+slug = "ni-shi-nian-guai-xian-zhuang"
+title = "二十年目睹之怪現狀"
+category = "fiction"
+book_file = "二十年目睹之怪現狀"
+lang = "zh"
+source = "wikisource"
+source_id = "二十年目睹之怪現狀"
+chapter_total = 108
+profile = "wikisource-novel"
+author = "滄海亭主人 (Weng Shao Mei)"
+year = 1905
+license = "PD-old-50 / page text CC BY-SA"
+pd_basis = "作者逝世逾50年，作品屬公有領域；章節文字取自中文維基文庫（CC BY-SA），轉載須標註來源。"
+description = "晚清四大譴責小說之一。"
+min_chars = 1500
+max_chars = 200000
+
+[[book]]
+slug = "republic"
+title = "The Republic"
+category = "philosophy"
+book_file = "The Republic"
+lang = "en"
+source = "gutenberg"
+source_url = "https://www.gutenberg.org/cache/epub/150/pg150.txt"
+chapter_re = "^BOOK\\s+[IVXLC]+$"
+chapter_total = 10
+author = "Plato"
+translator = "B. Jowett"
+year = 380
+license = "Public domain (US) / Project Gutenberg transcriber terms"
+pd_basis = "Plato (d. 348 BCE) and Jowett's 1871 translation are public domain; the Gutenberg transcribed text is redistributed without its header per the Gutenberg trademark terms."
+description = "Plato's dialogue on justice and the ideal state."
+min_chars = 5000
+max_chars = 400000

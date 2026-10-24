@@ -3,7 +3,22 @@
   "author": "Plato",
   "translator": "B. Jowett",
   "year": 380,
-  "source": "Project Gutenberg #150",
+  "source": "gutenberg",
   "source_url": "https://www.gutenberg.org/cache/epub/150/pg150.txt",
-  "description": "Plato's dialogue on justice and the ideal state, in Benjamin Jowett's 1871 translation."
+  "license": "Public domain (US) / Project Gutenberg transcriber terms",
+  "pd_basis": "Plato (d. 348 BCE) and Jowett's 1871 translation are public domain; the Gutenberg transcribed text is redistributed without its header per the Gutenberg trademark terms.",
+  "description": "Plato's dialogue on justice and the ideal state.",
+  "chapter_total": 10,
+  "chapters": {
+    "01 BOOK I.txt": "fe91a5f16c5273babdb313b53ac042dbb0137a5b45514a1c07453f97a71129b9",
+    "02 BOOK II.txt": "db442eca322f0f7be06f25f9574ffa1bc1b9b892460bea301f091eac3fc33e4a",
+    "03 BOOK III.txt": "406dd8da66597137c6510084e55f49c3964a4d0dc81d65ca066e8b3ac8aea8b9",
+    "04 BOOK IV.txt": "87c2c951282200e5f7cbce128190e78926c660d6cee27ec1e9700fb86d7263f1",
+    "05 BOOK V.txt": "0556d68848170f10c5cdd127f29442f48c3ad9f681dea463763ae4e9cc2e7366",
+    "06 BOOK VI.txt": "93bca9883bc0fa55369ffb39b29632fba2e4ac52de5a53caaf29d1f85e18691d",
+    "07 BOOK VII.txt": "ff03c4f360391bff26dcd82611d874e7aa20343050d655c52934639e8e2ee504",
+    "08 BOOK VIII.txt": "918122da84246620ead1625d33803b1e175aba30699d50a847f2ef2b2a479185",
+    "09 BOOK IX.txt": "ce807d5aa5c2d9eb29cc3e78cf2c255c32879df5d15fc2dae94aacb36f39179b",
+    "10 BOOK X.txt": "2d17f91981792fa0411ef9fe002ab168a65b1b2c4ff7b4a1e503e914a1e5ab40"
+  }
 }
