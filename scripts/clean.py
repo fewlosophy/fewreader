@@ -65,14 +65,19 @@ def split_blocks(text: str) -> list[list[str]]:
     return [block.splitlines() for block in re.split(r"\n\s*\n+", text) if block.strip()]
 
 
+def _indent_for(para: str) -> str:
+    """CJK paragraphs get two full-width spaces (hlm convention); Latin keeps 4 SP."""
+    return "\u3000\u3000" if re.search(r"[\u3400-\u9fff\uf900-\ufaff]", para) else "    "
+
+
 def _format_blocks(blocks: list[list[str]]) -> str:
-    """Render paragraph-blocks: heading blocks bare, body blocks 4-space indented."""
+    """Render paragraph-blocks: heading blocks bare, body blocks indented."""
     out: list[str] = []
     for block in blocks:
         para = normalize_typography(unwrap_paragraph(block)).strip()
         if not para:
             continue
-        out.append(para if is_heading(para) else "    " + para)
+        out.append(para if is_heading(para) else _indent_for(para) + para)
     return "\n\n".join(out)
 
 
