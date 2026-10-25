@@ -86,8 +86,10 @@ body {
   transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Force sidebar visible and sticky on md+ regardless of mobile JS state */
-@media (min-width: 768px) {
+/* Force sidebar visible and sticky from lg (1024px) up, regardless of mobile JS state.
+   Tablets in portrait (744-834px) must NOT get the 288px sidebar: it left the article
+   column at ~452px. They use the drawer instead, so the reading measure stays intact. */
+@media (min-width: 1024px) {
   #sidebar {
     position: sticky !important;
     top: 0;
