@@ -1,10 +1,12 @@
-const CACHE_NAME = 'fewreader-pwa-v1';
+const CACHE_NAME = 'fewreader-pwa-v2';
 
 // Essential App Shell assets to pre-cache on install
+// NOTE: keep the ?v= query in sync with base.html. Versioned URLs are how a deploy
+// invalidates both the CDN edge cache and this cache without a manual CF purge.
 const PRECACHE_ASSETS = [
   '/',
-  '/static/tailwind.min.css',
-  '/static/custom.css',
+  '/static/tailwind.min.css?v=20261025a',
+  '/static/custom.css?v=20261025a',
   '/static/manifest.webmanifest',
   '/static/icons/icon.svg',
   '/static/icons/icon-192.png',
