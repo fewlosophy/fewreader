@@ -10,6 +10,9 @@
 
 A minimal, self-hosted reading app for your `.md` and `.txt` files. No accounts, no cloud, no noise — just your content in a clean browser interface.
 
+> **Status:** feature-complete and no longer updated. This repository is the
+> public release and is kept as-is; development continues in a private repository.
+
 **Live Demo**: [read.fewlosophy.com](https://read.fewlosophy.com)
 
 > 💡 **Note**: This project was 100% vibe coded from start to finish.
