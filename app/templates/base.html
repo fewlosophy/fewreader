@@ -155,8 +155,9 @@
       function settle(shouldOpen) {
         const s = el(), b = bd();
         s.style.transition = '';
-        s.style.transform = '';
         if (b) { b.style.transition = ''; b.style.opacity = ''; }
+        // openSidebar()/closeSidebar() own the transform, so don't clear it here
+        // first — that would cancel the transition from the dragged position.
         shouldOpen ? openSidebar() : closeSidebar();
       }
 
