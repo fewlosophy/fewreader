@@ -90,3 +90,80 @@ description = "北宋沈括所著筆記，二十六卷，分故事、辯證、�
 min_chars = 150
 max_chars = 400000
 delay_s = 0.3
+
+[[book]]
+slug = "xu-xia-ke-you-ji"
+title = "徐霞客遊記"
+category = "travel"
+book_file = "徐霞客遊記"
+lang = "zh"
+source = "wikisource"
+source_id = "徐霞客遊記"
+chapter_total = 52
+unit = "篇"
+profile = "wikisource-header"
+index_note = "遊記四十五篇 · 附錄七篇"
+# No numeric 回/卷 sequence: the canonical reading order comes from the
+# 目錄 on the Wikisource main page (chronological), so list the pages.
+pages = [
+  { page = "遊天台山日記", heading = "遊天台山日記" },
+  { page = "遊雁宕山日記", heading = "遊雁宕山日記" },
+  { page = "遊白嶽山日記", heading = "遊白嶽山日記" },
+  { page = "遊黃山日記", heading = "遊黃山日記" },
+  { page = "遊武彜山日記", heading = "遊武彜山日記" },
+  { page = "遊廬山日記", heading = "遊廬山日記" },
+  { page = "後遊黃山日記", heading = "後遊黃山日記" },
+  { page = "遊九鯉湖日記", heading = "遊九鯉湖日記" },
+  { page = "遊嵩山日記", heading = "遊嵩山日記" },
+  { page = "遊太華山日記", heading = "遊太華山日記" },
+  { page = "遊太和山日記", heading = "遊太和山日記" },
+  { page = "閩遊日記", heading = "閩遊日記" },
+  { page = "後閩遊日記", heading = "後閩遊日記" },
+  { page = "後遊天台山日記", heading = "後遊天台山日記" },
+  { page = "後遊雁宕山日記", heading = "後遊雁宕山日記" },
+  { page = "遊五台山日記", heading = "遊五台山日記" },
+  { page = "遊恒山日記", heading = "遊恒山日記" },
+  { page = "浙遊日記", heading = "浙遊日記" },
+  { page = "江右遊日記", heading = "江右遊日記" },
+  { page = "楚遊日記", heading = "楚遊日記" },
+  { page = "粵西遊日記一", heading = "粵西遊日記一" },
+  { page = "粵西遊日記二", heading = "粵西遊日記二" },
+  { page = "粵西遊日記三", heading = "粵西遊日記三" },
+  { page = "粵西遊日記四", heading = "粵西遊日記四" },
+  { page = "黔遊日記一", heading = "黔遊日記一" },
+  { page = "黔遊日記二", heading = "黔遊日記二" },
+  { page = "滇遊日記一", heading = "滇遊日記一" },
+  { page = "遊太華山記", heading = "遊太華山記" },
+  { page = "滇中花木記", heading = "滇中花木記" },
+  { page = "遊顏洞記", heading = "遊顏洞記" },
+  { page = "隨筆兩則", heading = "隨筆兩則" },
+  { page = "滇遊日記二", heading = "滇遊日記二" },
+  { page = "滇遊日記三", heading = "滇遊日記三" },
+  { page = "盤江考", heading = "盤江考" },
+  { page = "滇遊日記四", heading = "滇遊日記四" },
+  { page = "滇遊日記五", heading = "滇遊日記五" },
+  { page = "滇遊日記六", heading = "滇遊日記六" },
+  { page = "滇遊日記七", heading = "滇遊日記七" },
+  { page = "滇遊日記八", heading = "滇遊日記八" },
+  { page = "滇遊日記九", heading = "滇遊日記九" },
+  { page = "滇遊日記十", heading = "滇遊日記十" },
+  { page = "滇遊日記十一", heading = "滇遊日記十一" },
+  { page = "永昌志略", heading = "永昌志略" },
+  { page = "近騰諸彜說略", heading = "近騰諸彜說略" },
+  { page = "滇遊日記十二", heading = "滇遊日記十二" },
+  { page = "滇遊日記十三", heading = "滇遊日記十三" },
+  { page = "雞山志目", heading = "雞山志目" },
+  { page = "雞山志略一", heading = "雞山志略一" },
+  { page = "雞山志略二", heading = "雞山志略二" },
+  { page = "麗江紀略", heading = "麗江紀略" },
+  { page = "法王緣起", heading = "法王緣起" },
+  { page = "溯江紀源", heading = "溯江紀源" },
+]
+author = "徐弘祖（霞客）"
+year = 1641
+license = "PD-old-50 / page text CC BY-SA"
+pd_basis = "作者徐弘祖（1587–1641）逝世逾50年，作品屬公有領域；各篇文字取自中文維基文庫，該站頁面內容以 CC BY-SA 授權，轉載須標註來源。"
+description = "明代徐弘祖（號霞客）歷三十年遊歷所記，按日紀程，遍及今華東、華中、華南及雲貴，為中國古代最完整的實地地理考察記錄。"
+min_chars = 150
+max_chars = 400000
+delay_s = 0.3

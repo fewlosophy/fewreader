@@ -54,7 +54,10 @@ CN_VOLUME_RE = re.compile(r"^\s*卷\s*[一二三四五六七八九十百零〇�
 # ==卷一== / ===故事=== (補筆談) and <center>=故事一=</center> (正卷) are both
 # section titles; render them as 【…】 so the reader keeps the structure.
 CENTER_HEAD_RE = re.compile(r"<center>\s*={1,6}\s*(.+?)\s*={1,6}\s*</center>", re.I | re.S)
-WIKI_HEAD_RE = re.compile(r"(?m)^\s*={1,6}\s*(.+?)\s*={1,6}\s*$")
+WIKI_HEAD_RE = re.compile(r"(?m)^[ \t]*(={1,6})[ \t]*([^=\n]+?)[ \t]*\1[ \t]*$")
+STRAY_EQ_RE = re.compile(r"(?m)^[ \t]*={1,6}[ \t]*$")
+REF_RE = re.compile(r"<ref[^>]*/>|<ref[^>]*>.*?</ref>", re.I | re.S)
+YL_RE = re.compile(r"\{\{\s*YL\s*\|\s*([^|}]*)[^}]*\}\}")   # {{YL|癸丑|1613年}} -> 癸丑
 HEADING_OUT_RE = re.compile(r"^【.*】$")
 ANY_TAG_RE = re.compile(r"</?[a-zA-Z][^>]*>")
 INCLUDE_TAG_RE = re.compile(r"</?(?:onlyinclude|noinclude|includeonly)\s*>", re.I)
@@ -96,10 +99,17 @@ def http_text(url: str, retries: int = 5, timeout: int = 60) -> str:
 # wikitext helpers
 # --------------------------------------------------------------------------- #
 def header_block(raw: str) -> str:
-    """{{header ...}} by brace matching; a regex stops inside {{另|a|b}}."""
-    i = raw.find("{{header")
-    if i < 0:
+    """{{header ...}} by brace matching; a regex stops inside {{另|a|b}}.
+
+    Case-insensitive: some pages use {{Header ...}} (e.g. 徐霞客遊記/滇遊日記一,
+    whose section carries a nested {{color|red|闕}}). Matching only lowercase
+    left the whole header in the body, and the non-greedy TEMPLATE_RE then cut it
+    at the inner braces, leaving an orphan '}}'.
+    """
+    m = re.search(r"\{\{\s*header", raw, re.I)
+    if not m:
         return ""
+    i = m.start()
     depth, j = 0, i
     while j < len(raw) - 1:
         two = raw[j:j + 2]
@@ -149,6 +159,8 @@ def wikitext_body(raw: str) -> str:
     hb = header_block(raw)
     body = raw.replace(hb, "", 1) if hb else raw
     body = INCLUDE_TAG_RE.sub("", body)
+    body = REF_RE.sub("", body)
+    body = YL_RE.sub(r"\1", body)
     body = VARIANT2_RE.sub(r"\1", body)
     body = PIANZI_RE.sub(r"\1", body)
     body = VARIANT_RE.sub(r"\1", body)
@@ -158,7 +170,8 @@ def wikitext_body(raw: str) -> str:
     body = body.replace("'''", "").replace("''", "")
     # Section titles: <center>=故事一=</center> and ==卷一== -> 【…】
     body = CENTER_HEAD_RE.sub(lambda m: f"\n\n【{m.group(1).strip()}】\n\n", body)
-    body = WIKI_HEAD_RE.sub(lambda m: f"\n\n【{m.group(1).strip()}】\n\n", body)
+    body = WIKI_HEAD_RE.sub(lambda m: f"\n\n【{m.group(2).strip()}】\n\n", body)
+    body = STRAY_EQ_RE.sub("", body)
     body = ANY_TAG_RE.sub("", body)
     body = html.unescape(body)
     body = re.sub(r"(?m)^\s*<[^>]+>\s*$", "", body)
@@ -242,7 +255,28 @@ def _extra_pages(book: dict, key: str) -> list[tuple[int, str, str]]:
     return out
 
 
+def _fetch_page_list(book: dict, limit: int = 0) -> list[tuple[int, str, str]]:
+    """Explicit ordered page list for books with no numeric 回/卷 sequence."""
+    entries = list(book["pages"])
+    if limit:
+        entries = entries[:limit]
+    out: list[tuple[int, str, str]] = []
+    for i, spec in enumerate(entries, 1):
+        page = spec["page"] if isinstance(spec, dict) else spec
+        heading = (spec.get("heading") if isinstance(spec, dict) else None) or page
+        title = f"{book['source_id']}/{page}"
+        url = f"{WIKISOURCE_API}?" + urllib.parse.urlencode({"action": "raw", "title": title})
+        body = wikitext_body(http_text(url))
+        if len(body) < int(book.get("min_chars", 500)):
+            raise SystemExit(f"{book['slug']}: page '{page}' unusable (chars={len(body)})")
+        out.append((i, heading, body))
+        time.sleep(float(book.get("delay_s", 0.4)))
+    return out
+
+
 def fetch_wikisource(book: dict, limit: int = 0) -> list[tuple[int, str, str]]:
+    if book.get("pages"):
+        return _fetch_page_list(book, limit)
     total = int(book["chapter_total"])
     if limit:
         total = min(total, limit)
