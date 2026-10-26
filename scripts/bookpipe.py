@@ -306,6 +306,13 @@ def wikitext_body(raw: str) -> str:
     body = ANY_TAG_RE.sub("", body)
     body = _flatten_tables(body)
     body = html.unescape(body)
+    # U+FFFD means the source page itself carries a corrupted character
+    # (日知錄/卷20 has 《書·金<U+FFFD>》 for 金縢). Drop it and say so, rather than
+    # failing the whole volume over one byte.
+    if "\ufffd" in body:
+        n_bad = body.count("\ufffd")
+        print(f"   ! dropped {n_bad} U+FFFD from source text")
+        body = body.replace("\ufffd", "")
     body = re.sub(r"(?m)^\s*<[^>]+>\s*$", "", body)
 
     paras: list[str] = []
@@ -598,6 +605,60 @@ def _fetch_split_poems(book: dict, limit: int = 0) -> list[tuple[int, str, str]]
     return out
 
 
+TOC_CHILD_RE = re.compile(r"^(\*{1,2})\s*\[\[\s*/?([^|\]]+?)(?:\|([^\]]*))?\]\]")
+
+
+def _fetch_toc_groups(book: dict, limit: int = 0) -> list[tuple[int, str, str]]:
+    """Index page listing chapters (*) and their topics (**); one chapter per group.
+
+    天工開物 is this shape: the 18 chapter pages hold only the 宋子曰 preface and
+    the technique text lives in the topic pages listed beneath them. Shipping the
+    chapter pages alone would give 18 prefaces and no book.
+    """
+    raw = fetch_wikitext(book["source_id"])
+    groups: list[dict] = []
+    for ln in raw.splitlines():
+        stripped = ln.strip()
+        m = TOC_CHILD_RE.match(stripped)
+        if not m:
+            continue
+        page = m.group(2).strip()
+        disp = (m.group(3) or page).strip()
+        if page.endswith("自序") or page == "全覽":
+            continue
+        if m.group(1) == "**" and groups:
+            groups[-1]["children"].append((page, disp))
+        else:
+            groups.append({"page": page, "disp": disp, "children": []})
+    if not groups:
+        raise SystemExit(f"{book['slug']}: no TOC entries found on {book['source_id']}")
+    if limit:
+        groups = groups[:limit]
+
+    want: list[str] = []
+    for g in groups:
+        want.append(f"{book['source_id']}/{g['page']}")
+        want += [f"{book['source_id']}/{p}" for p, _ in g["children"]]
+    prefetch_titles(want, float(book.get("delay_s", 0.2)))
+
+    out: list[tuple[int, str, str]] = []
+    for n, g in enumerate(groups, 1):
+        parts: list[str] = []
+        head = wikitext_body(fetch_wikitext(f"{book['source_id']}/{g['page']}")).strip()
+        if head:
+            parts.append(head)
+        for page, disp in g["children"]:
+            body = wikitext_body(fetch_wikitext(f"{book['source_id']}/{page}")).strip()
+            if body:
+                parts.append(f"【{disp}】\n\n{body}")
+        body = "\n\n".join(parts) + "\n"
+        if len(body) < int(book.get("min_chars", 150)):
+            raise SystemExit(f"{book['slug']}: chapter '{g['disp']}' too short ({len(body)})")
+        out.append((n, g["disp"], body))
+        time.sleep(float(book.get("delay_s", 0.2)))
+    return out
+
+
 def _fetch_page_list(book: dict, limit: int = 0) -> list[tuple[int, str, str]]:
     """Explicit ordered page list for books with no numeric 回/卷 sequence."""
     entries = list(book["pages"])
@@ -628,6 +689,8 @@ def _fetch_page_list(book: dict, limit: int = 0) -> list[tuple[int, str, str]]:
 def fetch_wikisource(book: dict, limit: int = 0) -> list[tuple[int, str, str]]:
     if book.get("poem_index"):
         return _fetch_poem_index(book, limit)
+    if book.get("toc_groups"):
+        return _fetch_toc_groups(book, limit)
     if book.get("split_poems"):
         return _fetch_split_poems(book, limit)
     if book.get("pages"):

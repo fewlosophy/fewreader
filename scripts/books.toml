@@ -331,3 +331,296 @@ description = "清末朱孝臧所編宋詞選本，自趙佶至李清照八十�
 min_chars = 50
 max_chars = 200000
 delay_s = 0.2
+
+[[book]]
+slug = "chuxueji"
+title = "初學記"
+category = "reference"
+book_file = "初學記"
+lang = "zh"
+source = "wikisource"
+source_id = "初學記"
+chapter_total = 30
+unit = "卷"
+index_note = "三十卷 · 二十三部"
+front_pages = [{ page = "序", heading = "序" }]
+pages = [
+  { page = "卷第一", heading = "卷第一" },
+  { page = "卷第二", heading = "卷第二" },
+  { page = "卷第三", heading = "卷第三" },
+  { page = "卷第四", heading = "卷第四" },
+  { page = "卷第五", heading = "卷第五" },
+  { page = "卷第六", heading = "卷第六" },
+  { page = "卷第七", heading = "卷第七" },
+  { page = "卷第八", heading = "卷第八" },
+  { page = "卷第九", heading = "卷第九" },
+  { page = "卷第十", heading = "卷第十" },
+  { page = "卷第十一", heading = "卷第十一" },
+  { page = "卷第十二", heading = "卷第十二" },
+  { page = "卷第十三", heading = "卷第十三" },
+  { page = "卷第十四", heading = "卷第十四" },
+  { page = "卷第十五", heading = "卷第十五" },
+  { page = "卷第十六", heading = "卷第十六" },
+  { page = "卷第十七", heading = "卷第十七" },
+  { page = "卷第十八", heading = "卷第十八" },
+  { page = "卷第十九", heading = "卷第十九" },
+  { page = "卷第二十", heading = "卷第二十" },
+  { page = "卷第二十一", heading = "卷第二十一" },
+  { page = "卷第二十二", heading = "卷第二十二" },
+  { page = "卷第二十三", heading = "卷第二十三" },
+  { page = "卷第二十四", heading = "卷第二十四" },
+  { page = "卷第二十五", heading = "卷第二十五" },
+  { page = "卷第二十六", heading = "卷第二十六" },
+  { page = "卷第二十七", heading = "卷第二十七" },
+  { page = "卷第二十八", heading = "卷第二十八" },
+  { page = "卷第二十九", heading = "卷第二十九" },
+  { page = "卷第三十", heading = "卷第三十" },
+]
+author = "徐堅等"
+year = 728
+license = "PD-old-50 / page text CC BY-SA"
+pd_basis = "作者徐堅等（唐開元間）逝世逾50年，作品屬公有領域；文字取自中文維基文庫（CC BY-SA），轉載須標註來源。"
+description = "唐玄宗時為諸王習文而編的類書，三十卷，分天、歲時、地、州郡、帝王、中宮、儲宮、帝戚、職官、禮、樂、人、政理、文、武、道釋、居處、器物、服食、寶器、果木、獸、鳥二十三部，每類先「敘事」後「事對」再詩文。"
+min_chars = 150
+max_chars = 400000
+delay_s = 0.3
+
+[[book]]
+slug = "yiwenzileiju"
+title = "藝文類聚"
+category = "reference"
+book_file = "藝文類聚"
+lang = "zh"
+source = "wikisource"
+source_id = "藝文類聚"
+chapter_total = 100
+unit = "卷"
+index_note = "一百卷 · 四十六部"
+pages = [
+  { page = "卷001", heading = "卷001" },
+  { page = "卷002", heading = "卷002" },
+  { page = "卷003", heading = "卷003" },
+  { page = "卷004", heading = "卷004" },
+  { page = "卷005", heading = "卷005" },
+  { page = "卷006", heading = "卷006" },
+  { page = "卷007", heading = "卷007" },
+  { page = "卷008", heading = "卷008" },
+  { page = "卷009", heading = "卷009" },
+  { page = "卷010", heading = "卷010" },
+  { page = "卷011", heading = "卷011" },
+  { page = "卷012", heading = "卷012" },
+  { page = "卷013", heading = "卷013" },
+  { page = "卷014", heading = "卷014" },
+  { page = "卷015", heading = "卷015" },
+  { page = "卷016", heading = "卷016" },
+  { page = "卷017", heading = "卷017" },
+  { page = "卷018", heading = "卷018" },
+  { page = "卷019", heading = "卷019" },
+  { page = "卷020", heading = "卷020" },
+  { page = "卷021", heading = "卷021" },
+  { page = "卷022", heading = "卷022" },
+  { page = "卷023", heading = "卷023" },
+  { page = "卷024", heading = "卷024" },
+  { page = "卷025", heading = "卷025" },
+  { page = "卷026", heading = "卷026" },
+  { page = "卷027", heading = "卷027" },
+  { page = "卷028", heading = "卷028" },
+  { page = "卷029", heading = "卷029" },
+  { page = "卷030", heading = "卷030" },
+  { page = "卷031", heading = "卷031" },
+  { page = "卷032", heading = "卷032" },
+  { page = "卷033", heading = "卷033" },
+  { page = "卷034", heading = "卷034" },
+  { page = "卷035", heading = "卷035" },
+  { page = "卷036", heading = "卷036" },
+  { page = "卷037", heading = "卷037" },
+  { page = "卷038", heading = "卷038" },
+  { page = "卷039", heading = "卷039" },
+  { page = "卷040", heading = "卷040" },
+  { page = "卷041", heading = "卷041" },
+  { page = "卷042", heading = "卷042" },
+  { page = "卷043", heading = "卷043" },
+  { page = "卷044", heading = "卷044" },
+  { page = "卷045", heading = "卷045" },
+  { page = "卷046", heading = "卷046" },
+  { page = "卷047", heading = "卷047" },
+  { page = "卷048", heading = "卷048" },
+  { page = "卷049", heading = "卷049" },
+  { page = "卷050", heading = "卷050" },
+  { page = "卷051", heading = "卷051" },
+  { page = "卷052", heading = "卷052" },
+  { page = "卷053", heading = "卷053" },
+  { page = "卷054", heading = "卷054" },
+  { page = "卷055", heading = "卷055" },
+  { page = "卷056", heading = "卷056" },
+  { page = "卷057", heading = "卷057" },
+  { page = "卷058", heading = "卷058" },
+  { page = "卷059", heading = "卷059" },
+  { page = "卷060", heading = "卷060" },
+  { page = "卷061", heading = "卷061" },
+  { page = "卷062", heading = "卷062" },
+  { page = "卷063", heading = "卷063" },
+  { page = "卷064", heading = "卷064" },
+  { page = "卷065", heading = "卷065" },
+  { page = "卷066", heading = "卷066" },
+  { page = "卷067", heading = "卷067" },
+  { page = "卷068", heading = "卷068" },
+  { page = "卷069", heading = "卷069" },
+  { page = "卷070", heading = "卷070" },
+  { page = "卷071", heading = "卷071" },
+  { page = "卷072", heading = "卷072" },
+  { page = "卷073", heading = "卷073" },
+  { page = "卷074", heading = "卷074" },
+  { page = "卷075", heading = "卷075" },
+  { page = "卷076", heading = "卷076" },
+  { page = "卷077", heading = "卷077" },
+  { page = "卷078", heading = "卷078" },
+  { page = "卷079", heading = "卷079" },
+  { page = "卷080", heading = "卷080" },
+  { page = "卷081", heading = "卷081" },
+  { page = "卷082", heading = "卷082" },
+  { page = "卷083", heading = "卷083" },
+  { page = "卷084", heading = "卷084" },
+  { page = "卷085", heading = "卷085" },
+  { page = "卷086", heading = "卷086" },
+  { page = "卷087", heading = "卷087" },
+  { page = "卷088", heading = "卷088" },
+  { page = "卷089", heading = "卷089" },
+  { page = "卷090", heading = "卷090" },
+  { page = "卷091", heading = "卷091" },
+  { page = "卷092", heading = "卷092" },
+  { page = "卷093", heading = "卷093" },
+  { page = "卷094", heading = "卷094" },
+  { page = "卷095", heading = "卷095" },
+  { page = "卷096", heading = "卷096" },
+  { page = "卷097", heading = "卷097" },
+  { page = "卷098", heading = "卷098" },
+  { page = "卷099", heading = "卷099" },
+  { page = "卷100", heading = "卷100" },
+]
+author = "歐陽詢等"
+year = 624
+license = "PD-old-50 / page text CC BY-SA"
+pd_basis = "作者歐陽詢等（唐武德七年成書）逝世逾50年，作品屬公有領域；文字取自中文維基文庫（CC BY-SA），轉載須標註來源。"
+description = "唐初歐陽詢等奉敕編纂的類書，一百卷，分四十六部，每部先列「事」後列「文」，徵引古籍一千餘種，多數原書已亡佚，為輯佚與考證的重要來源。"
+min_chars = 150
+max_chars = 400000
+delay_s = 0.3
+
+[[book]]
+slug = "rizhilu"
+title = "日知錄"
+category = "reference"
+book_file = "日知錄"
+lang = "zh"
+source = "wikisource"
+source_id = "日知錄"
+chapter_total = 32
+unit = "卷"
+index_note = "三十二卷 · 一千餘條"
+front_pages = [{ page = "自序", heading = "自序" }]
+pages = [
+  { page = "卷01", heading = "卷01" },
+  { page = "卷02", heading = "卷02" },
+  { page = "卷03", heading = "卷03" },
+  { page = "卷04", heading = "卷04" },
+  { page = "卷05", heading = "卷05" },
+  { page = "卷06", heading = "卷06" },
+  { page = "卷07", heading = "卷07" },
+  { page = "卷08", heading = "卷08" },
+  { page = "卷09", heading = "卷09" },
+  { page = "卷10", heading = "卷10" },
+  { page = "卷11", heading = "卷11" },
+  { page = "卷12", heading = "卷12" },
+  { page = "卷13", heading = "卷13" },
+  { page = "卷14", heading = "卷14" },
+  { page = "卷15", heading = "卷15" },
+  { page = "卷16", heading = "卷16" },
+  { page = "卷17", heading = "卷17" },
+  { page = "卷18", heading = "卷18" },
+  { page = "卷19", heading = "卷19" },
+  { page = "卷20", heading = "卷20" },
+  { page = "卷21", heading = "卷21" },
+  { page = "卷22", heading = "卷22" },
+  { page = "卷23", heading = "卷23" },
+  { page = "卷24", heading = "卷24" },
+  { page = "卷25", heading = "卷25" },
+  { page = "卷26", heading = "卷26" },
+  { page = "卷27", heading = "卷27" },
+  { page = "卷28", heading = "卷28" },
+  { page = "卷29", heading = "卷29" },
+  { page = "卷30", heading = "卷30" },
+  { page = "卷31", heading = "卷31" },
+  { page = "卷32", heading = "卷32" },
+]
+author = "顧炎武"
+year = 1670
+license = "PD-old-50 / page text CC BY-SA"
+pd_basis = "作者顧炎武（1613–1682）逝世逾50年，作品屬公有領域；文字取自中文維基文庫（CC BY-SA），轉載須標註來源。"
+description = "明末清初顧炎武的讀書札記，三十二卷一千餘條，經義、史學、官方、吏治、財賦、典禮、輿地、藝文無所不包，為清代考據學的開山之作。"
+min_chars = 150
+max_chars = 400000
+delay_s = 0.3
+
+[[book]]
+slug = "kunxuejiwen"
+title = "困學紀聞"
+category = "reference"
+book_file = "困學紀聞"
+lang = "zh"
+source = "wikisource"
+source_id = "困學紀聞"
+chapter_total = 20
+unit = "卷"
+index_note = "二十卷"
+pages = [
+  { page = "卷01", heading = "卷01" },
+  { page = "卷02", heading = "卷02" },
+  { page = "卷03", heading = "卷03" },
+  { page = "卷04", heading = "卷04" },
+  { page = "卷05", heading = "卷05" },
+  { page = "卷06", heading = "卷06" },
+  { page = "卷07", heading = "卷07" },
+  { page = "卷08", heading = "卷08" },
+  { page = "卷09", heading = "卷09" },
+  { page = "卷10", heading = "卷10" },
+  { page = "卷11", heading = "卷11" },
+  { page = "卷12", heading = "卷12" },
+  { page = "卷13", heading = "卷13" },
+  { page = "卷14", heading = "卷14" },
+  { page = "卷15", heading = "卷15" },
+  { page = "卷16", heading = "卷16" },
+  { page = "卷17", heading = "卷17" },
+  { page = "卷18", heading = "卷18" },
+  { page = "卷19", heading = "卷19" },
+  { page = "卷20", heading = "卷20" },
+]
+author = "王應麟"
+year = 1280
+license = "PD-old-50 / page text CC BY-SA"
+pd_basis = "作者王應麟（1223–1296）逝世逾50年，作品屬公有領域；文字取自中文維基文庫（CC BY-SA），轉載須標註來源。"
+description = "宋末王應麟的考據札記，二十卷，分說經、天道、歷數、地理、諸子、考史、評詩文、雜識八類，考證精嚴，為宋代筆記中考據最密者。"
+min_chars = 150
+max_chars = 400000
+delay_s = 0.3
+
+[[book]]
+slug = "tiangongkaiwu"
+title = "天工開物"
+category = "reference"
+book_file = "天工開物"
+lang = "zh"
+source = "wikisource"
+source_id = "天工開物"
+chapter_total = 18
+unit = "章"
+toc_groups = true
+index_note = "三卷 · 十八章"
+author = "宋應星"
+year = 1637
+license = "PD-old-50 / page text CC BY-SA"
+pd_basis = "作者宋應星（1587–1666）逝世逾50年，作品屬公有領域；文字取自中文維基文庫（CC BY-SA），轉載須標註來源。"
+description = "明宋應星所著綜合性技術著作，三卷十八章，自乃粒（農作）至珠玉，記載農業與手工業的原料、工藝與器械，附圖百餘幅，是中國技術史的經典。"
+min_chars = 150
+max_chars = 400000
+delay_s = 0.3

@@ -1,0 +1,30 @@
+{
+  "title": "天工開物",
+  "author": "宋應星",
+  "year": 1637,
+  "source": "wikisource",
+  "license": "PD-old-50 / page text CC BY-SA",
+  "pd_basis": "作者宋應星（1587–1666）逝世逾50年，作品屬公有領域；文字取自中文維基文庫（CC BY-SA），轉載須標註來源。",
+  "description": "明宋應星所著綜合性技術著作，三卷十八章，自乃粒（農作）至珠玉，記載農業與手工業的原料、工藝與器械，附圖百餘幅，是中國技術史的經典。",
+  "chapter_total": 18,
+  "chapters": {
+    "第001章 乃粒第一.txt": "48a564779142f5c769989c928bcf38ba22f5c38e949795664c70c1b7835973cb",
+    "第002章 乃服第二.txt": "b5e5cbae5c05e57a4b906f78fdfbb73159ec39ed0dd5dd41b61b6d27b5d20016",
+    "第003章 彰施第三.txt": "3dc6068cb0eccbc8e71f563dce2d7ea1028dcc1735f68b4dba604726f0af5063",
+    "第004章 粹精第四.txt": "c58f7d9a2137f1767595d904b30c6a242a4fef1c8e607165d34056da6e178c64",
+    "第005章 作咸第五.txt": "5d4804f76ae0d77f29ecb9975a001d7f4a58ea578c3a3b196b08f97603af4fa6",
+    "第006章 甘嗜第六.txt": "f4d24c30f75808695f1cab4cb7550585a3ae65a7ce05707657100d63217fc766",
+    "第007章 陶埏第七.txt": "e64755d06e3e1c94b2587714c4ac1b0b5157daaa8c71a8b643c5068ebbf3f1d7",
+    "第008章 冶鑄第八.txt": "e235fd2efbadf5073feb15904a8750d26a1803f678a979ee4830fd8191485f73",
+    "第009章 舟車第九.txt": "889d5fe42e3e7231c7cf1a7a80a1d99a19323394e6323316190c7aded043f004",
+    "第010章 錘鍛第十.txt": "dbb19ca4fa9231dc257e686554fc9f4ab82d07524d53eb256943d8260d9018ef",
+    "第011章 燔石第十一.txt": "b995731132e5562975b6595fc174192fe7f7f8fe0ce51f634368c9ab9178f8cc",
+    "第012章 膏液第十二.txt": "ab216cbad8e68a1e5ed9dd3130a5481c32f0eff41d5d1eb5c6c02bd14263d911",
+    "第013章 殺青第十三.txt": "a040781f0e47752463808813c5f2ed025f80441dc97e0500feacf482da0af3c6",
+    "第014章 五金第十四.txt": "dff3505b03beb93b2cadc248358c995c2c49aaf5718aa49e7042d074fce02ab7",
+    "第015章 佳兵第十五.txt": "14c77fcfc6eb347b97efb18d139f1c17825b5794e4ac8a54be1df4fa5b12646d",
+    "第016章 丹青第十六.txt": "24bedaa82ef3fa11eec6293fef3ad7c04dea8eaefcfc6fbfd88db0affeb770f1",
+    "第017章 曲蘖第十七.txt": "d8e84a3d798d8167c4744ef95e5b328d734b44e744f0d71adb277d16af5a4c23",
+    "第018章 珠玉第十八.txt": "633825db6cac75aa58bb2db39309d5afd657890bdc89d8d59baef8ecbe030fbc"
+  }
+}

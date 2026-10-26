@@ -1,0 +1,32 @@
+{
+  "title": "困學紀聞",
+  "author": "王應麟",
+  "year": 1280,
+  "source": "wikisource",
+  "license": "PD-old-50 / page text CC BY-SA",
+  "pd_basis": "作者王應麟（1223–1296）逝世逾50年，作品屬公有領域；文字取自中文維基文庫（CC BY-SA），轉載須標註來源。",
+  "description": "宋末王應麟的考據札記，二十卷，分說經、天道、歷數、地理、諸子、考史、評詩文、雜識八類，考證精嚴，為宋代筆記中考據最密者。",
+  "chapter_total": 20,
+  "chapters": {
+    "第001卷 卷01.txt": "d157a4be81480a3e231b6642fc5e9c128880aac16211931a8685f6c08319431c",
+    "第002卷 卷02.txt": "29ade0f21a5e023bb88082cb98d46d3119f887b73efadde1b4f2b75c4b9cca5b",
+    "第003卷 卷03.txt": "77bb40cda2164b0425a1c7a8d0774b16014ef33c5156fb2e9b8b2cacee009bb5",
+    "第004卷 卷04.txt": "79578aadbb3ac38a31e55efed59e9ff7ee581889a4b4396c11552eb4bf2342ba",
+    "第005卷 卷05.txt": "d6bf8624264c9045a5c5a93b969073f30118184ae5548a60c435b615a425142c",
+    "第006卷 卷06.txt": "6324276aa8ded0e16e60a9df58319740af148024aa344a09c5c2dd49d7c74654",
+    "第007卷 卷07.txt": "4d7eba13aa1e4a596557a3c8ab9a2061362230ec99f7dadf6c6cdb556a6de98f",
+    "第008卷 卷08.txt": "bc441d22d862a409180739a989052fd4639fe1924ed3faa417a1e7f5871076cd",
+    "第009卷 卷09.txt": "3eca2a66e07f8d81aaf6b8cd7cf04467df75dcb3a73c90719d3266871a8c0f15",
+    "第010卷 卷10.txt": "06aaeff2ea4b884d62e6e05d52cff492931b062531738ed2d48ec811f47de1c7",
+    "第011卷 卷11.txt": "66dfca786636e5c62e36221635328b79ee1431cd4687c58262b3a3b9670bd66c",
+    "第012卷 卷12.txt": "6f3f3bf6412452cae1ae6ec7e2b01b81131d82a8af10e12d4db08107e9828970",
+    "第013卷 卷13.txt": "c1dd77aaa54fd700497102ca8a083c053556268018e128cba93d87f8fa26db87",
+    "第014卷 卷14.txt": "921cb04e2a0b613e62076f119abadfaabb2410e57483286c10318957515bf7c1",
+    "第015卷 卷15.txt": "11f1a89ba214f36243d6fabc2cf4b9262bba463320840a51a9b7b2139f72b4e3",
+    "第016卷 卷16.txt": "c685a2d9e2013464ef01f50059c15a2ac6477e845d3dc3d655d25a46d1ae71a0",
+    "第017卷 卷17.txt": "e8565e9783483b7340582c5941e5eff791cccd9dc0e7eaf7e5f3f270d832102d",
+    "第018卷 卷18.txt": "2c4e3e2a6b08224295cf371329fcab5f4e2009a6b58b3e747197d8b28b7eebfc",
+    "第019卷 卷19.txt": "1d0b5829848d80421e08f1fd8f7f32f28798d8a24ab6a8c0412d89a6fb4d565a",
+    "第020卷 卷20.txt": "162f73ac6eaf4850cbf473da1f449d930745ec7b75484ffc0e934c3a70c83884"
+  }
+}
