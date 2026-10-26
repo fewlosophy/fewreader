@@ -58,10 +58,22 @@ WIKI_HEAD_RE = re.compile(r"(?m)^[ \t]*(={1,6})[ \t]*([^=\n]+?)[ \t]*\1[ \t]*$")
 STRAY_EQ_RE = re.compile(r"(?m)^[ \t]*={1,6}[ \t]*$")
 REF_RE = re.compile(r"<ref[^>]*/>|<ref[^>]*>.*?</ref>", re.I | re.S)
 YL_RE = re.compile(r"\{\{\s*YL\s*\|\s*([^|}]*)[^}]*\}\}")   # {{YL|癸丑|1613年}} -> 癸丑
+# {{專|黃帝}} / {{書|札記}} / {{標|幼而徇齊}} annotate a name or a reading; the
+# display text is the first positional arg, so dropping the template would delete
+# the word itself. Everything else ({{注意}}, {{wikipedia}}, {{Textquality}},
+# {{樣式:舊體詩}}, …) is page furniture and is dropped.
+DISPLAY_TEMPLATES = {"專", "書", "標", "另", "另2", "僻字", "YL", "註", "人名"}
+INNER_TEMPLATE_RE = re.compile(r"\{\{([^{}]*)\}\}")
+POEM_RE = re.compile(r"<poem[^>]*>(.*?)</poem>", re.I | re.S)
+# Language-variant markup: -{zh:鍾;zh-hans:钟;zh-hant:鍾;}- -> 鍾
+VARIANT_MARK_RE = re.compile(r"-\{(.*?)\}-", re.S)
 HEADING_OUT_RE = re.compile(r"^【.*】$")
 ANY_TAG_RE = re.compile(r"</?[a-zA-Z][^>]*>")
 INCLUDE_TAG_RE = re.compile(r"</?(?:onlyinclude|noinclude|includeonly)\s*>", re.I)
 RESIDUAL_RE = re.compile(r"\{\{|\}\}|\[\[|\]\]|__\w+__|<br\s*/?>|&lt;", re.I)
+# [[Category:X]] / [[File:X]] / [[:Category:X]] are page furniture, not prose.
+META_LINK_RE = re.compile(r"\[\[\s*:?\s*(?:Category|File|Image)\s*:[^\]]*\]\]", re.I)
+META_CAT_RE = re.compile(r"\[\[\s*Category\s*:[^\]]*\]\]", re.I)
 
 
 # --------------------------------------------------------------------------- #
@@ -154,25 +166,145 @@ def wikisource_title(raw: str, profile: str) -> str:
     raise SystemExit(f"unknown wikisource profile '{profile}'")
 
 
+def _split_args(inner: str) -> list[str]:
+    """Split template args on '|' but not inside [[a|b]] (the pipe is a link label)."""
+    parts, buf, depth = [], [], 0
+    i = 0
+    while i < len(inner):
+        two = inner[i:i + 2]
+        if two == "[[":
+            depth += 1
+            buf.append(two)
+            i += 2
+            continue
+        if two == "]]" and depth:
+            depth -= 1
+            buf.append(two)
+            i += 2
+            continue
+        ch = inner[i]
+        if ch == "|" and depth == 0:
+            parts.append("".join(buf))
+            buf = []
+        else:
+            buf.append(ch)
+        i += 1
+    parts.append("".join(buf))
+    return parts
+
+
+def _expand_templates(body: str) -> str:
+    """Expand innermost templates, keeping display text for annotation templates.
+
+    Runs bottom-up so nested markup ({{標|{{專|幼而徇齊}}}}) resolves; 12 passes is
+    ample for Wikisource nesting depth.
+    """
+    def one(m: re.Match) -> str:
+        parts = _split_args(m.group(1))
+        name = parts[0].strip()
+        if name in DISPLAY_TEMPLATES:
+            for arg in parts[1:]:
+                if "=" not in arg and arg.strip():
+                    return arg.strip()
+            return ""
+        # Wrapper templates ({{center block|<poem>…}}, {{center|…}}) hold real
+        # body text; meta boxes ({{wikipedia|X}}, {{Textquality|100%}},
+        # {{注意|text=…}}) are short or use named args. Keep the former.
+        if len(parts) > 1 and "=" not in parts[1] and len(parts[1].strip()) > 30:
+            return parts[1]
+        return ""
+
+    for _ in range(12):
+        new = INNER_TEMPLATE_RE.sub(one, body)
+        if new == body:
+            break
+        body = new
+    return body
+
+
+def _variant_marks(body: str) -> str:
+    """Resolve -{zh:鍾;zh-hans:钟;zh-hant:鍾;}- to the traditional form."""
+    def one(m: re.Match) -> str:
+        inner = m.group(1)
+        if ";" not in inner:
+            return inner
+        pairs = {}
+        for part in inner.split(";"):
+            if ":" in part:
+                k, _, v = part.partition(":")
+                pairs[k.strip().lstrip("-")] = v.strip()
+        for key in ("zh-hant", "zh-tw", "zh", "zh-hans"):
+            if pairs.get(key):
+                return pairs[key]
+        return inner
+    return VARIANT_MARK_RE.sub(one, body)
+
+
+def _flatten_tables(body: str) -> str:
+    """Turn wikitext tables into one cell per line (as verse, so breaks survive).
+
+    The 史記 年表 volumes are literally tables; without this the reader gets a wall
+    of '|' cell separators. Cell attribute prefixes (align=… |) are stripped.
+    """
+    out: list[str] = []
+    in_table = False
+    for ln in body.splitlines():
+        s = ln.strip()
+        if s.startswith("{|"):
+            in_table = True
+            continue
+        if s.startswith("|}"):
+            in_table = False
+            out.append("")
+            continue
+        if not in_table:
+            out.append(ln)
+            continue
+        if s.startswith("|-") or not s:
+            continue
+        if s.startswith(("|", "!")):
+            cell = s.lstrip("|!").strip()
+            if "|" in cell:
+                head, _, rest = cell.partition("|")
+                cell = rest.strip() if "=" in head else cell.replace("|", "　")
+            if cell:
+                out.append(":" + cell)
+            continue
+        out.append(":" + s)
+    return "\n".join(out)
+
+
 def wikitext_body(raw: str) -> str:
     """Strip the header/templates, format paragraphs; ':' verse runs keep breaks."""
     hb = header_block(raw)
     body = raw.replace(hb, "", 1) if hb else raw
     body = INCLUDE_TAG_RE.sub("", body)
     body = REF_RE.sub("", body)
-    body = YL_RE.sub(r"\1", body)
-    body = VARIANT2_RE.sub(r"\1", body)
-    body = PIANZI_RE.sub(r"\1", body)
-    body = VARIANT_RE.sub(r"\1", body)
-    body = re.sub(r"__\w+__", "", body)
+    body = META_LINK_RE.sub("", body)
+    body = _variant_marks(body)
+    body = _expand_templates(body)
     body = TEMPLATE_RE.sub("", body)
+    # Stray braces survive on pages whose source is unbalanced (史記/卷027 has an
+    # orphan '}}' mid-text). Expansion has already run, so any leftover here is
+    # source damage, not an unhandled template — drop it.
+    body = body.replace("{{", "").replace("}}", "")
+    body = re.sub(r"__\w+__", "", body)
     body = LINK_RE.sub(r"\1", body)
     body = body.replace("'''", "").replace("''", "")
+    # <poem> keeps one line per verse line; prefix ':' so the block loop below
+    # treats it as verse instead of joining it into a single run-on line.
+    body = POEM_RE.sub(
+        lambda m: "\n\n" + "\n".join(
+            ":" + ln for ln in m.group(1).strip().splitlines() if ln.strip()
+        ) + "\n\n",
+        body,
+    )
     # Section titles: <center>=故事一=</center> and ==卷一== -> 【…】
     body = CENTER_HEAD_RE.sub(lambda m: f"\n\n【{m.group(1).strip()}】\n\n", body)
     body = WIKI_HEAD_RE.sub(lambda m: f"\n\n【{m.group(2).strip()}】\n\n", body)
     body = STRAY_EQ_RE.sub("", body)
     body = ANY_TAG_RE.sub("", body)
+    body = _flatten_tables(body)
     body = html.unescape(body)
     body = re.sub(r"(?m)^\s*<[^>]+>\s*$", "", body)
 
@@ -229,6 +361,70 @@ def fetch_gutenberg(book: dict, limit: int = 0) -> list[tuple[int, str, str]]:
     return out[:limit] if limit else out
 
 
+_PREFETCH: dict[str, str] = {}
+API_BATCH = 50  # MediaWiki caps titles= at 50 per query
+
+
+def _norm(title: str) -> str:
+    return title.replace("_", " ").strip()
+
+
+def prefetch_titles(titles: list[str], delay: float = 0.2) -> None:
+    """Bulk-fetch raw wikitext, 50 titles per request.
+
+    One action=raw per page costs a full round trip (~0.7 s); the query API
+    returns 50 revisions per request (~0.05 s/page), which is the difference
+    between minutes and seconds for a 300-poem anthology.
+    """
+    todo: list[str] = []
+    seen = set()
+    for t in titles:
+        k = _norm(t)
+        if k not in _PREFETCH and k not in seen:
+            seen.add(k)
+            todo.append(t)
+    for i in range(0, len(todo), API_BATCH):
+        chunk = todo[i:i + API_BATCH]
+        q = {
+            "action": "query", "prop": "revisions", "rvprop": "content",
+            "rvslots": "main", "format": "json", "formatversion": "2",
+            "titles": "|".join(chunk),
+        }
+        url = f"https://zh.wikisource.org/w/api.php?" + urllib.parse.urlencode(q)
+        try:
+            data = json.loads(urllib.request.urlopen(
+                urllib.request.Request(url, headers=UA), timeout=90).read().decode())
+        except Exception as e:  # noqa: BLE001
+            print(f"   prefetch batch failed ({e}); falling back to per-page")
+            continue
+        for page in data.get("query", {}).get("pages", []):
+            revs = page.get("revisions")
+            if revs:
+                _PREFETCH[_norm(page["title"])] = revs[0]["slots"]["main"]["content"]
+        time.sleep(delay)
+
+
+def fetch_wikitext(title: str, hops: int = 3) -> str:
+    """Fetch raw wikitext, following #REDIRECT stubs."""
+    raw = _PREFETCH.get(_norm(title))
+    if raw is None:
+        raw = _PREFETCH.get(_norm(title).replace(" ", "_"))
+    if raw is None:
+        url = f"{WIKISOURCE_API}?" + urllib.parse.urlencode({"action": "raw", "title": title})
+        raw = http_text(url)
+    for _ in range(hops):
+        m = re.match(r"\s*#REDIRECT\s*\[\[\s*([^\]|#]+)", raw, re.I)
+        if not m:
+            break
+        target = m.group(1).strip()
+        print(f"   redirect: {title} -> {target}")
+        title = target
+        raw = _PREFETCH.get(_norm(title))
+        if raw is None:
+            url = f"{WIKISOURCE_API}?" + urllib.parse.urlencode({"action": "raw", "title": title})
+            raw = http_text(url)
+    return raw
+
 def _extra_pages(book: dict, key: str) -> list[tuple[int, str, str]]:
     """Front/back matter: pages that are not part of the numbered sequence.
 
@@ -238,9 +434,7 @@ def _extra_pages(book: dict, key: str) -> list[tuple[int, str, str]]:
     for spec in book.get(key) or []:
         page = spec["page"] if isinstance(spec, dict) else spec
         heading = (spec.get("heading") if isinstance(spec, dict) else None) or page
-        title = f"{book['source_id']}/{page}"
-        url = f"{WIKISOURCE_API}?" + urllib.parse.urlencode({"action": "raw", "title": title})
-        raw = http_text(url)
+        raw = fetch_wikitext(f"{book['source_id']}/{page}")
         profile = book.get("profile", "wikisource-novel")
         derived = wikisource_title(raw, profile) or heading
         body = wikitext_body(raw)
@@ -255,26 +449,112 @@ def _extra_pages(book: dict, key: str) -> list[tuple[int, str, str]]:
     return out
 
 
+def header_field(raw: str, key: str) -> str:
+    hb = header_block(raw)
+    if not hb:
+        return ""
+    m = re.search(rf"\|\s*{key}\s*=\s*(.*?)(?=\n\s*\||\Z)", hb, re.S)
+    return _clean_title(m.group(1)) if m else ""
+
+
+def _fetch_poem_index(book: dict, limit: int = 0) -> list[tuple[int, str, str]]:
+    """Anthologies whose source page is a TOC of links grouped by == 體裁 ==.
+
+    唐詩三百首 is exactly this: the main page holds only the 蘅塘退士原序 prose
+    plus 8 sections of poem links. One section becomes one chapter.
+    """
+    idx = http_text(
+        f"{WIKISOURCE_API}?"
+        + urllib.parse.urlencode({"action": "raw", "title": book["source_id"]})
+    )
+    sections: list[dict] = []
+    cur: dict | None = None
+    for line in idx.splitlines():
+        stripped = line.strip()
+        m = re.match(r"^==\s*([^=]+?)\s*==\s*$", stripped)
+        if m:
+            cur = {"name": m.group(1).strip(), "items": [], "text": []}
+            sections.append(cur)
+            continue
+        if cur is None:
+            continue
+        lm = re.match(r"^#\s*([^\[]*)\[\[([^|\]]+)(?:\|([^\]]*))?\]\](.*)$", stripped)
+        if lm:
+            sub = re.search(r"<sub>(.*?)</sub>", lm.group(4) or "")
+            cur["items"].append((
+                lm.group(2).strip(),
+                (lm.group(3) or lm.group(2)).strip(),
+                lm.group(1).strip(),
+                sub.group(1).strip() if sub else "",
+            ))
+        elif stripped:
+            cur["text"].append(stripped)
+
+    if not sections:
+        raise SystemExit(f"{book['slug']}: no == sections == found on {book['source_id']}")
+    if limit:
+        sections = sections[:limit]
+
+    prefetch_titles(
+        [item[0] for sec in sections for item in sec["items"]],
+        float(book.get("delay_s", 0.2)),
+    )
+    out: list[tuple[int, str, str]] = []
+    for n, sec in enumerate(sections, 1):
+        if not sec["items"]:
+            prose = wikitext_body("\n".join(sec["text"]))
+            if len(prose) < int(book.get("min_chars", 150)):
+                continue
+            out.append((n, sec["name"], prose))
+            continue
+        chunks: list[str] = []
+        for target, disp, author, sub in sec["items"]:
+            raw = fetch_wikitext(target)
+            poem = wikitext_body(raw)
+            if len(poem.strip()) < 8:
+                print(f"   ! empty poem, skipped: {target}")
+                continue
+            who = header_field(raw, "author") or author
+            heading = disp + (f"（{sub}）" if sub else "")
+            chunks.append(f"【{heading}】" + (f"　{who}" if who else "") + "\n\n" + poem.strip())
+            time.sleep(float(book.get("delay_s", 0.2)))
+        body = "\n\n".join(chunks) + "\n"
+        if len(body) < int(book.get("min_chars", 150)):
+            raise SystemExit(f"{book['slug']}: section '{sec['name']}' too short ({len(body)})")
+        out.append((n, sec["name"], body))
+    return out
+
+
 def _fetch_page_list(book: dict, limit: int = 0) -> list[tuple[int, str, str]]:
     """Explicit ordered page list for books with no numeric 回/卷 sequence."""
     entries = list(book["pages"])
     if limit:
         entries = entries[:limit]
-    out: list[tuple[int, str, str]] = []
+    want: list[str] = [
+        f"{book['source_id']}/{(e['page'] if isinstance(e, dict) else e)}" for e in entries
+    ]
+    for key in ("front_pages", "back_pages"):
+        want += [
+            f"{book['source_id']}/{(e['page'] if isinstance(e, dict) else e)}"
+            for e in (book.get(key) or [])
+        ]
+    prefetch_titles(want, float(book.get("delay_s", 0.2)))
+    out: list[tuple[int, str, str]] = _extra_pages(book, "front_pages")
     for i, spec in enumerate(entries, 1):
         page = spec["page"] if isinstance(spec, dict) else spec
         heading = (spec.get("heading") if isinstance(spec, dict) else None) or page
-        title = f"{book['source_id']}/{page}"
-        url = f"{WIKISOURCE_API}?" + urllib.parse.urlencode({"action": "raw", "title": title})
-        body = wikitext_body(http_text(url))
+        body = wikitext_body(fetch_wikitext(f"{book['source_id']}/{page}"))
         if len(body) < int(book.get("min_chars", 500)):
             raise SystemExit(f"{book['slug']}: page '{page}' unusable (chars={len(body)})")
         out.append((i, heading, body))
         time.sleep(float(book.get("delay_s", 0.4)))
+    out.extend(_extra_pages(book, "back_pages"))
     return out
 
 
 def fetch_wikisource(book: dict, limit: int = 0) -> list[tuple[int, str, str]]:
+    if book.get("poem_index"):
+        return _fetch_poem_index(book, limit)
     if book.get("pages"):
         return _fetch_page_list(book, limit)
     total = int(book["chapter_total"])
@@ -282,12 +562,14 @@ def fetch_wikisource(book: dict, limit: int = 0) -> list[tuple[int, str, str]]:
         total = min(total, limit)
     profile = book.get("profile", "wikisource-novel")
     pattern = book.get("page_pattern") or "第{n:03d}回"
+    prefetch_titles(
+        [f"{book['source_id']}/{pattern.format(n=n)}" for n in range(1, total + 1)],
+        float(book.get("delay_s", 0.2)),
+    )
     out: list[tuple[int, str, str]] = []
     out.extend(_extra_pages(book, "front_pages"))
     for n in range(1, total + 1):
-        title = f"{book['source_id']}/{pattern.format(n=n)}"
-        url = f"{WIKISOURCE_API}?" + urllib.parse.urlencode({"action": "raw", "title": title})
-        raw = http_text(url)
+        raw = fetch_wikitext(f"{book['source_id']}/{pattern.format(n=n)}")
         heading = wikisource_title(raw, profile)
         body = wikitext_body(raw)
         if not heading or len(body) < int(book.get("min_chars", 500)):

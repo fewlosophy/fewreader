@@ -167,3 +167,146 @@ description = "明代徐弘祖（號霞客）歷三十年遊歷所記，按日�
 min_chars = 150
 max_chars = 400000
 delay_s = 0.3
+
+[[book]]
+slug = "lunyu"
+title = "論語"
+category = "philosophy"
+book_file = "論語"
+lang = "zh"
+source = "wikisource"
+source_id = "論語"
+chapter_total = 20
+unit = "篇"
+profile = "wikisource-header"
+index_note = "二十篇 · 附序說"
+front_pages = [{ page = "序說", heading = "序說" }]
+pages = [
+  { page = "學而第一", heading = "學而第一" },
+  { page = "爲政第二", heading = "爲政第二" },
+  { page = "八佾第三", heading = "八佾第三" },
+  { page = "里仁第四", heading = "里仁第四" },
+  { page = "公冶長第五", heading = "公冶長第五" },
+  { page = "雍也第六", heading = "雍也第六" },
+  { page = "述而第七", heading = "述而第七" },
+  { page = "泰伯第八", heading = "泰伯第八" },
+  { page = "子罕第九", heading = "子罕第九" },
+  { page = "鄉黨第十", heading = "鄉黨第十" },
+  { page = "先進第十一", heading = "先進第十一" },
+  { page = "顏淵第十二", heading = "顏淵第十二" },
+  { page = "子路第十三", heading = "子路第十三" },
+  { page = "憲問第十四", heading = "憲問第十四" },
+  { page = "衞靈公第十五", heading = "衞靈公第十五" },
+  { page = "季氏第十六", heading = "季氏第十六" },
+  { page = "陽貨第十七", heading = "陽貨第十七" },
+  { page = "微子第十八", heading = "微子第十八" },
+  { page = "子張第十九", heading = "子張第十九" },
+  { page = "堯曰第二十", heading = "堯曰第二十" },
+]
+author = "孔子弟子及再傳弟子"
+year = -400
+license = "PD-old-50 / page text CC BY-SA"
+pd_basis = "成書於戰國前期，作者為孔子弟子及再傳弟子，距今逾兩千年，屬公有領域；文字取自中文維基文庫（CC BY-SA），轉載須標註來源。"
+description = "孔子及其弟子言行輯錄，二十篇，儒家最基本的經典。"
+min_chars = 150
+max_chars = 200000
+delay_s = 0.3
+
+[[book]]
+slug = "zhuangzi"
+title = "莊子"
+category = "philosophy"
+book_file = "莊子"
+lang = "zh"
+source = "wikisource"
+source_id = "莊子"
+chapter_total = 33
+unit = "篇"
+profile = "wikisource-header"
+index_note = "內篇七、外篇十五、雜篇十一"
+pages = [
+  { page = "逍遙遊", heading = "逍遙遊" },
+  { page = "齊物論", heading = "齊物論" },
+  { page = "養生主", heading = "養生主" },
+  { page = "人間世", heading = "人間世" },
+  { page = "德充符", heading = "德充符" },
+  { page = "大宗師", heading = "大宗師" },
+  { page = "應帝王", heading = "應帝王" },
+  { page = "駢拇", heading = "駢拇" },
+  { page = "馬蹄", heading = "馬蹄" },
+  { page = "胠篋", heading = "胠篋" },
+  { page = "在宥", heading = "在宥" },
+  { page = "天地", heading = "天地" },
+  { page = "天道", heading = "天道" },
+  { page = "天運", heading = "天運" },
+  { page = "刻意", heading = "刻意" },
+  { page = "繕性", heading = "繕性" },
+  { page = "秋水", heading = "秋水" },
+  { page = "至樂", heading = "至樂" },
+  { page = "達生", heading = "達生" },
+  { page = "山木", heading = "山木" },
+  { page = "田子方", heading = "田子方" },
+  { page = "知北遊", heading = "知北遊" },
+  { page = "庚桑楚", heading = "庚桑楚" },
+  { page = "徐無鬼", heading = "徐無鬼" },
+  { page = "則陽", heading = "則陽" },
+  { page = "外物", heading = "外物" },
+  { page = "寓言", heading = "寓言" },
+  { page = "讓王", heading = "讓王" },
+  { page = "盜跖", heading = "盜跖" },
+  { page = "說劍", heading = "說劍" },
+  { page = "漁父", heading = "漁父" },
+  { page = "列禦寇", heading = "列禦寇" },
+  { page = "天下", heading = "天下" },
+]
+author = "莊周"
+year = -300
+license = "PD-old-50 / page text CC BY-SA"
+pd_basis = "莊周（約前369–前286）逝世逾50年，作品屬公有領域；文字取自中文維基文庫（CC BY-SA），轉載須標註來源。"
+description = "戰國莊周及其後學所作，三十三篇，道家最重要的經典，亦為中國散文的頂峰。"
+min_chars = 150
+max_chars = 200000
+delay_s = 0.3
+
+[[book]]
+slug = "shiji"
+title = "史記"
+category = "history"
+book_file = "史記"
+lang = "zh"
+source = "wikisource"
+source_id = "史記"
+chapter_total = 130
+unit = "卷"
+page_pattern = "卷{n:03d}"
+profile = "wikisource-header"
+index_note = "本紀十二、表十、書八、世家三十、列傳七十"
+author = "司馬遷"
+year = -90
+license = "PD-old-50 / page text CC BY-SA"
+pd_basis = "司馬遷（約前145–前86）逝世逾50年，作品屬公有領域；文字取自中文維基文庫（CC BY-SA），轉載須標註來源。"
+description = "中國第一部紀傳體通史，一百三十卷，自黃帝至漢武帝，本紀、表、書、世家、列傳五體兼備。"
+min_chars = 150
+max_chars = 400000
+delay_s = 0.3
+
+[[book]]
+slug = "tangshi-sanbaishou"
+title = "唐詩三百首"
+category = "poetry"
+book_file = "唐詩三百首"
+lang = "zh"
+source = "wikisource"
+source_id = "唐詩三百首"
+chapter_total = 8
+unit = "卷"
+poem_index = true
+index_note = "八卷 · 三百餘首"
+author = "孫洙（蘅塘退士）編"
+year = 1763
+license = "PD-old-50 / page text CC BY-SA"
+pd_basis = "編者孫洙（1711–1778）逝世逾50年，所選唐詩亦均屬公有領域；文字取自中文維基文庫（CC BY-SA），轉載須標註來源。"
+description = "清蘅塘退士所編唐詩選本，按五言古詩、七言古詩、樂府、五言律詩、七言律詩、五言絕句、七言絕句分卷，共三百餘首。"
+min_chars = 150
+max_chars = 400000
+delay_s = 0.2

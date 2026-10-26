@@ -1,0 +1,20 @@
+{
+  "title": "唐詩三百首",
+  "author": "孫洙（蘅塘退士）編",
+  "year": 1763,
+  "source": "wikisource",
+  "license": "PD-old-50 / page text CC BY-SA",
+  "pd_basis": "編者孫洙（1711–1778）逝世逾50年，所選唐詩亦均屬公有領域；文字取自中文維基文庫（CC BY-SA），轉載須標註來源。",
+  "description": "清蘅塘退士所編唐詩選本，按五言古詩、七言古詩、樂府、五言律詩、七言律詩、五言絕句、七言絕句分卷，共三百餘首。",
+  "chapter_total": 8,
+  "chapters": {
+    "第001卷 蘅塘退士原序.txt": "a81eca17aaf5e82d139591fd446a9118c81c262e1c44b57e633dca54c23cb7ab",
+    "第002卷 五言古詩.txt": "3f95021fb6c5ae548ffd84e2c9f273aa20f49b2c63f236f7d7f9a522afb6c063",
+    "第003卷 七言古詩.txt": "2badc578ebda1ce389328714008107f328eefac64f5f9482258b73612f201f9b",
+    "第004卷 樂府.txt": "5f591c32c92ad04f2aed5c9ac9eb59d03e00ca665fb5ceee971398be3ca31e58",
+    "第005卷 五言律詩.txt": "c8a0149a5fcdd97870789e72edafb00dfb346392628578aafc0ac5a3d5ac12c8",
+    "第006卷 七言律詩.txt": "348da47a04c095d1aa2982a8ebc69e936a50ab643045522822a3967e37aa9c9e",
+    "第007卷 五言絕句.txt": "c2c110454879c5007b8a569b42804f52a998ae846ef82cebf85b6126f20f7846",
+    "第008卷 七言絕句.txt": "1c7f028eec079b0fa14c92ca5cd71b0550abadd7590b5745f18e7deaea86ea64"
+  }
+}

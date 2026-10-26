@@ -1,0 +1,33 @@
+{
+  "title": "論語",
+  "author": "孔子弟子及再傳弟子",
+  "year": -400,
+  "source": "wikisource",
+  "license": "PD-old-50 / page text CC BY-SA",
+  "pd_basis": "成書於戰國前期，作者為孔子弟子及再傳弟子，距今逾兩千年，屬公有領域；文字取自中文維基文庫（CC BY-SA），轉載須標註來源。",
+  "description": "孔子及其弟子言行輯錄，二十篇，儒家最基本的經典。",
+  "chapter_total": 21,
+  "chapters": {
+    "序說.txt": "c6c15686899a38f17a3375aed81250a01be05ba162b08ddf0fec18acf43a8a44",
+    "第001篇 學而第一.txt": "bead4391f50a416ae92eae2fb771bbcb07a202bad7e2a12251615693961c33ed",
+    "第002篇 爲政第二.txt": "687e98728097ffaeeaae5b10f84a8ecbf55e1744823b94720b2d9f8f41ed7a90",
+    "第003篇 八佾第三.txt": "855e2793b5fe721986bc14b66f720901730e7fa655fc539fd9badf7fd8508077",
+    "第004篇 里仁第四.txt": "addebc23e6e69b32e7cb6bef8133f43ea4d4c59340cfe86f3d3d1c0f324016f5",
+    "第005篇 公冶長第五.txt": "6d22c7fb912e62e538da1beaabb05c419d934d9455a9cdafbc1758546ec8b6e1",
+    "第006篇 雍也第六.txt": "de01cdd2058208afcf62381f771941682ed3e5650aeded69cf3e0c3f9176857f",
+    "第007篇 述而第七.txt": "41c3e6242747ed8e3a4c174a93c6dfa43cc9f4bce6ee80a6239820a2b0fa7856",
+    "第008篇 泰伯第八.txt": "0bcf8884695a126be02991d431641b92fbb7ab340a2a549c2248a62d58a6e466",
+    "第009篇 子罕第九.txt": "26d0603ca482d594691ea12942da23dae1f056bce111e2a76e8a3a74b8e8d510",
+    "第010篇 鄉黨第十.txt": "011cf8cf42aa002b7533e089582de4cf1c70fc7abf317317d53c7b5413e30263",
+    "第011篇 先進第十一.txt": "282a38134531897c812bb21e22aa79dfda99ad581d3875ba871cf5167880466b",
+    "第012篇 顏淵第十二.txt": "02f5d05ef57a61ffb67d40803e772ecf9f1a655f7ac52ca1f02f8b90a4ca66f0",
+    "第013篇 子路第十三.txt": "7dc0c9cff79ed694f8a3a4b97eb32f4659acd8b7737adc91345e41f628245464",
+    "第014篇 憲問第十四.txt": "ba75a128a1fb4d0baa91129a3b6ac2327813665d526b763c9e4016c944923e18",
+    "第015篇 衞靈公第十五.txt": "ee174eb493602cbb29b52871aa65ac6bfab8da1e6c85df10aa48837ea9ac61e7",
+    "第016篇 季氏第十六.txt": "c38847822e93a75251671f8b79b87a0988c340a2b1fb8cd4f73a52d0a989e104",
+    "第017篇 陽貨第十七.txt": "4be1a59bae69b55f7c3919baa52e3479dd3535a775d716f5f34d1fd82d006e2f",
+    "第018篇 微子第十八.txt": "dcccf5e5254ec883aa9feb13b0f958871429654eb00fc0eeffb41c4dcfed44ae",
+    "第019篇 子張第十九.txt": "455fd97f2f542ad04ae4eccd62c2450726d67fc4a10884064abc5ff57a8ef278",
+    "第020篇 堯曰第二十.txt": "2d5dd941d0e1745145dac5de8f123c901b7d5659de0969f5053f98fdc0ee32cd"
+  }
+}
