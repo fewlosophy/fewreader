@@ -624,3 +624,41 @@ description = "明宋應星所著綜合性技術著作，三卷十八章，自�
 min_chars = 150
 max_chars = 400000
 delay_s = 0.3
+
+[[book]]
+slug = "middlemarch"
+title = "Middlemarch"
+category = "fiction"
+book_file = "Middlemarch"
+lang = "en"
+source = "gutenberg"
+source_url = "https://www.gutenberg.org/cache/epub/145/pg145.txt"
+chapter_re = "^CHAPTER\\s+[IVXLC]+\\.\\s*$"
+chapter_total = 86
+author = "George Eliot"
+year = 1872
+index_note = "86 chapters"
+license = "Public domain (US) / Project Gutenberg transcriber terms"
+pd_basis = "Eliot (d. 1880) and this 1871-72 text are public domain; the Gutenberg transcription is redistributed without its header per the Gutenberg trademark terms."
+description = "A study of provincial life: eight books and 86 chapters set in a Midlands town, the English novel usually named its greatest."
+min_chars = 1000
+max_chars = 400000
+
+[[book]]
+slug = "moby-dick"
+title = "Moby-Dick"
+category = "fiction"
+book_file = "Moby-Dick"
+lang = "en"
+source = "gutenberg"
+source_url = "https://www.gutenberg.org/cache/epub/2701/pg2701.txt"
+chapter_re = "^CHAPTER\\s+\\d+\\.\\s*.*$"
+chapter_total = 135
+author = "Herman Melville"
+year = 1851
+index_note = "135 chapters"
+license = "Public domain (US) / Project Gutenberg transcriber terms"
+pd_basis = "Melville (d. 1891) and the 1851 text are public domain; the Gutenberg transcription is redistributed without its header per the Gutenberg trademark terms."
+description = "The whale, the sea, and cetology: Melville's encyclopedic novel, in 135 chapters plus Etymology and Extracts."
+min_chars = 150
+max_chars = 400000

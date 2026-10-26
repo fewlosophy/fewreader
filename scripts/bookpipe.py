@@ -364,7 +364,18 @@ def fetch_gutenberg(book: dict, limit: int = 0) -> list[tuple[int, str, str]]:
     _preamble, chapters = clean.clean_to_chapters(body, boundary)
     if not chapters:
         raise SystemExit(f"{book['slug']}: no chapters matched chapter_re")
-    out = [(i, heading, text) for i, (heading, text) in enumerate(chapters, 1)]
+    # Gutenberg files repeat every chapter heading in a CONTENTS block, so each
+    # heading matches twice: once in the TOC (empty body) and once as the real
+    # chapter. Keep the last occurrence of each heading.
+    first_seen: dict[str, int] = {}
+    for i, (h, _b) in enumerate(chapters):
+        first_seen.setdefault(h, i)
+    if len(first_seen) < len(chapters):
+        last: dict[str, int] = {}
+        for i, (h, _b) in enumerate(chapters):
+            last[h] = i
+        chapters = [chapters[i] for i in sorted(last.values())]
+    out = [(i, heading.strip().rstrip("."), text) for i, (heading, text) in enumerate(chapters, 1)]
     return out[:limit] if limit else out
 
 
