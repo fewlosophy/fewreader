@@ -525,6 +525,79 @@ def _fetch_poem_index(book: dict, limit: int = 0) -> list[tuple[int, str, str]]:
     return out
 
 
+HEAD_LINE_RE = re.compile(r"^==\s*(.+?)\s*==\s*$")
+AUTHOR_IN_HEAD_RE = re.compile(r"[（(]\s*\[\[\s*(?:Author|作者)\s*:\s*([^|\]]+)(?:\|([^\]]*))?\]\]\s*[)）]")
+TRANSCLUDE_RE = re.compile(r"^\{\{:\s*([^}|]+?)\s*\}\}\s*$", re.M)
+SINGLE_QUOTE3 = "'" * 3
+
+
+def _fetch_split_poems(book: dict, limit: int = 0) -> list[tuple[int, str, str]]:
+    """One page holding a whole anthology, each poem under =='''詞牌'''（作者）==.
+
+    宋詞三百首 is this shape (no subpages, no link TOC). Poems are grouped by
+    poet into one chapter each, preserving the anthology's own order: ~300
+    individual chapters would collide (晏殊 has three 木蘭花).
+    """
+    raw = fetch_wikitext(book["source_id"])
+    entries: list[dict] = []
+    cur: dict | None = None
+    for ln in raw.splitlines():
+        m = HEAD_LINE_RE.match(ln.strip())
+        if m:
+            head = m.group(1)
+            am = AUTHOR_IN_HEAD_RE.search(head)
+            author = (am.group(2) or am.group(1)).strip() if am else ""
+            title = (head[: am.start()] if am else head).replace(SINGLE_QUOTE3, "").strip()
+            title = LINK_RE.sub(r"\1", title).strip()
+            if not title:
+                cur = None
+                continue
+            cur = {"title": title, "author": author, "lines": []}
+            entries.append(cur)
+            continue
+        if cur is not None:
+            cur["lines"].append(ln)
+
+    # {{:頁名}} transcludes the poem from its own page (青玉案 辛棄疾)
+    for e in entries:
+        blob = "\n".join(e["lines"])
+        tm = TRANSCLUDE_RE.search(blob)
+        if tm and len(re.sub(r"\s", "", blob)) < 60:
+            fetched = fetch_wikitext(tm.group(1).strip())
+            e["lines"] = fetched.splitlines()
+            # Heading was ==[[青玉案 (辛棄疾)]]==: no （作者） to parse, so take the
+            # author from the transcluded page and trim the parenthetical title.
+            if not e["author"]:
+                e["author"] = header_field(fetched, "author")
+            pm = re.search(r"[（(]([^)）]+)[)）]\s*$", e["title"])
+            if pm:
+                if not e["author"]:
+                    e["author"] = pm.group(1).strip()
+                e["title"] = e["title"][: pm.start()].strip() or e["title"]
+        e["body"] = wikitext_body("\n".join(e["lines"]))
+
+    groups: list[tuple[str, list[dict]]] = []
+    for e in entries:
+        if not e["body"].strip():
+            print(f"   ! empty poem: {e['title']} ({e['author']})")
+            continue
+        if groups and groups[-1][0] == e["author"]:
+            groups[-1][1].append(e)
+        else:
+            groups.append((e["author"], [e]))
+    if not groups:
+        raise SystemExit(f"{book['slug']}: no poems parsed from {book['source_id']}")
+    if limit:
+        groups = groups[:limit]
+
+    out: list[tuple[int, str, str]] = []
+    for n, (author, items) in enumerate(groups, 1):
+        chunks = [f"【{e['title']}】\n\n{e['body'].strip()}" for e in items]
+        body = "\n\n".join(chunks) + "\n"
+        out.append((n, author or "無名氏", body))
+    return out
+
+
 def _fetch_page_list(book: dict, limit: int = 0) -> list[tuple[int, str, str]]:
     """Explicit ordered page list for books with no numeric 回/卷 sequence."""
     entries = list(book["pages"])
@@ -555,6 +628,8 @@ def _fetch_page_list(book: dict, limit: int = 0) -> list[tuple[int, str, str]]:
 def fetch_wikisource(book: dict, limit: int = 0) -> list[tuple[int, str, str]]:
     if book.get("poem_index"):
         return _fetch_poem_index(book, limit)
+    if book.get("split_poems"):
+        return _fetch_split_poems(book, limit)
     if book.get("pages"):
         return _fetch_page_list(book, limit)
     total = int(book["chapter_total"])

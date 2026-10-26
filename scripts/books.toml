@@ -310,3 +310,24 @@ description = "清蘅塘退士所編唐詩選本，按五言古詩、七言古�
 min_chars = 150
 max_chars = 400000
 delay_s = 0.2
+
+[[book]]
+slug = "songci-sanbaishou"
+title = "宋詞三百首"
+category = "poetry"
+book_file = "宋詞三百首"
+lang = "zh"
+source = "wikisource"
+source_id = "宋詞三百首"
+chapter_total = 83
+unit = "篇"
+split_poems = true
+index_note = "八十三家 · 二百八十三首"
+author = "朱孝臧（上疆村民）編"
+year = 1924
+license = "PD-old-50 / page text CC BY-SA"
+pd_basis = "編者朱孝臧（1857–1931）逝世逾50年，所選宋詞亦均屬公有領域；文字取自中文維基文庫（CC BY-SA），轉載須標註來源。"
+description = "清末朱孝臧所編宋詞選本，自趙佶至李清照八十五家，二百八十餘首，按詞人編次。"
+min_chars = 50
+max_chars = 200000
+delay_s = 0.2
