@@ -776,6 +776,46 @@ def fetch_wikisource(book: dict, limit: int = 0) -> list[tuple[int, str, str]]:
     return out
 
 
+def _split_jowett_intro(title: str, cleaned: str) -> tuple[str | None, str]:
+    """Split Jowett's INTRODUCTION from the dialogue proper.
+
+    Each Gutenberg text has an analysis, then the dialogue name as a bare
+    capitalised heading (EUTHYPHRO, LACHES; OR, ON COURAGE), then the dialogue.
+    The heading appears in the contents list too, so the *last* INTRODUCTION is
+    the real one and the split is taken from there.
+    """
+    lines = cleaned.splitlines()
+
+    def is_intro(ln: str) -> bool:
+        probe = ln.strip().strip(".").upper()
+        return probe == "INTRODUCTION" or probe.startswith("INTRODUCTION AND")
+
+    cands = [i for i, ln in enumerate(lines) if is_intro(ln)]
+    if not cands:
+        return None, cleaned
+    want = re.sub(r"[^A-Z ]", "", title.upper()).strip()
+    # Only bare heading lines count: clean_paragraphs indents body paragraphs with
+    # four spaces, so an indented line starting with the dialogue's name is prose
+    # ("Euthyphro, who, in the abundance of his knowledge..."), not the heading.
+    heads = [
+        i for i, ln in enumerate(lines)
+        if i > cands[0]
+        and not ln.startswith("    ")
+        and len(ln.strip()) < 80
+        and re.sub(r"[^A-Z ]", "", ln.strip().upper()).strip().startswith(want)
+    ]
+    for ci in reversed(cands):
+        for hi in heads:
+            if hi <= ci:
+                continue
+            intro = "\n".join(lines[ci:hi]).strip()
+            body = "\n".join(lines[hi:]).strip()
+            if len(intro) > 200 and len(body) > 200:
+                return intro, body
+            break
+    return None, cleaned
+
+
 def fetch_gutenberg_collection(book: dict, limit: int = 0) -> list[tuple[int, str, str]]:
     """A set of independent Gutenberg texts, one chapter each.
 
@@ -791,7 +831,7 @@ def fetch_gutenberg_collection(book: dict, limit: int = 0) -> list[tuple[int, st
         lines = body.splitlines()
         for i, ln in enumerate(lines):
             probe = ln.strip().strip(".").upper()
-            if probe == "INTRODUCTION" or ln.strip().upper().startswith("PERSONS OF THE DIALOGUE"):
+            if probe.startswith("INTRODUCTION") or ln.strip().upper().startswith("PERSONS OF THE DIALOGUE"):
                 lines = lines[i:]
                 break
         cleaned = clean.clean_paragraphs("\n".join(lines))
@@ -801,6 +841,17 @@ def fetch_gutenberg_collection(book: dict, limit: int = 0) -> list[tuple[int, st
             )
         chunks.append((item["title"], cleaned))
         time.sleep(float(book.get("delay_s", 1.0)))
+    if book.get("split_intro"):
+        split: list[tuple[str, str]] = []
+        for title, body in chunks:
+            intro, rest = _split_jowett_intro(title, body)
+            if intro is None:
+                print(f"   ! no intro/dialogue split for {title}")
+                split.append((title, rest))
+            else:
+                split.append((f"{title} — Introduction", intro))
+                split.append((title, rest))
+        chunks = split
     if limit:
         chunks = chunks[:limit]
     return [(i, title, body) for i, (title, body) in enumerate(chunks, 1)]
