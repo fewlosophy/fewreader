@@ -7,7 +7,7 @@
   "license": "Public domain (US) / Project Gutenberg transcriber terms",
   "pd_basis": "Melville (d. 1891) and the 1851 text are public domain; the Gutenberg transcription is redistributed without its header per the Gutenberg trademark terms.",
   "description": "The whale, the sea, and cetology: Melville's encyclopedic novel, in 135 chapters plus Etymology and Extracts.",
-  "chapter_total": 135,
+  "chapter_total": 136,
   "chapters": {
     "01 CHAPTER 1. Loomings.txt": "70249f47620f075afbc6f82273ef8319f3b28f2f2c9b823c00f5d6eb5ee8ea3d",
     "02 CHAPTER 2. The Carpet-Bag.txt": "55b3f41eb76d5c724f2da83afb4e17fa85dc1a6a143e83f1917ad540707221ba",
@@ -143,6 +143,7 @@
     "132 CHAPTER 132. The Symphony.txt": "efc04ce2655081e45f6dc159895574fe3b9c903250cc0d31ee72891bf6e66b2a",
     "133 CHAPTER 133. The Chase—First Day.txt": "0a2a6e81aa488412473194ddc0b76b12120597cb70c8eb2ab65e2d58488d0495",
     "134 CHAPTER 134. The Chase—Second Day.txt": "c5106f50a48b99c3e9110550063387a9ef822eba1a75788ee01f630c9cec10c2",
-    "135 CHAPTER 135. The Chase.—Third Day.txt": "541abdb193f03076348d7ecf10fea18732ad4f59b60c16880a1fe52f4ac23c66"
+    "135 CHAPTER 135. The Chase.—Third Day.txt": "1982acb91689b56b892d9deeda368bdbfefc25de40bf6c6a546d7449ac5c9830",
+    "Epilogue.txt": "8a10b70c0a7e4ef95af45d6c88e562c4ee2ce500fa076a7ee50bb889aa7d0299"
   }
 }

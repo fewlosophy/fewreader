@@ -636,6 +636,8 @@ source_url = "https://www.gutenberg.org/cache/epub/145/pg145.txt"
 chapter_re = "^CHAPTER\\s+[IVXLC]+\\.\\s*$"
 chapter_total = 86
 author = "George Eliot"
+front_marks = [{ mark = "^PRELUDE\\.?\\s*$", heading = "PRELUDE" }]
+back_marks = [{ mark = "^FINALE\\.?\\s*$", heading = "FINALE" }]
 year = 1872
 index_note = "86 chapters"
 license = "Public domain (US) / Project Gutenberg transcriber terms"
@@ -655,6 +657,7 @@ source_url = "https://www.gutenberg.org/cache/epub/2701/pg2701.txt"
 chapter_re = "^CHAPTER\\s+\\d+\\.\\s*.*$"
 chapter_total = 135
 author = "Herman Melville"
+back_marks = [{ mark = "^\\s*Epilogue\\s*$", heading = "Epilogue" }]
 year = 1851
 index_note = "135 chapters"
 license = "Public domain (US) / Project Gutenberg transcriber terms"

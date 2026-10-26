@@ -7,8 +7,9 @@
   "license": "Public domain (US) / Project Gutenberg transcriber terms",
   "pd_basis": "Eliot (d. 1880) and this 1871-72 text are public domain; the Gutenberg transcription is redistributed without its header per the Gutenberg trademark terms.",
   "description": "A study of provincial life: eight books and 86 chapters set in a Midlands town, the English novel usually named its greatest.",
-  "chapter_total": 86,
+  "chapter_total": 88,
   "chapters": {
+    "PRELUDE.txt": "38f421915ba0f8d6fa552ee07f8111dbdb6d5d0e64c40916d655e56fcb813afb",
     "01 CHAPTER I.txt": "5196221b6e2e524b68646f9ad49a052159b88cf01f37df0c58763c04617d6b9f",
     "02 CHAPTER II.txt": "41b3c5507f39b2331cc252d0718fd3a29fe100e56e9716654c75e3f4bef7e8b7",
     "03 CHAPTER III.txt": "38f9248cad1ea86beee66c377894d92140a21ff93bd45f5346e09965847b2dfd",
@@ -94,6 +95,7 @@
     "83 CHAPTER LXXXIII.txt": "15a592d8bafb6e5da29bd09f2a7ed51aace35ae05de9f55c4b3b774c1bc81564",
     "84 CHAPTER LXXXIV.txt": "626d6bd493415808d2a1187da6b29910227f64239e8583ca1393ab64e621fa48",
     "85 CHAPTER LXXXV.txt": "40613f5456215caa3ce2acb9a538d1167a61ba783a42a41d9cc8513052d8ef98",
-    "86 CHAPTER LXXXVI.txt": "3746e257d80620d3d46956438331d4c003b70b556517050f221c8c7f00f455e3"
+    "86 CHAPTER LXXXVI.txt": "5ed7264fe7dbbb256f7cbc8bba1cf5c5a5c8c2c29e10fd0e9f703741df216f0e",
+    "FINALE.txt": "40907488640b0c87e73351f50fe3088b80b4a1ecae02086453ab0856aae32d52"
   }
 }

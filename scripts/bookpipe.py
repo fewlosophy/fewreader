@@ -357,6 +357,43 @@ def safe_name(s: str) -> str:
 # --------------------------------------------------------------------------- #
 # adapters -> [(order, heading, body)]
 # --------------------------------------------------------------------------- #
+def _apply_marks(book: dict, body: str, boundary: re.Pattern,
+                 chapters: list[tuple[str, str]]) -> tuple[list, list]:
+    """Pull front/back matter out of a Gutenberg text into its own chapters.
+
+    Front matter sits between the end of the CONTENTS block and the first real
+    chapter heading (Middlemarch's PRELUDE), so the mark is searched in the whole
+    body from its *last* occurrence — the first one is the contents listing — and
+    the text runs to the next chapter boundary. Back matter trails the last
+    chapter's body (FINALE, Epilogue).
+    """
+    front: list[tuple[int, str, str]] = []
+    for spec in book.get("front_marks") or []:
+        marks = list(re.finditer(spec["mark"], body, re.M))
+        if not marks:
+            print(f"   ! front mark not found: {spec['heading']}")
+            continue
+        start = marks[-1].start()
+        nxt = boundary.search(body, start + 1)
+        chunk = body[start: nxt.start() if nxt else len(body)].strip()
+        front.append((0, spec["heading"], clean.clean_paragraphs(chunk)))
+
+    back: list[tuple[int, str, str]] = []
+    if chapters:
+        head, text = chapters[-1]
+        for spec in book.get("back_marks") or []:
+            marks = list(re.finditer(spec["mark"], text, re.M))
+            if not marks:
+                print(f"   ! back mark not found: {spec['heading']}")
+                continue
+            cut = marks[-1].start()
+            tail = text[cut:].rstrip() + "\n"
+            text = text[:cut].rstrip() + "\n"
+            back.append((0, spec["heading"], tail))
+        chapters[-1] = (head, text)
+    return front, back
+
+
 def fetch_gutenberg(book: dict, limit: int = 0) -> list[tuple[int, str, str]]:
     text = http_text(book["source_url"], timeout=120)
     body = clean.strip_pg_boilerplate(text)
@@ -375,8 +412,14 @@ def fetch_gutenberg(book: dict, limit: int = 0) -> list[tuple[int, str, str]]:
         for i, (h, _b) in enumerate(chapters):
             last[h] = i
         chapters = [chapters[i] for i in sorted(last.values())]
-    out = [(i, heading.strip().rstrip("."), text) for i, (heading, text) in enumerate(chapters, 1)]
-    return out[:limit] if limit else out
+    front, back = _apply_marks(book, body, boundary, chapters)
+    numbered = [
+        (i, heading.strip().rstrip("."), text)
+        for i, (heading, text) in enumerate(chapters, 1)
+    ]
+    if limit:
+        numbered = numbered[:limit]
+    return front + numbered + back
 
 
 _PREFETCH: dict[str, str] = {}
@@ -797,7 +840,12 @@ def write_book(book: dict, chapters: list[tuple[int, str, str]], root: Path) -> 
 # validators
 # --------------------------------------------------------------------------- #
 def _extras_count(book: dict) -> int:
-    return len(book.get("front_pages") or []) + len(book.get("back_pages") or [])
+    return (
+        len(book.get("front_pages") or [])
+        + len(book.get("back_pages") or [])
+        + len(book.get("front_marks") or [])
+        + len(book.get("back_marks") or [])
+    )
 
 
 def validate(book: dict, root: Path, expect: int = 0) -> list[str]:
