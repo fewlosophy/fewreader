@@ -120,6 +120,100 @@
       isOpen ? closeSidebar() : openSidebar();
     }
 
+    // ── Swipe to open / close the sidebar (touch, below lg) ──────────────
+    // Mirrors fewsite's drawer gesture: drag 1:1 with the finger, decide on
+    // release by flick velocity, else by half-width position.
+    (function initSwipeDrawer() {
+      const BREAKPOINT = 1024;   // keep in sync with `lg:` below
+      const FLICK = 0.25;        // px/ms
+      let tracking = false, locked = false, wasOpen = false;
+      let startX = 0, startY = 0, lastX = 0, lastT = 0, vel = 0, width = 288;
+
+      const el = () => document.getElementById('sidebar');
+      const bd = () => document.getElementById('drawer-backdrop');
+
+      function sidebarIsOpen() {
+        const s = el();
+        if (!s) return false;
+        const m = new DOMMatrixReadOnly(getComputedStyle(s).transform);
+        return m.m41 > -1;
+      }
+
+      function drag(px) {
+        const s = el(), b = bd();
+        const x = Math.max(-width, Math.min(0, px));
+        s.style.transition = 'none';
+        s.style.transform = 'translateX(' + x + 'px)';
+        if (b) {
+          b.style.transition = 'none';
+          b.classList.remove('opacity-0', 'pointer-events-none');
+          b.classList.add('opacity-100');
+          b.style.opacity = String(1 + x / width);
+        }
+      }
+
+      function settle(shouldOpen) {
+        const s = el(), b = bd();
+        s.style.transition = '';
+        s.style.transform = '';
+        if (b) { b.style.transition = ''; b.style.opacity = ''; }
+        shouldOpen ? openSidebar() : closeSidebar();
+      }
+
+      document.addEventListener('touchstart', (e) => {
+        if (window.innerWidth >= BREAKPOINT || e.touches.length !== 1) return;
+        const t = e.touches[0];
+        wasOpen = sidebarIsOpen();
+        // When closed, only a gesture starting in the left half opens the drawer.
+        if (!wasOpen && t.clientX > window.innerWidth * 0.5) return;
+        width = el().offsetWidth || 288;
+        startX = t.clientX; startY = t.clientY;
+        lastX = startX; lastT = performance.now(); vel = 0;
+        tracking = true; locked = false;
+      }, { passive: true });
+
+      document.addEventListener('touchmove', (e) => {
+        if (!tracking || window.innerWidth >= BREAKPOINT) return;
+        const t = e.touches[0];
+        const dx = t.clientX - startX, dy = t.clientY - startY;
+        if (!locked) {
+          if (Math.abs(dx) > 8 && Math.abs(dx) >= Math.abs(dy)) {
+            locked = true;                      // horizontal intent
+          } else if (Math.abs(dy) > 8) {
+            tracking = false;                   // vertical scroll — leave it alone
+            return;
+          } else {
+            return;
+          }
+        }
+        if (e.cancelable) e.preventDefault();
+        const now = performance.now(), dt = now - lastT;
+        if (dt > 10) { vel = (t.clientX - lastX) / dt; lastX = t.clientX; lastT = now; }
+        drag((wasOpen ? 0 : -width) + dx);
+      }, { passive: false });
+
+      function endSwipe(e) {
+        if (!tracking) return;
+        tracking = false;
+        if (!locked) return;
+        locked = false;
+        const dx = e.changedTouches[0].clientX - startX;
+        const pos = (wasOpen ? 0 : -width) + dx;
+        let shouldOpen;
+        if (vel > FLICK) shouldOpen = true;
+        else if (vel < -FLICK) shouldOpen = false;
+        else shouldOpen = pos > -width / 2;
+        settle(shouldOpen);
+      }
+
+      document.addEventListener('touchend', endSwipe, { passive: true });
+      document.addEventListener('touchcancel', () => {
+        if (!tracking) return;
+        tracking = false; locked = false;
+        settle(sidebarIsOpen());
+      }, { passive: true });
+    })();
+
     // ── Font size ─────────────────────────────────────────
     const FONT_SIZES = ['1rem', '1.0625rem', '1.125rem', '1.3125rem', '1.5625rem'];
 
@@ -220,7 +314,8 @@
   {# ── Sidebar ── #}
   <aside id="sidebar"
          class="fixed top-0 left-0 z-40 h-screen w-72 flex flex-col shrink-0
-                -translate-x-full lg:fixed lg:translate-x-0
+                -translate-x-full lg:translate-x-0
+                transition-transform duration-300 ease-out
                 border-r border-[var(--color-border)] bg-[var(--color-surface)]
                 overflow-y-auto">
 
