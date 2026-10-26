@@ -14,59 +14,6 @@ A minimal, self-hosted reading app for your `.md` and `.txt` files. No accounts,
 
 > 💡 **Note**: This project was 100% vibe coded from start to finish.
 
-## Adding a book (registry pipeline)
-
-Books are data, not code. Everything lives in `scripts/books.toml`:
-
-```toml
-[[book]]
-slug = "sanguoyanyi"
-title = "三國演義"
-category = "fiction"
-book_file = "三國演義"
-lang = "zh"
-source = "wikisource"          # or "gutenberg"
-source_id = "三國演義"          # or source_url + chapter_re for gutenberg
-chapter_total = 120
-profile = "wikisource-header"  # or "wikisource-novel"
-author = "羅貫中"
-license = "PD-old-50 / page text CC BY-SA"
-pd_basis = "作者逝世逾50年，作品屬公有領域。"
-min_chars = 2000
-max_chars = 200000
-```
-
-Then:
-
-```bash
-python3 scripts/bookpipe.py --book sanguoyanyi --dry-run   # plan only
-python3 scripts/bookpipe.py --book sanguoyanyi             # fetch → clean → validate → promote
-python3 scripts/bookpipe.py --all                          # every book in the registry
-python3 scripts/bookpipe.py --book sanguoyanyi --limit 3   # rehearsal: never promotes
-python3 scripts/bookpipe.py --book sanguoyanyi --reindex    # offline rebuild of index/.meta.json
-python3 scripts/bookpipe.py --book sanguoyanyi --validate-only
-```
-
-A book lands in `content/<category>/<slug>/` **only if all ten validators pass**:
-chapter count, non-empty headings, zero residual wikitext, per-chapter size band,
-language ratio, no U+FFFD, contiguous numbering, no duplicate chapter bodies,
-sha256 recorded in `.meta.json`, and every index link resolving on disk.
-Everything is written to `content/.staging/<slug>/` first; on failure the staging
-tree is kept with a `REPORT.md` listing every failed check and `content/` is
-untouched, so the library never shows a half-imported book.
-
-**Repair loop when a new book fails:** read `content/.staging/<slug>/REPORT.md`,
-adjust the registry entry (wrong `profile`, `chapter_total`, size band) or the
-cleaning rules in `scripts/bookpipe.py`, re-run, and only commit once the run
-reports `all checks green`.
-
-Deploy after a successful ingest:
-
-```bash
-git add -A && git commit -m "feat(content): import <書名>" && git push
-
-```
-
 ## Get Started (Docker)
 
 The fastest way is with Docker Compose:
