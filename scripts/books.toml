@@ -785,3 +785,181 @@ pages = [
   { page = "聘義", heading = "聘義" },
   { page = "喪服四制", heading = "喪服四制" },
 ]
+
+[[book]]
+slug = "dongjing-menghua-lu"
+title = "東京夢華錄"
+category = "customs"
+book_file = "東京夢華錄"
+lang = "zh"
+source = "wikisource"
+source_id = "東京夢華錄"
+chapter_total = 10
+unit = "卷"
+profile = "wikisource-header"
+index_note = "十卷"
+pages = [
+  { page = "卷一", heading = "卷一" },
+  { page = "卷二", heading = "卷二" },
+  { page = "卷三", heading = "卷三" },
+  { page = "卷四", heading = "卷四" },
+  { page = "卷五", heading = "卷五" },
+  { page = "卷六", heading = "卷六" },
+  { page = "卷七", heading = "卷七" },
+  { page = "卷八", heading = "卷八" },
+  { page = "卷九", heading = "卷九" },
+  { page = "卷十", heading = "卷十" },
+]
+author = "孟元老"
+year = 1127
+license = "PD-old-50 / page text CC BY-SA"
+pd_basis = "作者孟元老逝世逾50年，作品屬公有領域；文字取自中文維基文庫（CC BY-SA），轉載須標註來源。"
+description = "宋孟元老追憶北宋東京（開封）之作，十卷，記都城格局、御街商鋪、夜市飲食、瓦子百戲、歲時節令，為宋代城市生活最完整的記錄。"
+min_chars = 100
+max_chars = 400000
+delay_s = 0.3
+
+[[book]]
+slug = "mengliang-lu"
+title = "夢粱錄"
+category = "customs"
+book_file = "夢粱錄"
+lang = "zh"
+source = "wikisource"
+source_id = "夢粱錄"
+chapter_total = 20
+unit = "卷"
+profile = "wikisource-header"
+index_note = "二十卷 · 附序"
+front_pages = [{ page = "序", heading = "序" }]
+pages = [
+  { page = "卷01", heading = "卷01" },
+  { page = "卷02", heading = "卷02" },
+  { page = "卷03", heading = "卷03" },
+  { page = "卷04", heading = "卷04" },
+  { page = "卷05", heading = "卷05" },
+  { page = "卷06", heading = "卷06" },
+  { page = "卷07", heading = "卷07" },
+  { page = "卷08", heading = "卷08" },
+  { page = "卷09", heading = "卷09" },
+  { page = "卷10", heading = "卷10" },
+  { page = "卷11", heading = "卷11" },
+  { page = "卷12", heading = "卷12" },
+  { page = "卷13", heading = "卷13" },
+  { page = "卷14", heading = "卷14" },
+  { page = "卷15", heading = "卷15" },
+  { page = "卷16", heading = "卷16" },
+  { page = "卷17", heading = "卷17" },
+  { page = "卷18", heading = "卷18" },
+  { page = "卷19", heading = "卷19" },
+  { page = "卷20", heading = "卷20" },
+]
+author = "吳自牧"
+year = 1274
+license = "PD-old-50 / page text CC BY-SA"
+pd_basis = "作者吳自牧逝世逾50年，作品屬公有領域；文字取自中文維基文庫（CC BY-SA），轉載須標註來源。"
+description = "宋吳自牧記南宋臨安（杭州）之作，二十卷，記宮殿、市鎮、商店、作坊、節令、戲曲、飲食，與《東京夢華錄》互為南北。"
+min_chars = 100
+max_chars = 400000
+delay_s = 0.3
+
+[[book]]
+slug = "wulin-jiushi"
+title = "武林舊事"
+category = "customs"
+book_file = "武林舊事"
+lang = "zh"
+source = "wikisource"
+source_id = "武林舊事"
+chapter_total = 10
+unit = "卷"
+profile = "wikisource-header"
+index_note = "十卷 · 附序"
+front_pages = [{ page = "序", heading = "序" }]
+pages = [
+  { page = "卷一", heading = "卷一" },
+  { page = "卷二", heading = "卷二" },
+  { page = "卷三", heading = "卷三" },
+  { page = "卷四", heading = "卷四" },
+  { page = "卷五", heading = "卷五" },
+  { page = "卷六", heading = "卷六" },
+  { page = "卷七", heading = "卷七" },
+  { page = "卷八", heading = "卷八" },
+  { page = "卷九", heading = "卷九" },
+  { page = "卷十", heading = "卷十" },
+]
+author = "周密"
+year = 1280
+license = "PD-old-50 / page text CC BY-SA"
+pd_basis = "作者周密逝世逾50年，作品屬公有領域；文字取自中文維基文庫（CC BY-SA），轉載須標註來源。"
+description = "宋周密記臨安舊事，十卷，於節令、歌舞、瓦子、酒樓、物產記載最細，卷十《官本雜劇段數》為戲曲史要籍。"
+min_chars = 100
+max_chars = 400000
+delay_s = 0.3
+
+[[book]]
+slug = "lingwai-daida"
+title = "嶺外代答"
+category = "customs"
+book_file = "嶺外代答"
+lang = "zh"
+source = "wikisource"
+source_id = "嶺外代答"
+chapter_total = 10
+unit = "卷"
+profile = "wikisource-header"
+index_note = "十卷 · 附序"
+front_pages = [{ page = "序", heading = "序" }]
+pages = [
+  { page = "卷01", heading = "卷01" },
+  { page = "卷02", heading = "卷02" },
+  { page = "卷03", heading = "卷03" },
+  { page = "卷04", heading = "卷04" },
+  { page = "卷05", heading = "卷05" },
+  { page = "卷06", heading = "卷06" },
+  { page = "卷07", heading = "卷07" },
+  { page = "卷08", heading = "卷08" },
+  { page = "卷09", heading = "卷09" },
+  { page = "卷10", heading = "卷10" },
+]
+author = "周去非"
+year = 1178
+license = "PD-old-50 / page text CC BY-SA"
+pd_basis = "作者周去非逝世逾50年，作品屬公有領域；文字取自中文維基文庫（CC BY-SA），轉載須標註來源。"
+description = "宋周去非記嶺南風土之作，十卷，分地理、邊帥、外國、風土、法制、財計、器用、服用、食用、香藥、寶貨、金石、花木、禽獸、蟲魚，兼記海外諸蕃與南海貿易。"
+min_chars = 100
+max_chars = 400000
+delay_s = 0.3
+
+[[book]]
+slug = "taoan-mengyi"
+title = "陶庵夢憶"
+category = "customs"
+book_file = "陶庵夢憶"
+lang = "zh"
+source = "wikisource"
+source_id = "陶庵夢憶"
+chapter_total = 8
+unit = "卷"
+profile = "wikisource-header"
+index_note = "八卷 · 附序跋"
+back_pages = [{ page = "陶庵夢憶補", heading = "陶庵夢憶補" }, { page = "伍跋", heading = "伍跋" }]
+front_pages = [{ page = "夢憶序", heading = "夢憶序" }, { page = "陶庵夢憶序", heading = "陶庵夢憶序" }]
+pages = [
+  { page = "卷01", heading = "卷01" },
+  { page = "卷02", heading = "卷02" },
+  { page = "卷03", heading = "卷03" },
+  { page = "卷04", heading = "卷04" },
+  { page = "卷05", heading = "卷05" },
+  { page = "卷06", heading = "卷06" },
+  { page = "卷07", heading = "卷07" },
+  { page = "卷08", heading = "卷08" },
+]
+author = "張岱"
+year = 1671
+license = "PD-old-50 / page text CC BY-SA"
+pd_basis = "作者張岱逝世逾50年，作品屬公有領域；文字取自中文維基文庫（CC BY-SA），轉載須標註來源。"
+description = "明張岱追憶晚明江南生活之作，八卷，記茶樓、戲台、燈市、器物、人物、山水，為明清散文名篇，亦為晚明民俗第一手材料。"
+min_chars = 100
+max_chars = 400000
+delay_s = 0.3

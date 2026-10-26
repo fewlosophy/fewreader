@@ -346,7 +346,9 @@ def _body_heading(body: str) -> str:
         s = line.strip()
         if HEADING_OUT_RE.match(s):
             return s[1:-1].strip()
-    return ""
+    # Some volumes open with a ○-marked topic instead (武林舊事 卷四 "○故都宮殿").
+    m = re.search(r"○\s*([^\s（(○]{1,12})", body[:400])
+    return m.group(1).strip() if m else ""
 
 
 def safe_name(s: str) -> str:
@@ -486,6 +488,21 @@ def fetch_wikitext(title: str, hops: int = 3) -> str:
             raw = http_text(url)
     return raw
 
+def _follow_transclusion(raw: str) -> str:
+    """Follow a {{:Page}} transclusion when it is the whole body.
+
+    陶庵夢憶/伍跋 holds nothing but {{:陶庵夢憶跋}}, so without this the 跋 comes
+    out empty and the ingest fails.
+    """
+    hb = header_block(raw)
+    body = raw.replace(hb, "", 1) if hb else raw
+    body = TEMPLATE_RE.sub("", body)
+    m = TRANSCLUDE_RE.search(raw)
+    if m and len(re.sub(r"\s|[\u3000]", "", body)) < 40:
+        return fetch_wikitext(m.group(1).strip())
+    return raw
+
+
 def _extra_pages(book: dict, key: str) -> list[tuple[int, str, str]]:
     """Front/back matter: pages that are not part of the numbered sequence.
 
@@ -495,7 +512,7 @@ def _extra_pages(book: dict, key: str) -> list[tuple[int, str, str]]:
     for spec in book.get(key) or []:
         page = spec["page"] if isinstance(spec, dict) else spec
         heading = (spec.get("heading") if isinstance(spec, dict) else None) or page
-        raw = fetch_wikitext(f"{book['source_id']}/{page}")
+        raw = _follow_transclusion(fetch_wikitext(f"{book['source_id']}/{page}"))
         profile = book.get("profile", "wikisource-novel")
         derived = wikisource_title(raw, profile) or heading
         body = wikitext_body(raw)
@@ -586,6 +603,7 @@ def _fetch_poem_index(book: dict, limit: int = 0) -> list[tuple[int, str, str]]:
     return out
 
 
+BARE_VOLUME_RE = re.compile(r"^\s*卷\s*[一二三四五六七八九十百零〇○\d]+\s*$")
 HEAD_LINE_RE = re.compile(r"^==\s*(.+?)\s*==\s*$")
 AUTHOR_IN_HEAD_RE = re.compile(r"[（(]\s*\[\[\s*(?:Author|作者)\s*:\s*([^|\]]+)(?:\|([^\]]*))?\]\]\s*[)）]")
 TRANSCLUDE_RE = re.compile(r"^\{\{:\s*([^}|]+?)\s*\}\}\s*$", re.M)
@@ -731,9 +749,20 @@ def _fetch_page_list(book: dict, limit: int = 0) -> list[tuple[int, str, str]]:
     for i, spec in enumerate(entries, 1):
         page = spec["page"] if isinstance(spec, dict) else spec
         heading = (spec.get("heading") if isinstance(spec, dict) else None) or page
-        body = wikitext_body(fetch_wikitext(f"{book['source_id']}/{page}"))
+        raw = _follow_transclusion(fetch_wikitext(f"{book['source_id']}/{page}"))
+        body = wikitext_body(raw)
         if len(body) < int(book.get("min_chars", 500)):
             raise SystemExit(f"{book['slug']}: page '{page}' unusable (chars={len(body)})")
+        # A bare volume marker ("卷三") makes a useless filename and a doubled
+        # heading; prefer the page's own section title ("卷三 東都外城").
+        if heading == page and BARE_VOLUME_RE.match(heading):
+            derived = wikisource_title(raw, book.get("profile", "wikisource-header"))
+            derived = CN_VOLUME_RE.sub("", CN_PREFIX_RE.sub("", derived)).strip()
+            if not derived:
+                # Header says only "卷一"; the first 【…】 section title names it.
+                derived = _body_heading(body)
+            if derived:
+                heading = derived
         out.append((i, heading, body))
         time.sleep(float(book.get("delay_s", 0.4)))
     out.extend(_extra_pages(book, "back_pages"))
@@ -876,10 +905,14 @@ def chapter_filename(book: dict, order: int, heading: str) -> str:
     if order <= 0:
         return safe_name(heading) + ".txt"
     if book.get("lang") == "zh":
-        prefix = f"第{order:03d}{book.get('unit', '回')} "
+        prefix = f"第{order:03d}{book.get('unit', '回')}"
     else:
-        prefix = f"{order:02d} "
-    return safe_name(prefix + heading) + ".txt"
+        prefix = f"{order:02d}"
+    # A heading that is only a volume marker would double the prefix
+    # ("第001卷 卷一"), and some pages carry no section title at all.
+    if not heading.strip() or BARE_VOLUME_RE.match(heading):
+        return prefix + ".txt"
+    return safe_name(f"{prefix} {heading}") + ".txt"
 
 
 def write_book(book: dict, chapters: list[tuple[int, str, str]], root: Path) -> None:

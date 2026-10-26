@@ -1,0 +1,22 @@
+{
+  "title": "東京夢華錄",
+  "author": "孟元老",
+  "year": 1127,
+  "source": "wikisource",
+  "license": "PD-old-50 / page text CC BY-SA",
+  "pd_basis": "作者孟元老逝世逾50年，作品屬公有領域；文字取自中文維基文庫（CC BY-SA），轉載須標註來源。",
+  "description": "宋孟元老追憶北宋東京（開封）之作，十卷，記都城格局、御街商鋪、夜市飲食、瓦子百戲、歲時節令，為宋代城市生活最完整的記錄。",
+  "chapter_total": 10,
+  "chapters": {
+    "第001卷 東都外城.txt": "788cc54cc3f1e11a17f02c3d206d5b690af0f795e43b23eea9c1366d1baa4ca2",
+    "第002卷 御街.txt": "732789f525c02d5910d6c15b9a74336014615a488b933e5a5d61bd4e58c2235d",
+    "第003卷 馬行街北諸醫鋪.txt": "d345e6676c804cab2ce0e30f9bba9abca8c12a5c41cf3643d0f4c15deb94cd66",
+    "第004卷 軍頭司.txt": "582aebb877e1d208a9924ea5c66edbf3d5704bb0d339cbd63dadedead9d947f7",
+    "第005卷 ﻿民俗.txt": "64f5fdc9d3b96baa67ffa72259a8d412b4fda5789c4f6343db7e12f264ae615a",
+    "第006卷 正月.txt": "be582ff2ec223f833b6bf1c4875ad361b0a9fdf2910a9ff060362bf46579e784",
+    "第007卷 清明節.txt": "42c1459c83579c1b0444316b6fcb9618d77a1d0bb93115c7a0791ca77c2c953e",
+    "第008卷 四月八日.txt": "4406b1ad1b4679dac534f7e0d56376b91613edad61d106e18076d025c06a2e4f",
+    "第009卷 十月一日.txt": "79f33a583c7f07a5094d6e0359103603443539b4018122a30077578dce085286",
+    "第010卷 冬至.txt": "02fe9dda17302f1909733dfd70d9b363ea8748318b321e458321ce359a08b300"
+  }
+}

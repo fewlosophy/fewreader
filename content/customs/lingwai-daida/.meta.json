@@ -1,0 +1,23 @@
+{
+  "title": "嶺外代答",
+  "author": "周去非",
+  "year": 1178,
+  "source": "wikisource",
+  "license": "PD-old-50 / page text CC BY-SA",
+  "pd_basis": "作者周去非逝世逾50年，作品屬公有領域；文字取自中文維基文庫（CC BY-SA），轉載須標註來源。",
+  "description": "宋周去非記嶺南風土之作，十卷，分地理、邊帥、外國、風土、法制、財計、器用、服用、食用、香藥、寶貨、金石、花木、禽獸、蟲魚，兼記海外諸蕃與南海貿易。",
+  "chapter_total": 11,
+  "chapters": {
+    "序.txt": "fcf0ccd8d33e7fa2dbe30745f75785250e03432a347e932901b133e72630df71",
+    "第001卷 times=南宋 previous=序 next=卷二 type= from= notes=.txt": "446fa7a591f8094d56ae6fa894d5cf54036e77658a729a5ca7dd0c3ece51e140",
+    "第002卷 times=南宋 previous=卷一 next=卷三 type= from= notes=.txt": "7cb3f779498ce22c8d2b7fc21cff545643f3fc886d10d48d15e057d64a697bfd",
+    "第003卷 times=南宋 previous=卷二 next=卷四 type= from= notes=.txt": "6453ec1b58d37e6a082587bc7efce9666f685d9c9d9e0a7da21b904f6da2e9ec",
+    "第004卷 times=南宋 previous=卷三 next=卷五 type= from= notes=.txt": "ca2866ac1a6650a80225b32c04d781c34e95dc1875f83e6cec17b13c26439d2e",
+    "第005卷 times=南宋 previous=卷四 next=卷六 type= from= notes=.txt": "80edecf5e27b094cd91995f5dae34437e3868cf4d452a989bcdb320f6c23dec3",
+    "第006卷 times=南宋 previous=卷五 next=卷七 type= from= notes=.txt": "4aabda30fad0c1005b3492bbb893e8ecfac219c06dfb8f0e3dc23ce5ea9d98db",
+    "第007卷 times=南宋 previous=卷六 next=卷八 type= from= notes=.txt": "43056a293d2106e3b6156f5af6ee2916eb84243eee7c5d90bb0e1cfb56c88a4f",
+    "第008卷 times=南宋 previous=卷七 next=卷九 type= from= notes=.txt": "aa034ed4f9198aa903f5c0e0998cd3a943a6e4fc4206d27ffdcf8ba17ae477ff",
+    "第009卷 times=南宋 previous=卷八 next=卷十 type= from= notes=.txt": "549de4888d54af66db8419e995e9bdeab623f9871981963c42164aa6e0f51b40",
+    "第010卷 times=南宋 previous=卷九 next=全書完 type= from= notes=.txt": "da1a5d4f51f280ff9b35c31b229383264b1a0d5a4fece375fa8915c446316c67"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "title": "夢粱錄",
+  "author": "吳自牧",
+  "year": 1274,
+  "source": "wikisource",
+  "license": "PD-old-50 / page text CC BY-SA",
+  "pd_basis": "作者吳自牧逝世逾50年，作品屬公有領域；文字取自中文維基文庫（CC BY-SA），轉載須標註來源。",
+  "description": "宋吳自牧記南宋臨安（杭州）之作，二十卷，記宮殿、市鎮、商店、作坊、節令、戲曲、飲食，與《東京夢華錄》互為南北。",
+  "chapter_total": 21,
+  "chapters": {
+    "序.txt": "23f9e76bfd608277e2f7cb2edf49abb2942a3bdcf1d270b665c6fa8d73dcd5bd",
+    "第001卷 正月.txt": "8df8423469bac767636d0865e58fd74c11663a29f7f6271b4f123806aecbeb28",
+    "第002卷 三月.txt": "a6d97cbd74c69b2adeb774b391a0f6ccf2af72babdda1e7690903edcba209c27",
+    "第003卷 四月.txt": "fb24e21b6b705c89b43bd7830604a615cea3a6bfff83ee332668b604cbc938ba",
+    "第004卷 六月.txt": "9b3a451e1a2a21bcac78c4bdb5f35b9380692042566b415ad8cf2e338957f3b3",
+    "第005卷 九月.txt": "02e072ef46d4dd2aa25e2648ec090e0452991bb5fe2b1eec6d47a071e9e341b6",
+    "第006卷 十月.txt": "690b0092400d3a36e4fd8c1f007f25e1aa6813296570d4534adcc374f42683a1",
+    "第007卷 杭州.txt": "a726b2b4c43a4d46d91cbf42049ccee8c06f83ad8d2ccbc272556bb26f14397a",
+    "第008卷 大內.txt": "d69cfbd12076e705aec99f35043073de1248e19dbe2252c06a60b0e7b71fe1a2",
+    "第009卷 三省樞使諫官.txt": "c59d918d0fa9e6f229edefc7957db19eaaf8df5d28a4d5d00b2c6119289357bd",
+    "第010卷 諸官舍.txt": "505bb5be4863984b6a6d46d337e0c9895ca3d22ed408e7feb62283fd31d2ed24",
+    "第011卷 諸山巖.txt": "8b868a373d2a0a9ad2934b3c2082ffe17d93b2d9cf962155ada6edb848b35a60",
+    "第012卷 西湖.txt": "b9c491c443119b85e131dd929b5cce4bcf1804c20706a40b30f51adfcef62e1b",
+    "第013卷 兩赤縣市鎮.txt": "c102320cb255c10d26248a92cfb973688f24c3f22a1ec27486d4ba050138ff31",
+    "第014卷 祠祭.txt": "8142c176b08b253110fe13423d82e61a07ff57044571a95e19b93c68ea460df4",
+    "第015卷 學校.txt": "3a1c99b9ac1b02e0306c96a9e4c6008d4bdf9e951fa77218d13bfbe0485351fd",
+    "第016卷 茶肆.txt": "73e62ea10d1f175901d115e464f15506252914b4cf21395e0d40b3f9f2dd019b",
+    "第017卷 歷代人物.txt": "315fd8dff0c6c20a7885b9816841d587d4e105d91bcf67b85b46195c4582b2a5",
+    "第018卷 民俗.txt": "99d8b5c4ec06d5936b20dbdace65ae9711f14bc45aa1d3cd41f081d83bdf5ec0",
+    "第019卷 園囿.txt": "f6a8ecc305e4a38173b9509708d9385f52eba434a513d41d9b3d628ca7b35c09",
+    "第020卷 嫁娶.txt": "50e3f7473992ba4569d975001ae0f563987bf98d04b76dfa16867a46e2002fd7"
+  }
+}

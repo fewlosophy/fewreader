@@ -1,0 +1,24 @@
+{
+  "title": "陶庵夢憶",
+  "author": "張岱",
+  "year": 1671,
+  "source": "wikisource",
+  "license": "PD-old-50 / page text CC BY-SA",
+  "pd_basis": "作者張岱逝世逾50年，作品屬公有領域；文字取自中文維基文庫（CC BY-SA），轉載須標註來源。",
+  "description": "明張岱追憶晚明江南生活之作，八卷，記茶樓、戲台、燈市、器物、人物、山水，為明清散文名篇，亦為晚明民俗第一手材料。",
+  "chapter_total": 12,
+  "chapters": {
+    "夢憶序.txt": "222a190e546355b82db231c0fbdeaf3a1368dc6b090e82d99be87fd45bfac3b3",
+    "陶庵夢憶序.txt": "53dbdbd87304349c7ef364d272490225ab2ec38f1d4adb1f2374cb98caf11208",
+    "第001卷 鍾山.txt": "e81f4aa8dbf33d6b778169ef76a405d12d73729cb79563028dea6b83df7b7b51",
+    "第002卷 孔廟檜.txt": "d78f2616a68506b5ea7d8e8a2b07c3f3d0892a730b0ebf6d4037d875ba0c75d2",
+    "第003卷 絲社.txt": "d9ba276eb3d309bb02625251e81cd817fc02d22509fc087ae0a2b8ad76ba5e3d",
+    "第004卷 不繫園.txt": "1bd84813a087f47de562910700e708e5267b8cc38660f0741558a722108bd943",
+    "第005卷 范長白.txt": "4e5074ffc0f3a0978ec10a40eca5b7c7c8fb971b0315bb23b679837f40db8515",
+    "第006卷 彭天錫串戲.txt": "35f5d9a2cf2d7911ec3260dc79826bab2d46de672766cb21c4c3456796663442",
+    "第007卷 西湖香市.txt": "83f45852a199b8ed115431c0ac75fd0ecd46cbcf689307e2d59b53d7008bea29",
+    "第008卷 龍山放燈.txt": "067caa1f7d4aea36e97f70224b325da86f3d56c431a4d17bbeaee5ff537d7c57",
+    "陶庵夢憶補.txt": "922048f84a8c03577784d51bfbfa1fa79e9ef6c961a5f455bed10505d0b4a9e1",
+    "伍跋.txt": "b0d2ad6c9aac65a48ea5a6aebf859d45b7efc529aa35016070c259a497fb2d64"
+  }
+}

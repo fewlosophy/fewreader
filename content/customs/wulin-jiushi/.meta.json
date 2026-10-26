@@ -1,0 +1,23 @@
+{
+  "title": "武林舊事",
+  "author": "周密",
+  "year": 1280,
+  "source": "wikisource",
+  "license": "PD-old-50 / page text CC BY-SA",
+  "pd_basis": "作者周密逝世逾50年，作品屬公有領域；文字取自中文維基文庫（CC BY-SA），轉載須標註來源。",
+  "description": "宋周密記臨安舊事，十卷，於節令、歌舞、瓦子、酒樓、物產記載最細，卷十《官本雜劇段數》為戲曲史要籍。",
+  "chapter_total": 11,
+  "chapters": {
+    "序.txt": "4bcba812c3baf4be89cec580a9508c9f66bbb1dcb2e85a445f7585c5c832b515",
+    "第001卷 慶壽冊寶.txt": "1d4a0b96d4007732108b6393ddb555e9265d8a565b82010e8ae40f8ef1c6d1ef",
+    "第002卷 御教.txt": "1543d1a6374a9a8c3a00e212a327b74a07e8497fb6c72231381260f1a33269ea",
+    "第003卷 西湖游幸（都人游賞）.txt": "8dc199dd73e3557df4c93d8090c7044a20b43b70a0245a4927350c35f63ef39b",
+    "第004卷 故都宮殿.txt": "e66d580fe7db04badd597be90b622788141df44580cd7b0e9b3b9400b2579341",
+    "第005卷 湖山勝概.txt": "26f730928585eeb750851515657885e169e71352a18733973ab06a3e4618b34d",
+    "第006卷 諸市.txt": "08402670315d399e8a05f8cdbbc9c2fc1f2ec7847cdf2124ad799132526bfc96",
+    "第007卷 乾淳奉親.txt": "f882dd739fea62fca82e7b147c6a4b22f9c9610916b6a3308d57af5929273822",
+    "第008卷 車駕幸學.txt": "56caa36896e157cdea38098fcd039d657214f3bb082761d5d8832cf201b6dfd9",
+    "第009卷 高宗幸張府節次略.txt": "15261f08989b7e65a20455d72c46c25c53478a5f02d16e29d26c851ffcaeb2b7",
+    "第010卷 官本雜劇段數.txt": "ffbe74c8d5075e152f14a10fcd1d05c33400f1f39d3305e70e55321def7201a2"
+  }
+}
