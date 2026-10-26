@@ -63,3 +63,30 @@ pd_basis = "Plato (d. 348 BCE) and Jowett's 1871 translation are public domain; 
 description = "Plato's dialogue on justice and the ideal state."
 min_chars = 5000
 max_chars = 400000
+
+[[book]]
+slug = "meng-xi-bi-tan"
+title = "夢溪筆談"
+category = "notes"
+book_file = "夢溪筆談"
+lang = "zh"
+source = "wikisource"
+source_id = "夢溪筆談"
+chapter_total = 26
+unit = "卷"
+page_pattern = "卷{n:02d}"
+profile = "wikisource-header"
+index_note = "二十六卷 · 附補筆談、續筆談"
+front_pages = [{ page = "序", heading = "序" }]
+back_pages = [
+  { page = "補筆談", heading = "補筆談" },
+  { page = "續筆談", heading = "續筆談" },
+]
+author = "沈括"
+year = 1088
+license = "PD-old-50 / page text CC BY-SA"
+pd_basis = "作者沈括（1031–1095）逝世逾50年，作品屬公有領域；各卷文字取自中文維基文庫，該站頁面內容以 CC BY-SA 授權，轉載須標註來源。"
+description = "北宋沈括所著筆記，二十六卷，分故事、辯證、樂律、象數、人事、官政、權智、藝文、書畫、技藝、器用、神奇、異事、謬誤、譏謔、雜誌、藥議十七門，另附補筆談、續筆談。"
+min_chars = 150
+max_chars = 400000
+delay_s = 0.3
