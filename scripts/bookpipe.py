@@ -776,10 +776,42 @@ def fetch_wikisource(book: dict, limit: int = 0) -> list[tuple[int, str, str]]:
     return out
 
 
+def fetch_gutenberg_collection(book: dict, limit: int = 0) -> list[tuple[int, str, str]]:
+    """A set of independent Gutenberg texts, one chapter each.
+
+    Used for Plato's dialogues: each is a separate ebook (pg1642, pg1656, …) and
+    each deserves to be one chapter of a single collection rather than 26 books.
+    """
+    chunks: list[tuple[str, str]] = []
+    for item in book["sources"]:
+        text = http_text(item["url"], timeout=180)
+        body = clean.strip_pg_boilerplate(text)
+        # Drop the "Produced by …" credit, repeated title block and any Contents
+        # list; start at Jowett's INTRODUCTION (or the dramatis personae).
+        lines = body.splitlines()
+        for i, ln in enumerate(lines):
+            probe = ln.strip().strip(".").upper()
+            if probe == "INTRODUCTION" or ln.strip().upper().startswith("PERSONS OF THE DIALOGUE"):
+                lines = lines[i:]
+                break
+        cleaned = clean.clean_paragraphs("\n".join(lines))
+        if len(cleaned) < int(book.get("min_chars", 500)):
+            raise SystemExit(
+                f"{book['slug']}: {item['title']} too short ({len(cleaned)} chars)"
+            )
+        chunks.append((item["title"], cleaned))
+        time.sleep(float(book.get("delay_s", 1.0)))
+    if limit:
+        chunks = chunks[:limit]
+    return [(i, title, body) for i, (title, body) in enumerate(chunks, 1)]
+
+
 def fetch(book: dict, limit: int = 0) -> list[tuple[int, str, str]]:
     src = book["source"].lower()
     if src == "gutenberg":
         return fetch_gutenberg(book, limit)
+    if src == "gutenberg_collection":
+        return fetch_gutenberg_collection(book, limit)
     if src == "wikisource":
         return fetch_wikisource(book, limit)
     raise SystemExit(f"{book['slug']}: unknown source '{src}'")

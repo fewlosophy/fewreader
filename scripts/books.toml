@@ -665,3 +665,50 @@ pd_basis = "Melville (d. 1891) and the 1851 text are public domain; the Gutenber
 description = "The whale, the sea, and cetology: Melville's encyclopedic novel, in 135 chapters plus Etymology and Extracts."
 min_chars = 150
 max_chars = 400000
+
+[[book]]
+slug = "plato-dialogues"
+title = "Dialogues of Plato"
+category = "philosophy"
+book_file = "Dialogues of Plato"
+lang = "en"
+source = "gutenberg_collection"
+chapter_total = 26
+author = "Plato"
+translator = "Benjamin Jowett"
+year = -380
+index_note = "26 dialogues, Jowett translation"
+license = "Public domain (US) / Project Gutenberg transcriber terms"
+pd_basis = "Plato (d. 348 BCE) and Jowett's 1871 translation are public domain; each Gutenberg transcription is redistributed without its header per the Gutenberg trademark terms."
+description = "The Socratic and later dialogues in Benjamin Jowett's translation, from Euthyphro and the Apology through the Symposium and Republic-era works to the Laws. The Republic is shelved separately."
+min_chars = 3000
+max_chars = 800000
+delay_s = 0.5
+sources = [
+  { title = "Euthyphro", url = "https://www.gutenberg.org/cache/epub/1642/pg1642.txt" },
+  { title = "Apology", url = "https://www.gutenberg.org/cache/epub/1656/pg1656.txt" },
+  { title = "Crito", url = "https://www.gutenberg.org/cache/epub/1657/pg1657.txt" },
+  { title = "Phaedo", url = "https://www.gutenberg.org/cache/epub/1658/pg1658.txt" },
+  { title = "Laches", url = "https://www.gutenberg.org/cache/epub/1584/pg1584.txt" },
+  { title = "Lysis", url = "https://www.gutenberg.org/cache/epub/1579/pg1579.txt" },
+  { title = "Charmides", url = "https://www.gutenberg.org/cache/epub/1580/pg1580.txt" },
+  { title = "Protagoras", url = "https://www.gutenberg.org/cache/epub/1591/pg1591.txt" },
+  { title = "Meno", url = "https://www.gutenberg.org/cache/epub/1643/pg1643.txt" },
+  { title = "Euthydemus", url = "https://www.gutenberg.org/cache/epub/1598/pg1598.txt" },
+  { title = "Lesser Hippias", url = "https://www.gutenberg.org/cache/epub/1673/pg1673.txt" },
+  { title = "Alcibiades I", url = "https://www.gutenberg.org/cache/epub/1676/pg1676.txt" },
+  { title = "Gorgias", url = "https://www.gutenberg.org/cache/epub/1672/pg1672.txt" },
+  { title = "Menexenus", url = "https://www.gutenberg.org/cache/epub/1682/pg1682.txt" },
+  { title = "Symposium", url = "https://www.gutenberg.org/cache/epub/1600/pg1600.txt" },
+  { title = "Phaedrus", url = "https://www.gutenberg.org/cache/epub/1636/pg1636.txt" },
+  { title = "Cratylus", url = "https://www.gutenberg.org/cache/epub/1616/pg1616.txt" },
+  { title = "Theaetetus", url = "https://www.gutenberg.org/cache/epub/1726/pg1726.txt" },
+  { title = "Sophist", url = "https://www.gutenberg.org/cache/epub/1735/pg1735.txt" },
+  { title = "Statesman", url = "https://www.gutenberg.org/cache/epub/1738/pg1738.txt" },
+  { title = "Parmenides", url = "https://www.gutenberg.org/cache/epub/1687/pg1687.txt" },
+  { title = "Philebus", url = "https://www.gutenberg.org/cache/epub/1744/pg1744.txt" },
+  { title = "Timaeus", url = "https://www.gutenberg.org/cache/epub/1572/pg1572.txt" },
+  { title = "Critias", url = "https://www.gutenberg.org/cache/epub/1571/pg1571.txt" },
+  { title = "Ion", url = "https://www.gutenberg.org/cache/epub/1635/pg1635.txt" },
+  { title = "Laws", url = "https://www.gutenberg.org/cache/epub/1750/pg1750.txt" },
+]
