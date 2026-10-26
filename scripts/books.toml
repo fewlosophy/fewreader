@@ -713,3 +713,75 @@ sources = [
   { title = "Ion", url = "https://www.gutenberg.org/cache/epub/1635/pg1635.txt" },
   { title = "Laws", url = "https://www.gutenberg.org/cache/epub/1750/pg1750.txt" },
 ]
+
+[[book]]
+slug = "liji"
+title = "禮記"
+category = "philosophy"
+book_file = "禮記"
+lang = "zh"
+source = "wikisource"
+source_id = "禮記"
+chapter_total = 49
+unit = "篇"
+profile = "wikisource-header"
+index_note = "四十九篇"
+author = "戴聖 編"
+year = -50
+license = "PD-old-50 / page text CC BY-SA"
+pd_basis = "成書於西漢，編者戴聖，距今逾兩千年，屬公有領域；文字取自中文維基文庫（CC BY-SA），轉載須標註來源。"
+description = "西漢戴聖所編禮學文獻匯集，四十九篇，記禮的制度、儀節、意義與儒家論禮之言，為十三經之一。"
+min_chars = 150
+max_chars = 400000
+delay_s = 0.3
+pages = [
+  { page = "曲禮上", heading = "曲禮上" },
+  { page = "曲禮下", heading = "曲禮下" },
+  { page = "檀弓上", heading = "檀弓上" },
+  { page = "檀弓下", heading = "檀弓下" },
+  { page = "王制", heading = "王制" },
+  { page = "月令", heading = "月令" },
+  { page = "曾子問", heading = "曾子問" },
+  { page = "文王世子", heading = "文王世子" },
+  { page = "禮運", heading = "禮運" },
+  { page = "禮器", heading = "禮器" },
+  { page = "郊特牲", heading = "郊特牲" },
+  { page = "內則", heading = "內則" },
+  { page = "玉藻", heading = "玉藻" },
+  { page = "明堂位", heading = "明堂位" },
+  { page = "喪服小記", heading = "喪服小記" },
+  { page = "大傳", heading = "大傳" },
+  { page = "少儀", heading = "少儀" },
+  { page = "學記", heading = "學記" },
+  { page = "樂記", heading = "樂記" },
+  { page = "雜記上", heading = "雜記上" },
+  { page = "雜記下", heading = "雜記下" },
+  { page = "喪大記", heading = "喪大記" },
+  { page = "祭法", heading = "祭法" },
+  { page = "祭義", heading = "祭義" },
+  { page = "祭統", heading = "祭統" },
+  { page = "經解", heading = "經解" },
+  { page = "哀公問", heading = "哀公問" },
+  { page = "仲尼燕居", heading = "仲尼燕居" },
+  { page = "孔子閒居", heading = "孔子閒居" },
+  { page = "坊記", heading = "坊記" },
+  { page = "中庸", heading = "中庸" },
+  { page = "表記", heading = "表記" },
+  { page = "緇衣", heading = "緇衣" },
+  { page = "奔喪", heading = "奔喪" },
+  { page = "問喪", heading = "問喪" },
+  { page = "服問", heading = "服問" },
+  { page = "間傳", heading = "間傳" },
+  { page = "三年問", heading = "三年問" },
+  { page = "深衣", heading = "深衣" },
+  { page = "投壺", heading = "投壺" },
+  { page = "儒行", heading = "儒行" },
+  { page = "大學", heading = "大學" },
+  { page = "冠義", heading = "冠義" },
+  { page = "昏義", heading = "昏義" },
+  { page = "鄉飲酒義", heading = "鄉飲酒義" },
+  { page = "射義", heading = "射義" },
+  { page = "燕義", heading = "燕義" },
+  { page = "聘義", heading = "聘義" },
+  { page = "喪服四制", heading = "喪服四制" },
+]
